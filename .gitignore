@@ -1,22 +1,50 @@
-# Logs
-logs
-*.log
+# Node.js
+node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
-lerna-debug.log*
-node_modules
-.env
-dist-ssr
-*.local
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
+
+# Bun
+.bun/
+bun.lockb
+
+# Next.js build output
+.next/
+out/
+
+# Production build
+dist/
+
+# Vercel deployment
+.vercel/
+
+# Local env files
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Log files
+logs
+*.log
+*.log.*
+
+# IDEs and editors
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# OS-specific
 .DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
+Thumbs.db
+
+# Optional: TypeScript
+*.tsbuildinfo
+
+# Optional: testing
+coverage/
+
+# Optional: misc
+*.local

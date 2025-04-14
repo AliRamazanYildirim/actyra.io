@@ -1,4 +1,4 @@
-// File: /home/dci-student/Schreibtisch/FINAL Project DCI/final/src/app/layout.js
+// File: /home/dci-student/Schreibtisch/Neuer Ordner 3/actyra.io/src/app/layout.js
 import * as entry from '../../../src/app/layout.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

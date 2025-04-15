@@ -9,6 +9,7 @@ import { ShoppingCart, Menu, X } from "lucide-react";
 export default function NavBar() {
   const [isVisible, setIsVisible] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState("home");
   const pathname = usePathname();
   const router = useRouter();
 
@@ -17,6 +18,29 @@ export default function NavBar() {
     const timeout = setTimeout(() => setIsVisible(true), 100);
     return () => clearTimeout(timeout);
   }, []);
+
+  useEffect(() => {
+    if (pathname === "/") {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (entry.isIntersecting) {
+              setActiveSection(entry.target.id);
+            }
+          }
+        },
+        { threshold: 0.6 }
+      );
+
+      const sections = ["home", "events", "kategorien"];
+      sections.forEach((id) => {
+        const el = document.getElementById(id);
+        if (el) observer.observe(el);
+      });
+
+      return () => observer.disconnect();
+    }
+  }, [pathname]);
 
   const handleScrollTo = (id) => {
     setIsMobileMenuOpen(false);
@@ -30,8 +54,13 @@ export default function NavBar() {
 
   const linkStyle = (targetPath) =>
     `hover:text-pink-400 transition cursor-pointer ${
-      pathname === targetPath ? "text-pink-400 underline font-semibold" : ""
+      pathname === targetPath ? "text-pink-400 font-semibold" : ""
     }`;
+
+  const isActive = (sectionId) =>
+    pathname === "/" && activeSection === sectionId
+      ? "text-pink-400 font-semibold"
+      : "hover:text-pink-400 transition cursor-pointer";
 
   return (
     <nav
@@ -55,27 +84,27 @@ export default function NavBar() {
         {/* 🔷 Desktop Menü */}
         <ul className="hidden md:flex flex-wrap justify-center gap-8 text-white font-semibold text-sm md:text-base">
           <li>
-            <Link href="/" className={linkStyle("/")}>Startseite</Link>
+            <Link href="/" className={isActive("home")}>
+              Startseite
+            </Link>
           </li>
           <li>
-            <button onClick={() => handleScrollTo("events")} className="hover:text-pink-400 transition cursor-pointer">
+            <button onClick={() => handleScrollTo("events")} className={isActive("events")}>
               Events entdecken
             </button>
           </li>
           <li>
-            <button onClick={() => handleScrollTo("kategorien")} className="hover:text-pink-400 transition cursor-pointer">
+            <button onClick={() => handleScrollTo("kategorien")} className={isActive("kategorien")}>
               Kategorien
             </button>
           </li>
           <li>
-            <Link href="/event-erstellen" className={linkStyle("/event-erstellen")}>
-              Event erstellen
-            </Link>
+            <Link href="/event-erstellen" className={linkStyle("/event-erstellen")}>Event erstellen</Link>
           </li>
         </ul>
 
         {/* 🔷 Icons rechts */}
-        <div className="flex items-center gap-5">
+        <div className="flex items-center gap-5  text-white font-semibold text-sm md:text-base">
           <Link href="/login" className={linkStyle("/login")}>
             Mein Bereich
           </Link>
@@ -98,13 +127,13 @@ export default function NavBar() {
       {/* 🔽 Mobiles Menü */}
       {isMobileMenuOpen && (
         <div className="md:hidden bg-[#1c1f3c] text-white text-center py-4 space-y-4">
-          <Link href="/" onClick={() => setIsMobileMenuOpen(false)} className={linkStyle("/")}>
+          <Link href="/" onClick={() => setIsMobileMenuOpen(false)} className={isActive("home")}>
             Startseite
           </Link>
-          <button onClick={() => handleScrollTo("events")} className="block w-full hover:text-pink-400 transition cursor-pointer">
+          <button onClick={() => handleScrollTo("events")} className={isActive("events")}>
             Events entdecken
           </button>
-          <button onClick={() => handleScrollTo("kategorien")} className="block w-full hover:text-pink-400 transition cursor-pointer">
+          <button onClick={() => handleScrollTo("kategorien")} className={isActive("kategorien")}>
             Kategorien
           </button>
           <Link href="/event-erstellen" onClick={() => setIsMobileMenuOpen(false)} className={linkStyle("/event-erstellen")}>

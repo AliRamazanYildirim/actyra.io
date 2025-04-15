@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // File: /home/dci-student/Desktop/finalprojekt14-16/actyra.io/src/app/page.js
+=======
+// File: /home/dci-student/Schreibtisch/Final DCI NEW/actyra.io/src/app/page.js
+>>>>>>> 35db50ccfeab8707e69c2f0ec38ec54fcc9180b7
 import * as entry from '../../../src/app/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

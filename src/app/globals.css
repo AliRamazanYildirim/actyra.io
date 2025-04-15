@@ -117,6 +117,7 @@ body {
 .nav-link:hover::after {
   width: 100%;
 }
+<<<<<<< HEAD
 
 /* === TICKET SELECTOR DESIGN === */
 .ticket-box {
@@ -148,3 +149,5 @@ body {
 }
 
 
+=======
+>>>>>>> 35db50ccfeab8707e69c2f0ec38ec54fcc9180b7

@@ -2,5 +2,8 @@
   "/login/page": "app/login/page.js",
   "/page": "app/page.js",
   "/events/[slug]/page": "app/events/[slug]/page.js",
-  "/event-erstellen/page": "app/event-erstellen/page.js"
+  "/events/[slug]/tickets/page": "app/events/[slug]/tickets/page.js",
+  "/events/[slug]/success/page": "app/events/[slug]/success/page.js",
+  "/create-ticket/page": "app/create-ticket/page.js",
+  "/_not-found/page": "app/_not-found/page.js"
 }

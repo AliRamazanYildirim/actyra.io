@@ -117,3 +117,37 @@ body {
 .nav-link:hover::after {
   width: 100%;
 }
+<<<<<<< HEAD
+
+/* === TICKET SELECTOR DESIGN === */
+.ticket-box {
+  @apply bg-white dark:bg-[#111827] text-gray-800 dark:text-gray-100 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 p-6 max-w-md w-full mx-auto transition-all duration-300;
+}
+
+.ticket-heading {
+  @apply text-2xl font-bold mb-4 text-pink-600 dark:text-pink-400;
+}
+
+.ticket-label {
+  @apply block text-sm font-medium mb-1;
+}
+
+.ticket-input {
+  @apply w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-[#1f2937] text-gray-800 dark:text-gray-100 mb-4;
+}
+
+.ticket-summary {
+  @apply text-sm text-gray-600 dark:text-gray-300 mb-2;
+}
+
+.ticket-total {
+  @apply font-semibold text-lg mb-4 text-gray-800 dark:text-gray-100;
+}
+
+.ticket-button {
+  @apply w-full bg-pink-600 hover:bg-pink-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300;
+}
+
+
+=======
+>>>>>>> 35db50ccfeab8707e69c2f0ec38ec54fcc9180b7

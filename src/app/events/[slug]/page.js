@@ -1,6 +1,7 @@
 // src/app/events/[slug]/page.js
 
 import Image from "next/image";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Calendar, MapPin, Euro } from "lucide-react";
 
@@ -69,14 +70,15 @@ export default async function EventDetailPage({ params }) {
               {event.longDescription}
             </p>
 
-            <button className="mt-6 px-6 py-3 bg-pink-600 hover:bg-pink-700 text-white font-semibold rounded-full transition duration-300">
-              Jetzt Ticket sichern
-            </button>
+            {/* Link zur Ticketseite */}
+            <Link href={`/events/${event.slug}/tickets`}>
+              <button className="mt-6 px-6 py-3 bg-pink-600 hover:bg-pink-700 text-white font-semibold rounded-full transition duration-300">
+                Jetzt Ticket sichern
+              </button>
+            </Link>
           </div>
         </div>
       </main>
-
-      
     </>
   );
 }

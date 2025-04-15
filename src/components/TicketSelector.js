@@ -1,15 +1,19 @@
 "use client";
-import { useState } from "react";
 
-export default function TicketSelector({ price = 10, title = "Event" }) {
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+
+export default function TicketSelector({ price = 10, title = "Event", slug }) {
   const [quantity, setQuantity] = useState(1);
   const donation = price === 0 ? 2 : 3;
+  const router = useRouter();
 
   const totalPrice = quantity * price;
   const totalDonation = quantity * donation;
 
   const handleCheckout = () => {
-    alert(`🎟️ Du buchst ${quantity} Ticket(s) für "${title}"\nGesamt: ${totalPrice} € + ${totalDonation} € Spende`);
+    // 👉 Weiterleitung zur Success-Seite mit Event-Slug
+    router.push(`/events/${slug}/success`);
   };
 
   return (

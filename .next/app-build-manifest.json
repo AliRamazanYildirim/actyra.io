@@ -25,6 +25,11 @@
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/events/[slug]/tickets/page.js"
+    ],
+    "/events/[slug]/success/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/events/[slug]/success/page.js"
     ]
   }
 }

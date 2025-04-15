@@ -6,14 +6,11 @@ import { notFound } from "next/navigation";
 import { Calendar, MapPin, Euro } from "lucide-react";
 
 import NavBar from "@/components/NavBar";
+import HeroDetailComp from "@/components/HeroDetailComp";
 
-import HeroDetailComp from "@/components/HeroDetailComp"; // 👈 Neue Hero-Komponente
-
-// Events dynamisch laden
 export async function generateStaticParams() {
   const mod = await import("@/data/events.js");
   const events = mod?.default || [];
-
   return events.map((event) => ({ slug: event.slug }));
 }
 
@@ -22,7 +19,6 @@ export default async function EventDetailPage({ params }) {
   const events = mod?.default || [];
 
   const event = events.find((e) => e.slug === params.slug);
-
   if (!event) return notFound();
 
   return (
@@ -32,7 +28,7 @@ export default async function EventDetailPage({ params }) {
 
       <main className="max-w-5xl mx-auto px-6 py-16">
         <div className="bg-[#0f172a] text-white rounded-2xl shadow-2xl overflow-hidden">
-          {/* Bild */}
+          {/* Eventbild */}
           <div className="relative w-full h-72 md:h-[400px]">
             <Image
               src={event.imageUrl}
@@ -43,7 +39,7 @@ export default async function EventDetailPage({ params }) {
             />
           </div>
 
-          {/* Eventdetails */}
+          {/* Eventinfos */}
           <div className="p-8 space-y-6">
             <h1 className="text-4xl font-extrabold bg-gradient-to-r from-purple-400 to-pink-500 text-transparent bg-clip-text">
               {event.title}
@@ -70,7 +66,7 @@ export default async function EventDetailPage({ params }) {
               {event.longDescription}
             </p>
 
-            {/* Link zur Ticketseite */}
+            {/* Button zur Ticketseite */}
             <Link href={`/events/${event.slug}/tickets`}>
               <button className="mt-6 px-6 py-3 bg-pink-600 hover:bg-pink-700 text-white font-semibold rounded-full transition duration-300">
                 Jetzt Ticket sichern

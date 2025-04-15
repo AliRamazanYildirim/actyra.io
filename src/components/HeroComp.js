@@ -1,3 +1,5 @@
+// 📁 src/components/HeroComp.jsx
+
 "use client";
 
 import Image from "next/image";
@@ -25,7 +27,6 @@ export default function HeroComp() {
   const [letterIndex, setLetterIndex] = useState(0);
   const [showVideo, setShowVideo] = useState(false);
 
-  // Lauftext-Animation
   useEffect(() => {
     const currentWord = WORDS[index];
     if (letterIndex < currentWord.length) {
@@ -45,16 +46,10 @@ export default function HeroComp() {
   }, [letterIndex, index]);
 
   return (
-    <header className="relative overflow-hidden bg-[#0D0E25] text-white">
+    <header id="home" className="relative overflow-hidden bg-[#0D0E25] text-white">
       <Stars />
-
       <div className="relative z-10 max-w-7xl mx-auto px-6 pt-20 md:pt-40 pb-16 grid grid-cols-1 md:grid-cols-[1.2fr_1fr] gap-10 items-center">
-        {/* Linke Seite */}
         <div className="space-y-6 text-center md:text-left">
-          {/* Logo rund */}
-
-
-          {/* Titel + Lauftext + Hinweis */}
           <motion.div
             className="space-y-6"
             initial={{ opacity: 0, y: 20 }}
@@ -68,7 +63,6 @@ export default function HeroComp() {
               </span>
             </h1>
 
-            {/* Herz-Text */}
             <div className="flex flex-col items-center md:items-start text-white gap-2">
               <p className="flex items-center text-base font-bold">
                 <Heart size={18} className="mr-2 text-pink-500 animate-pulse" />
@@ -88,7 +82,6 @@ export default function HeroComp() {
               </p>
             </div>
 
-            {/* Call-to-Action Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
               <button className="px-6 py-3 font-semibold rounded bg-gradient-to-r from-indigo-600 to-pink-500 hover:opacity-90 transition">
                 Jetzt entdecken
@@ -100,7 +93,6 @@ export default function HeroComp() {
           </motion.div>
         </div>
 
-        {/* Rechte Seite mit Tilt-Effekt und Play-Button */}
         <Tilt
           glareEnable={false}
           perspective={1000}
@@ -118,7 +110,6 @@ export default function HeroComp() {
             className="rounded-xl shadow-2xl opacity-90 backdrop-blur-sm"
             priority
           />
-
           <button
             onClick={() => setShowVideo(true)}
             className="absolute inset-0 flex flex-col items-center justify-center hover:scale-105 transition-all"
@@ -133,7 +124,6 @@ export default function HeroComp() {
         </Tilt>
       </div>
 
-      {/* Video Modal */}
       {showVideo && <ModalVideo setShowVideo={setShowVideo} />}
     </header>
   );

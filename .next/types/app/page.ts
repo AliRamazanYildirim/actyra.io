@@ -1,4 +1,4 @@
-// File: /home/dci-student/Schreibtisch/Final DCI NEW/actyra.io/src/app/page.js
+// File: /home/dci-student/Schreibtisch/actyra.io/src/app/page.js
 import * as entry from '../../../src/app/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

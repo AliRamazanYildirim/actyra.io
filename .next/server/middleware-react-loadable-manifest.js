@@ -1,1 +1,0 @@
-self.__REACT_LOADABLE_MANIFEST="{\"components/DynamicStars.js -> ./Stars\":{\"id\":\"components/DynamicStars.js -> ./Stars\",\"files\":[\"static/chunks/_app-pages-browser_src_components_Stars_js.js\"]}}"

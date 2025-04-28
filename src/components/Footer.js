@@ -97,7 +97,7 @@ export default function Footer() {
             <input
               type="email"
               placeholder="Enter your email:"
-              className="w-full p-3 rounded bg-[#141539] text-white placeholder-gray-400 mb-4"
+              className="w-full p-3 rounded bg-white text-white placeholder-black mb-4"
             />
             <button className="w-full py-3 rounded bg-gradient-to-r from-indigo-600 to-pink-500 font-bold hover:opacity-90 transition duration-200">
               SUBSCRIBE NOW

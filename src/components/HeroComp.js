@@ -83,10 +83,10 @@ export default function HeroComp() {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-              <button className="px-6 py-3 font-semibold rounded bg-gradient-to-r from-indigo-600 to-pink-500 hover:opacity-90 transition">
+              <button className="px-6 py-3 font-semibold rounded bg-gradient-to-r from-indigo-600 to-pink-500 hover:opacity-90 transition cursor-pointer">
                 Jetzt entdecken
               </button>
-              <button className="px-6 py-3 font-semibold rounded border border-pink-500 text-pink-400 hover:bg-pink-600 hover:text-white transition">
+              <button className="px-6 py-3 font-semibold rounded border border-pink-500 text-pink-400 hover:bg-pink-600 hover:text-white transition cursor-pointer">
                 Event erstellen
               </button>
             </div>

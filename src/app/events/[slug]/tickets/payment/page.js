@@ -108,7 +108,7 @@ export default function PaymentPage({ params }) {
           <button
             disabled={!isValid}
             onClick={handleSubmit}
-            className={`w-full mt-6 py-3 rounded-full font-bold transition ${
+            className={`w-full mt-6 py-3 rounded-full font-bold transition cursor-pointer ${
               isValid
                 ? "bg-pink-600 hover:bg-pink-700"
                 : "bg-gray-700 cursor-not-allowed"

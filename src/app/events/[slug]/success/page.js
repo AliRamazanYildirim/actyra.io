@@ -62,7 +62,8 @@ export default function TicketSuccessPage({ params }) {
             {/* Zurück Button */}
             <div className="mt-6">
               <Link href="/">
-                <button className="px-6 py-3 bg-pink-600 hover:bg-pink-700 text-white font-semibold rounded-full transition duration-300">
+                <button className="px-6 py-3 bg-pink-600 hover:bg-pink-700 text-white font-semibold rounded-full transition duration-300 cursor-pointer">Bild auswählen
+
                   Zurück zur Startseite
                 </button>
               </Link>

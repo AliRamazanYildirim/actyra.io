@@ -68,7 +68,7 @@ export default async function EventDetailPage({ params }) {
 
             {/* Button zur Ticketseite */}
             <Link href={`/events/${event.slug}/tickets`}>
-              <button className="mt-6 px-6 py-3 bg-pink-600 hover:bg-pink-700 text-white font-semibold rounded-full transition duration-300">
+              <button className="mt-6 px-6 py-3 bg-pink-600 hover:bg-pink-700 text-white font-semibold rounded-full transition duration-300 cursor-pointer">
                 Jetzt Ticket sichern
               </button>
             </Link>

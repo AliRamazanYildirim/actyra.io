@@ -46,7 +46,7 @@ export default function TicketSelector({ price = 10, title = "Event", slug }) {
 
       <button
         onClick={handleCheckout}
-        className="ticket-button"
+        className="ticket-button cursor-pointer"
       >
         Weiter zur Bezahlung
       </button>

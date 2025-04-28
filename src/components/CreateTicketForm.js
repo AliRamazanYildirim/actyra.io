@@ -61,7 +61,7 @@ export default function CreateTicketForm() {
 
       <button
         type="submit"
-        className="w-full bg-pink-600 hover:bg-pink-700 px-4 py-2 rounded-full font-semibold"
+        className="w-full bg-pink-600 hover:bg-pink-700 px-4 py-2 rounded-full font-semibold cursor-pointer"
       >
         Ticket erstellen
       </button>

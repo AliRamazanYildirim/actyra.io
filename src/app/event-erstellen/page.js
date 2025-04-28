@@ -16,7 +16,7 @@ const EventErstellenPage = () => {
       <HeroEventErstellen />
 
       {/* Ab hier normaler gepaddeter Bereich */}
-      <main className="min-h-screen bg-gray-50 pt-8">
+      <main className="min-h-screen bg-white pt-8">
         <div className="container mx-auto px-4">
           <EventForm />
         </div>

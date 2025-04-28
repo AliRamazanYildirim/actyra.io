@@ -12,12 +12,13 @@ export default function TicketSelector({ price = 10, title = "Event", slug }) {
   const totalDonation = quantity * donation;
 
   const handleCheckout = () => {
-    // 👉 Weiterleitung zur Success-Seite mit Event-Slug
-    router.push(`/events/${slug}/success`);
+    router.push(
+      `/events/${slug}/tickets/payment?quantity=${quantity}&price=${price}&donation=${donation}`
+    );
   };
 
   return (
-    <div className="ticket-box">
+    <div className="bg-[#0f172a] text-white rounded-2xl shadow-2xl overflow-hidden p-8 space-y-6 mt-16">
       <h2 className="ticket-heading">Tickets buchen</h2>
 
       <label htmlFor="quantity" className="ticket-label">Anzahl der Tickets</label>
@@ -38,7 +39,9 @@ export default function TicketSelector({ price = 10, title = "Event", slug }) {
       </p>
 
       <div className="ticket-total">
-        Gesamt: {price === 0 ? `${totalDonation} € Spende` : `${totalPrice} € + ${totalDonation} € Spende`}
+        Gesamt: {price === 0
+          ? `${totalDonation} € Spende`
+          : `${totalPrice} € + ${totalDonation} € Spende`}
       </div>
 
       <button

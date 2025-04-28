@@ -14,33 +14,40 @@ export default function TicketBookingPage({ params }) {
       <NavBar />
       <HeroDetailComp />
 
-      <main className="min-h-screen bg-[#0f172a] text-white px-6 py-16 max-w-4xl mx-auto">
-        {/* Eventbild */}
-        <div className="relative w-full h-60 md:h-80 rounded-xl overflow-hidden shadow-xl mb-10">
-          <Image
-            src={event.imageUrl}
-            alt={event.title}
-            fill
-            className="object-cover"
-            priority
-          />
-        </div>
+      <main className="max-w-5xl mx-auto px-6 py-16">
+        {/* ✅ Kasten */}
+        <div className="bg-[#0f172a] text-white rounded-2xl shadow-2xl overflow-hidden">
+          {/* Eventbild */}
+          <div className="relative w-full h-60 md:h-80">
+            <Image
+              src={event.imageUrl}
+              alt={event.title}
+              fill
+              className="object-cover"
+              priority
+            />
+          </div>
 
-        {/* Titel + Beschreibung */}
-        <div className="mb-10 text-center">
-          <h1 className="text-3xl md:text-4xl font-extrabold bg-gradient-to-r from-purple-400 to-pink-500 text-transparent bg-clip-text">
-            🎟️ Ticket buchen für: {event.title}
-          </h1>
-          <p className="text-gray-300 mt-2">{event.shortDescription}</p>
-        </div>
+          {/* Inhalt */}
+          <div className="p-8 space-y-6">
+            <h1 className="text-3xl md:text-4xl font-extrabold bg-gradient-to-r from-purple-400 to-pink-500 text-transparent bg-clip-text text-center">
+              🎟️ Ticket buchen für: {event.title}
+            </h1>
 
-        {/* ✅ TicketSelector mit slug */}
-        <TicketSelector
-          price={event.price}
-          title={event.title}
-          slug={event.slug}
-        />
+            <p className="text-gray-300 text-center">{event.shortDescription}</p>
+
+            {/* TicketSelector in neuer Box */}
+            <div className="mt-10">
+              <TicketSelector
+                price={event.price}
+                title={event.title}
+                slug={event.slug}
+              />
+            </div>
+          </div>
+        </div>
       </main>
     </>
   );
 }
+

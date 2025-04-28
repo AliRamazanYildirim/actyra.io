@@ -8,6 +8,7 @@ pnpm-debug.log*
 # Bun
 .bun/
 bun.lockb
+bun.lock
 
 # Next.js build output
 .next/

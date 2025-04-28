@@ -1,11 +1,28 @@
-export default function EventErstellenPage() {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-[#0D0E25] text-white text-center px-6">
-        <div>
-          <h1 className="text-4xl font-bold mb-4">Event erstellen</h1>
-          <p className="text-gray-300">Diese Seite ist bald verfügbar!</p>
+// src/app/event-erstellen/page.js
+// Seite für Event-Erstellung - bindet das Event-Formular ein
+
+import HeroEventErstellen from "@/components/HeroEventErstellen";
+import EventForm from "@/components/EventForm";
+
+export const metadata = {
+  title: "Event erstellen | Actyra",
+  description: "Erstelle dein eigenes Event und veröffentliche es auf Actyra.",
+};
+
+const EventErstellenPage = () => {
+  return (
+    <>
+      {/* Hero vollflächig */}
+      <HeroEventErstellen />
+
+      {/* Ab hier normaler gepaddeter Bereich */}
+      <main className="min-h-screen bg-white pt-8">
+        <div className="container mx-auto px-4">
+          <EventForm />
         </div>
-      </div>
-    );
-  }
-  
+      </main>
+    </>
+  );
+};
+
+export default EventErstellenPage;

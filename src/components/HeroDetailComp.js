@@ -57,7 +57,7 @@ export default function HeroDetailComp() {
           {/* Play Button über Bild */}
           <button
             onClick={() => setShowVideo(true)}
-            className="absolute inset-0 flex flex-col items-center justify-center hover:scale-105 transition-all"
+            className="absolute inset-0 flex flex-col items-center justify-center hover:scale-105 transition-all cursor-pointer"
           >
             <div className="backdrop-blur-md bg-black/30 rounded-full p-4 shadow-lg border border-white">
               <Play className="w-8 h-8 text-red-500" />

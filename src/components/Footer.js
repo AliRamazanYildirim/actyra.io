@@ -99,7 +99,7 @@ export default function Footer() {
               placeholder="Enter your email:"
               className="w-full p-3 rounded bg-white text-white placeholder-black mb-4"
             />
-            <button className="w-full py-3 rounded bg-gradient-to-r from-indigo-600 to-pink-500 font-bold hover:opacity-90 transition duration-200">
+            <button className="w-full py-3 rounded bg-gradient-to-r from-indigo-600 to-pink-500 font-bold hover:opacity-90 transition duration-200 cursor-pointer">
               SUBSCRIBE NOW
             </button>
           </div>

@@ -7,15 +7,25 @@ import HeroDetailComp from "@/components/HeroDetailComp";
 import Image from "next/image";
 import Link from "next/link";
 import dynamic from "next/dynamic";
+import { use, useEffect, useState } from "react";
 
 const QRCode = dynamic(() => import("react-qr-code"), { ssr: false });
 
 export default function TicketSuccessPage({ params }) {
-  const event = eventsData.find((e) => e.slug === params.slug);
-  if (!event) return notFound();
+  // state für die Bestellnummer
+  // params auflösen mit React.use()
+  const [orderNumber, setOrderNumber] = useState("wird geladen...");
+  
+  const resolvedParams = use(params);
 
-  // Zufällige Bestellnummer generieren
-  const randomOrderNumber = `BNR${Math.floor(100000 + Math.random() * 900000)}`;
+  // Bestellnummer erst nach der Hydration generieren
+  useEffect(() => {
+    const randomOrderNumber = `BNR${Math.floor(100000 + Math.random() * 900000)}`;
+    setOrderNumber(randomOrderNumber);
+  }, []);
+
+  const event = eventsData.find((e) => e.slug === resolvedParams.slug);
+  if (!event) return notFound();
 
   return (
     <>
@@ -43,7 +53,7 @@ export default function TicketSuccessPage({ params }) {
 
             {/* Bestellnummer */}
             <p className="text-gray-300 text-lg">
-              Deine Bestellnummer: <span className="font-bold text-white">{randomOrderNumber}</span>
+              Deine Bestellnummer: <span className="font-bold text-white">{orderNumber}</span>
             </p>
 
             {/* QR Code */}

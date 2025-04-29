@@ -18,7 +18,9 @@ export default async function EventDetailPage({ params }) {
   const mod = await import("@/data/events.js");
   const events = mod?.default || [];
 
-  const event = events.find((e) => e.slug === params.slug);
+   // Params explizit auflösen
+   const resolvedParams = await Promise.resolve(params);
+   const event = events.find((e) => e.slug === resolvedParams.slug);
   if (!event) return notFound();
 
   return (

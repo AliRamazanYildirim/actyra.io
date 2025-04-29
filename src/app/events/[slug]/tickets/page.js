@@ -5,8 +5,9 @@ import NavBar from "@/components/NavBar";
 import HeroDetailComp from "@/components/HeroDetailComp";
 import Image from "next/image";
 
-export default function TicketBookingPage({ params }) {
-  const event = eventsData.find((e) => e.slug === params.slug);
+export default async function TicketBookingPage({ params }) {
+  const resolvedParams = await Promise.resolve(params);
+  const event = eventsData.find((e) => e.slug === resolvedParams.slug);
   if (!event) return notFound();
 
   return (

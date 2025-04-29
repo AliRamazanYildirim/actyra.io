@@ -1,13 +1,20 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
+import { useMemo, useState } from "react";
 import NavBar from "@/components/NavBar";
 import HeroDetailComp from "@/components/HeroDetailComp";
 
-export default function PaymentPage({ params }) {
+export default function PaymentPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const pathname = usePathname();
+
+  // 🔧 slug'ı URL'den çıkarıyoruz (örneğin: /events/my-event/tickets/payment)
+  const slug = useMemo(() => {
+    const segments = pathname.split("/");
+    return segments[2] || ""; // /events/[slug]/tickets/payment → index 2 = slug
+  }, [pathname]);
 
   const [form, setForm] = useState({
     name: "",
@@ -37,7 +44,7 @@ export default function PaymentPage({ params }) {
       method: form.method,
     }).toString();
 
-    router.push(`/events/${params.slug}/success?${query}`);
+    router.push(`/events/${slug}/success?${query}`);
   };
 
   const isValid = form.name && form.email;

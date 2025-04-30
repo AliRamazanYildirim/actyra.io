@@ -153,7 +153,7 @@ export default function EventListSection() {
 
               {/* CTA-Button mit Link zur Detailseite */}
               <Link href={`/events/${event.slug}`} passHref>
-                <button className="mt-4 px-4 py-2 rounded-full bg-pink-500 hover:bg-pink-600 text-white font-semibold w-full cursor-pointer">
+                <button className="mt-4 px-4 py-2 rounded-full bg-pink-700 hover:bg-pink-700 text-white font-semibold w-full cursor-pointer">
                   Jetzt teilnehmen
                 </button>
               </Link>

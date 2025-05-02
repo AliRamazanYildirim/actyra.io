@@ -2,12 +2,12 @@ import { FaFacebookF, FaTwitter, FaSkype, FaLinkedinIn } from "react-icons/fa";
 
 export default function Footer() {
   const galleryImages = [
-    "/event.jpg",
-    "/event1.avif",
-    "/event2.avif",
-    "/event3.jpg",
-    "/event4.avif",
-    "/event5.jpg",
+    "/images/event1.webp",
+    "/images/event2.webp",
+    "/images/event3.webp",
+    "/images/event4.webp",
+    "/images/event5.webp",
+    "/images/event6.webp",
   ];
 
   return (

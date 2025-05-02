@@ -17,7 +17,9 @@ const EventPreview = ({ formData, onBack, onSubmit }) => {
           )}
 
           <div className="p-6">
-            <h2 className="text-3xl font-bold mb-2 text-[#c127d9]">{formData.title}</h2>
+            <h2 className="text-3xl font-bold mb-2 text-[#c127d9]">
+              {formData.title}
+            </h2>
 
             <div className="flex items-center space-x-4 text-sm text-gray-300 mb-4">
               <span>📅 {formData.date}</span>

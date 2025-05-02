@@ -12,7 +12,7 @@ const events = [
     location: "Berlin",
     date: "2025-06-01",
     price: 15,
-    imageUrl: "/images/event1.avif",
+    imageUrl: "/images/event1.webp",
     slug: "neon-club-night",
     tags: ["Party", "Berlin"],
     shortDescription: "Erlebe eine Nacht voller Neonlichter und Musik in Berlin.",
@@ -24,7 +24,7 @@ const events = [
     location: "Hamburg",
     date: "2025-07-15",
     price: 0,
-    imageUrl: "/images/event2.avif",
+    imageUrl: "/images/event2.webp",
     slug: "open-air-festival",
     tags: ["Festival", "Live Musik"],
     shortDescription: "Feiere unter freiem Himmel mit Livemusik in Hamburg.",
@@ -48,7 +48,7 @@ const events = [
     location: "Köln",
     date: "2025-05-25",
     price: 0,
-    imageUrl: "/images/event4.jpeg",
+    imageUrl: "/images/event4.webp",
     slug: "yoga-im-park",
     tags: ["Outdoor", "Wellness"],
     shortDescription: "Finde innere Ruhe bei einer Yoga-Session im Grünen.",
@@ -110,6 +110,7 @@ export default function EventListSection() {
             {/* Event Bild */}
             <Image
               src={event.imageUrl}
+              
               alt={event.title}
               width={600}
               height={400}

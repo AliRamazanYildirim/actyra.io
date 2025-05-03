@@ -120,14 +120,14 @@ export default function Footer() {
           {/* Gallery */}
           <div>
             <h3 className="font-semibold mb-4 underline underline-offset-4 text-white">OUR GALLERY:</h3>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-3 gap-1 sm:gap-2">
               {galleryImages.map((src, i) => (
                 <a
                   key={i}
                   href={src}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-20 h-20 rounded-lg relative group overflow-hidden block"
+                  className="aspect-square max-w-[65px] sm:max-w-[70px] md:max-w-[80px] w-full rounded-lg relative group overflow-hidden block"
                 >
                   <Image
                     src={src}
@@ -135,10 +135,10 @@ export default function Footer() {
                     width={80}
                     height={80}
                     priority
-                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                    className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-110"
                   />
                   <div className="absolute inset-0 bg-gradient-to-r from-indigo-600 via-purple-500 to-pink-500 opacity-0 group-hover:opacity-90 flex items-center justify-center transition duration-300">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 7l-10 10m0-10h10v10" />
                     </svg>
                   </div>

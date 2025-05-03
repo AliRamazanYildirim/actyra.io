@@ -147,8 +147,8 @@ body {
   @apply w-1/2 mx-auto bg-pink-600 hover:bg-pink-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300 block;
 }
 
-/* Weißes Kalendericon für Datumsfelder */
-.white-date-picker::-webkit-calendar-picker-indicator {
-  filter: invert(1) brightness(1.8); /* Macht das Icon weiß */
+/* Tailwind Dark Mode für Datumsfeld */
+.date-input::-webkit-calendar-picker-indicator {
+  @apply dark:invert dark:brightness-150;
   cursor: pointer;
 }

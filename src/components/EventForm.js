@@ -136,7 +136,7 @@ const EventForm = () => {
                 name="date"
                 value={formData.date}
                 onChange={handleChange}
-                className="ticket-input white-date-picker"
+                className="ticket-input date-input"
                 required
               />
             </div>

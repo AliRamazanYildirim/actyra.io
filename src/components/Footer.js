@@ -1,5 +1,9 @@
-import { FaFacebookF, FaTwitter, FaSkype, FaLinkedinIn } from "react-icons/fa";
-
+'use client'
+import { FaFacebookF, FaLinkedinIn } from "react-icons/fa";
+import { FaXTwitter } from "react-icons/fa6";
+import { PiMicrosoftTeamsLogo } from "react-icons/pi";
+import { useEffect, useState } from "react";
+import Image from "next/image";
 export default function Footer() {
   const galleryImages = [
     "/images/event1.webp",
@@ -9,30 +13,36 @@ export default function Footer() {
     "/images/event5.webp",
     "/images/event6.webp",
   ];
+   const [stars, setStars] = useState([]);
+   // Erzeuge die Sterne nur auf dem Client
+   useEffect(() => {
+    const newStars = Array.from({ length: 30 }).map((_, i) => ({
+      id: i,
+      top: Math.random() * 100,
+      left: Math.random() * 100,
+      delay: Math.random() * 5,
+    }));
+    setStars(newStars);
+  }, []);
 
   return (
     <footer className="relative overflow-hidden bg-[#0D0E25] text-white pt-10">
-      {/* ✨ Stars */}
-      <div className="absolute inset-0 z-0 pointer-events-none">
-        {Array.from({ length: 30 }).map((_, i) => {
-          const top = Math.random() * 100;
-          const left = Math.random() * 100;
-          const delay = Math.random() * 5;
-          return (
-            <div
-              key={i}
-              className="star"
-              style={{
-                top: `${top}%`,
-                left: `${left}%`,
-                animationDelay: `${delay}s`,
-              }}
-            >
-              ✦
-            </div>
-          );
-        })}
-      </div>
+    {/* ✨ Stars */}
+    <div className="absolute inset-0 z-0 pointer-events-none" suppressHydrationWarning>
+      {stars.map((star) => (
+        <div
+          key={star.id}
+          className="star"
+          style={{
+            top: `${star.top}%`,
+            left: `${star.left}%`,
+            animationDelay: `${star.delay}s`,
+          }}
+        >
+          ✦
+        </div>
+      ))}
+    </div>
 
       {/* Footer content */}
       <div className="relative z-10">
@@ -51,9 +61,12 @@ export default function Footer() {
         <div className="max-w-7xl mx-auto px-6 py-16 grid grid-cols-1 md:grid-cols-4 gap-10">
           {/* Branding */}
           <div className="flex flex-col items-center text-center gap-4 mb-8 md:items-start md:text-left">
-            <img
+            <Image
               src="/logo-actyra.png"
               alt="Actyra Logo"
+              width={100}
+              height={100}
+              priority
               className="w-24 h-24 object-contain transition-transform duration-500 hover:scale-110 hover:-translate-y-1 animate-pulseGlow"
             />
             <span className="text-3xl font-extrabold tracking-wide">Actyra</span>
@@ -62,8 +75,8 @@ export default function Footer() {
             </p>
             <div className="flex gap-4 mt-4">
               <FaFacebookF className="bg-gray-700 p-2 rounded-full w-8 h-8 cursor-pointer hover:bg-pink-500 transition" />
-              <FaTwitter className="bg-gray-700 p-2 rounded-full w-8 h-8 cursor-pointer hover:bg-pink-500 transition" />
-              <FaSkype className="bg-gray-700 p-2 rounded-full w-8 h-8 cursor-pointer hover:bg-pink-500 transition" />
+              <FaXTwitter className="bg-gray-700 p-2 rounded-full w-8 h-8 cursor-pointer hover:bg-pink-500 transition" />
+              <PiMicrosoftTeamsLogo className="bg-gray-700 p-2 rounded-full w-8 h-8 cursor-pointer hover:bg-pink-500 transition" />
               <FaLinkedinIn className="bg-gray-700 p-2 rounded-full w-8 h-8 cursor-pointer hover:bg-pink-500 transition" />
             </div>
           </div>
@@ -116,9 +129,12 @@ export default function Footer() {
                   rel="noopener noreferrer"
                   className="w-20 h-20 rounded-lg relative group overflow-hidden block"
                 >
-                  <img
+                  <Image
                     src={src}
                     alt={`gallery-${i}`}
+                    width={80}
+                    height={80}
+                    priority
                     className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
                   />
                   <div className="absolute inset-0 bg-gradient-to-r from-indigo-600 via-purple-500 to-pink-500 opacity-0 group-hover:opacity-90 flex items-center justify-center transition duration-300">

@@ -50,7 +50,7 @@ export default function HeroDetailComp() {
             alt="Event Vorschau"
             width={400}
             height={400}
-            className="rounded-xl shadow-2xl opacity-90 backdrop-blur-sm"
+            className="rounded-xl shadow-2xl opacity-90 backdrop-blur-sm mt-[100px]"
             priority
           />
 

@@ -115,7 +115,7 @@ export default function PaymentPage() {
           <button
             disabled={!isValid}
             onClick={handleSubmit}
-            className={`w-full mt-6 py-3 rounded-full font-bold transition cursor-pointer ${
+            className={`ticket-button cursor-pointer ${
               isValid
                 ? "bg-pink-600 hover:bg-pink-700"
                 : "bg-gray-700 cursor-not-allowed"

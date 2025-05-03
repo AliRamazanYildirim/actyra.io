@@ -68,9 +68,10 @@ const EventForm = () => {
 
       {/* Formular Bereich */}
       <section className="py-10 bg-white">
-        <div className="bg-[#12192f] rounded-xl shadow-lg max-w-2xl mx-auto p-8">
+        <div className="bg-[#12192f] rounded-xl shadow-lg max-w-5xl mx-auto p-8">
           <form onSubmit={handlePreview} className="space-y-6">
             {/* Titel */}
+            <h1 className="text-3xl md:text-4xl font-extrabold bg-gradient-to-r from-purple-400 to-pink-500 text-transparent bg-clip-text text-center">🎟️ Ticket erstellen</h1>
             <div>
               <label className="block font-semibold mb-1 text-white">Titel</label>
               <input
@@ -78,7 +79,7 @@ const EventForm = () => {
                 name="title"
                 value={formData.title}
                 onChange={handleChange}
-                className="w-full border rounded-md px-4 py-2 bg-white"
+                className="ticket-input"
                 required
               />
             </div>
@@ -90,7 +91,7 @@ const EventForm = () => {
                 name="description"
                 value={formData.description}
                 onChange={handleChange}
-                className="w-full border rounded-md px-4 py-2 bg-white"
+                className="ticket-input"
                 required
               />
             </div>
@@ -103,7 +104,7 @@ const EventForm = () => {
                 name="location"
                 value={formData.location}
                 onChange={handleChange}
-                className="w-full border rounded-md px-4 py-2 bg-white"
+                className="ticket-input"
                 required
               />
             </div>
@@ -115,7 +116,7 @@ const EventForm = () => {
                 name="category"
                 value={formData.category}
                 onChange={handleChange}
-                className="w-full border rounded-md px-4 py-2 bg-white"
+                className="ticket-input"
                 required
               >
                 <option value="">Bitte wählen</option>
@@ -135,7 +136,7 @@ const EventForm = () => {
                 name="date"
                 value={formData.date}
                 onChange={handleChange}
-                className="w-full border rounded-md px-4 py-2 bg-white"
+                className="ticket-input white-date-picker"
                 required
               />
             </div>
@@ -148,7 +149,7 @@ const EventForm = () => {
                 name="tickets"
                 value={formData.tickets}
                 onChange={handleChange}
-                className="w-full border rounded-md px-4 py-2 bg-white"
+                className="ticket-input"
                 required
               />
             </div>
@@ -161,7 +162,7 @@ const EventForm = () => {
                 name="price"
                 value={formData.price}
                 onChange={handleChange}
-                className="w-full border rounded-md px-4 py-2 bg-white"
+                className="ticket-input"
                 required
               />
             </div>
@@ -174,7 +175,7 @@ const EventForm = () => {
                 name="donation"
                 value={formData.donation}
                 onChange={handleChange}
-                className="w-full border rounded-md px-4 py-2 bg-white"
+                className="ticket-input"
                 required
               />
             </div>
@@ -189,7 +190,7 @@ const EventForm = () => {
             <div className="flex justify-center">
               <button
                 type="submit"
-                className="bg-pink-600 hover:bg-pink-700 text-white px-6 py-3 rounded-lg font-semibold cursor-pointer"
+                className="ticket-button cursor-pointer"
               >
                 Vorschau anzeigen
               </button>

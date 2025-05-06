@@ -1,3 +1,4 @@
+// Scriptverantwortlicher : ASE
 "use client"; // Client-Komponente
 
 import { useState } from "react";
@@ -71,7 +72,7 @@ const EventForm = () => {
         <div className="bg-[#12192f] rounded-xl shadow-lg max-w-5xl mx-auto p-8">
           <form onSubmit={handlePreview} className="space-y-6">
             {/* Titel */}
-            <h1 className="text-3xl md:text-4xl font-extrabold bg-gradient-to-r from-purple-400 to-pink-500 text-transparent bg-clip-text text-center">🎟️ Ticket erstellen</h1>
+            <h1 className="text-3xl md:text-4xl font-extrabold bg-gradient-to-r from-purple-400 to-pink-500 text-transparent bg-clip-text text-center">🎟️ Tragen Sie hier Ihr Event ein!</h1>
             <div>
               <label className="block font-semibold mb-1 text-white">Titel</label>
               <input

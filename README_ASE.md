@@ -1,3 +1,28 @@
+# Dokumentation ASE Entwicklung 06.05.2025
+KategorienSection.js  / war nur Platzhalter 
+Kategorien Kacheln eingefügt 
+Scriptverantwortlicher eingefügt
+
+# neues Verzeichnis in public  + Icons 
+public/kategorien --> neu angelegt   --> wieder glöscht weil nicht mehr benötigt das Fonatawesome.com Icons genutzt werden
+# gelöscht 
+
+
+# Scriptanpassung
+**Script: EventForm.js** --> H1 Überschrift "Tragen Sie hier Ihr Event ein" 
+Scriptverantwortlicher nachgetragen
+
+
+# neues Verzeichnis erstellt unter src/
+src/icons 
+
+hier wurden die Kategorieicons abgeholt von 
+https://fontawesome.com/
+
+
+
+
+
 # Dokumentation ASE Entwicklung 28.04.2025
 
 Dieses Dokument beschreibt die wichtigsten Skripte im Projekt **Event erstellen**.

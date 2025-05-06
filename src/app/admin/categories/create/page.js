@@ -2,65 +2,61 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Input } from '@/components/ui/input.js';
-import { Label } from '@/components/ui/label.js';
 
 export default function CreateCategoryPage() {
-  const [name, setName] = useState('');
-  const [icon, setIcon] = useState('');
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  const handleSubmit = async (e) => {
+  const [name, setName] = useState('');
+  const [icon, setIcon] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = (e) => {
     e.preventDefault();
-    setError(null);
     setLoading(true);
 
-    try {
-      const res = await fetch('/api/categories', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, icon }),
+    setTimeout(() => {
+      console.log('Kategorie erstellt:', {
+        id: Date.now().toString(),
+        name,
+        icon,
+        createdAt: new Date().toISOString(),
+        isActive: true,
       });
-      if (!res.ok) throw new Error('Fehler beim Erstellen.');
       router.push('/admin/categories');
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
+    }, 800);
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 py-24 px-4 sm:px-8 lg:px-24">
-      <div className="max-w-xl mx-auto bg-[#0f172a] text-white p-8 rounded-2xl shadow-2xl space-y-6">
-        <h1 className="text-2xl font-bold text-center">Kategorie erstellen</h1>
+    <div className="h-screen w-screen flex items-center justify-center bg-gray-100 px-4">
+      <div className="w-full max-w-3xl bg-[#0f172a] text-white p-16 rounded-2xl shadow-2xl space-y-10">
+        <h1 className="text-4xl font-bold text-center">Neue Kategorie erstellen</h1>
 
-        {error && <p className="text-red-400 text-sm text-center">{error}</p>}
-
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-8">
           <div>
-            <Label className="block mb-2">Name</Label>
-            <Input
+            <label className="block mb-2 text-lg">Name</label>
+            <input
+              type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
-              className="w-full bg-gray-800 border border-gray-600 text-white px-4 py-3 rounded-lg"
+              className="w-full bg-white text-black border border-gray-300 px-4 py-4 rounded-md"
             />
           </div>
+
           <div>
-            <Label className="block mb-2">Icon (optional)</Label>
-            <Input
+            <label className="block mb-2 text-lg">Icon (optional)</label>
+            <input
+              type="text"
               value={icon}
               onChange={(e) => setIcon(e.target.value)}
-              className="w-full bg-gray-800 border border-gray-600 text-white px-4 py-3 rounded-lg"
+              className="w-full bg-white text-black border border-gray-300 px-4 py-4 rounded-md"
             />
           </div>
+
           <button
             type="submit"
-            className="w-full text-lg font-semibold bg-gradient-to-r from-purple-600 to-pink-500 hover:from-pink-500 hover:to-purple-600 text-white py-3 rounded-xl transition"
             disabled={loading}
+            className="w-full text-lg font-semibold bg-gradient-to-r from-purple-600 to-pink-500 text-white py-4 rounded-xl"
           >
             {loading ? 'Wird gespeichert...' : 'Speichern'}
           </button>

@@ -1,85 +1,77 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
-import { Input } from '@/components/ui/input.js';
-import { Label } from '@/components/ui/label.js';
+import { useState } from 'react';
+import { categorySeedData } from '@/data/categorySeedData';
 
 export default function EditCategoryPage() {
-  const router = useRouter();
   const { id } = useParams();
+  const router = useRouter();
 
-  const [name, setName] = useState('');
-  const [icon, setIcon] = useState('');
+  // Kategorie aus statischer Seed-Datei finden
+  const category = categorySeedData.find((c) => c.id === id);
+
+  const [name, setName] = useState(category?.name || '');
+  const [icon, setIcon] = useState(category?.icon || '');
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const loadCategory = async () => {
-      try {
-        const res = await fetch(`/api/categories/${id}`);
-        if (!res.ok) throw new Error('Kategorie nicht gefunden.');
-        const data = await res.json();
-        setName(data.name);
-        setIcon(data.icon || '');
-      } catch (err) {
-        setError(err.message);
-      }
-    };
-    loadCategory();
-  }, [id]);
-
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    setError(null);
     setLoading(true);
 
-    try {
-      const res = await fetch(`/api/categories/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, icon }),
+    setTimeout(() => {
+      console.log('Kategorie aktualisiert:', {
+        id,
+        name,
+        icon,
+        createdAt: category.createdAt,
+        isActive: category.isActive,
       });
-      if (!res.ok) throw new Error('Fehler beim Speichern.');
       router.push('/admin/categories');
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
+    }, 800);
   };
 
+  if (!category) {
+    return (
+      <div className="h-screen flex items-center justify-center text-xl text-red-600">
+        Kategorie nicht gefunden.
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-gray-100 py-24 px-4 sm:px-8 lg:px-24">
-      <div className="max-w-xl mx-auto bg-[#0f172a] text-white p-8 rounded-2xl shadow-2xl space-y-6">
-        <h1 className="text-2xl font-bold text-center">Kategorie bearbeiten</h1>
+    <div className="h-screen w-screen flex items-center justify-center bg-gray-100 px-4">
+      <div className="w-full max-w-3xl bg-[#0f172a] text-white p-16 rounded-2xl shadow-2xl space-y-10">
+        <h1 className="text-4xl font-bold text-center">Kategorie bearbeiten</h1>
 
-        {error && <p className="text-red-400 text-sm text-center">{error}</p>}
-
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-8">
           <div>
-            <Label className="block mb-2">Name</Label>
-            <Input
+            <label className="block mb-2 text-lg">Name</label>
+            <input
+              type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
-              className="w-full bg-gray-800 border border-gray-600 text-white px-4 py-3 rounded-lg"
+              className="w-full bg-white text-black border border-gray-300 px-4 py-4 rounded-md"
             />
           </div>
+
           <div>
-            <Label className="block mb-2">Icon (optional)</Label>
-            <Input
+            <label className="block mb-2 text-lg">Icon (optional)</label>
+            <input
+              type="text"
               value={icon}
               onChange={(e) => setIcon(e.target.value)}
-              className="w-full bg-gray-800 border border-gray-600 text-white px-4 py-3 rounded-lg"
+              className="w-full bg-white text-black border border-gray-300 px-4 py-4 rounded-md"
             />
           </div>
+
           <button
             type="submit"
-            className="w-full text-lg font-semibold bg-gradient-to-r from-purple-600 to-pink-500 hover:from-pink-500 hover:to-purple-600 text-white py-3 rounded-xl transition"
             disabled={loading}
+            className="w-full text-lg font-semibold bg-gradient-to-r from-purple-600 to-pink-500 text-white py-4 rounded-xl"
           >
-            {loading ? 'Wird gespeichert...' : 'Speichern'}
+            {loading ? 'Wird gespeichert...' : 'Änderungen speichern'}
           </button>
         </form>
       </div>

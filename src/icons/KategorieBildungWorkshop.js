@@ -1,4 +1,5 @@
 // Scriptverantwortlicher: ASE
+// eingebunden in componenents/KategorienSection 
 // src/icons/KategorieBildungWorkshop.js
 
 export default function KategorieBildungWorkshop(props) {

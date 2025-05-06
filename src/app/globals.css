@@ -63,7 +63,6 @@ body {
 }
 .star {
   position: absolute;
-  color: #fff;
   opacity: 0.6;
   font-size: 1rem;
   animation: starBlink 2.5s infinite ease-in-out;
@@ -147,7 +146,7 @@ body {
   @apply w-1/2 mx-auto bg-pink-600 hover:bg-pink-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300 block;
 }
 
-/* Tailwind Dark Mode für Datumsfeld */
+/* Tailwind Dark Mode für Datumsfeld von Event Erstellen Seite */
 .date-input::-webkit-calendar-picker-indicator {
   @apply dark:invert dark:brightness-150;
   cursor: pointer;

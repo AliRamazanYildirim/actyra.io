@@ -5,6 +5,15 @@ import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import { ShoppingCart, Menu, X } from "lucide-react";
+import {
+  SignInButton,
+  SignUpButton,
+  SignedIn,
+  SignedOut,
+  UserButton,
+  useUser,
+} from "@clerk/nextjs";
+import { RiSearchEyeLine } from "react-icons/ri";
 
 export default function NavBar() {
   const [isVisible, setIsVisible] = useState(false);
@@ -12,6 +21,7 @@ export default function NavBar() {
   const [activeSection, setActiveSection] = useState("home");
   const pathname = usePathname();
   const router = useRouter();
+  const { isSignedIn } = useUser();
 
   useEffect(() => {
     document.documentElement.style.scrollBehavior = "smooth";
@@ -42,6 +52,22 @@ export default function NavBar() {
     }
   }, [pathname]);
 
+
+// Close mobile menu on resize
+
+useEffect(() => {
+  const closeMenuOnResize = () => {
+    if (window.innerWidth >= 768) {
+      setIsMobileMenuOpen(false);
+    }
+  };
+
+  window.addEventListener("resize", closeMenuOnResize);
+  return () => window.removeEventListener("resize", closeMenuOnResize);
+}, []);
+
+  
+
   const handleScrollTo = (id) => {
     setIsMobileMenuOpen(false);
     if (pathname !== "/") {
@@ -65,80 +91,235 @@ export default function NavBar() {
   return (
     <nav
       className={`fixed top-0 left-0 w-full z-50 transition-all duration-700 ease-in-out
-        ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-5"}
-        backdrop-blur-xl bg-gradient-to-r from-[#0D0E25]/80 to-[#1c1f3c]/80 shadow-md`}
+            ${
+              isVisible
+                ? "opacity-100 translate-y-0"
+                : "opacity-0 -translate-y-5"
+            }
+            backdrop-blur-xl bg-gradient-to-r from-[#0D0E25]/80 to-[#1c1f3c]/80 shadow-md`}
     >
       <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-        {/* 🔷 Logo */}
+        {/* Logo - immer sichtbar */}
         <Link href="/" className="flex items-center gap-2">
           <Image
             src="/logo-actyra.png"
             alt="Actyra Logo"
             width={40}
             height={40}
+            priority
             className="rounded-full shadow-md hover:scale-105 transition"
           />
-          <span className="text-white font-bold text-lg hidden sm:inline">Actyra</span>
+          <span className="text-white font-bold text-lg hidden sm:inline">
+            Actyra
+          </span>
         </Link>
 
-        {/* 🔷 Desktop Menü */}
-        <ul className="hidden md:flex flex-wrap justify-center gap-8 text-white font-semibold text-sm md:text-base">
+        {/* 🔍 Suchleiste - nur auf Desktop sichtbar */}
+        <div className="hidden md:flex items-center flex-1 max-w-xl mx-6">
+          <span className="bg-white bg-opacity-10 rounded-md flex items-center w-full backdrop-blur-sm">
+            <input
+              type="text"
+              placeholder="Nach Events suchen"
+              className="py-2 px-4 bg-transparent text-black placeholder-gray-600 outline-none flex-1 text-sm"
+            />
+            <div className="h-6 w-[1px] bg-gray-400 mx-1"></div>
+            <input
+              type="text"
+              placeholder="Stadt oder PLZ"
+              className="py-2 px-4 bg-transparent text-black placeholder-gray-600 outline-none flex-1 text-sm"
+            />
+            <button
+              className="bg-pink-600 hover:bg-pink-700 transition p-3 rounded-r-md"
+              aria-label="Suchen"
+            >
+              <RiSearchEyeLine />
+            </button>
+          </span>
+        </div>
+
+        {/* Desktop-Navigation - nur auf Desktop sichtbar */}
+        <ul className="hidden md:flex flex-wrap justify-between mt-1 gap-4 text-white font-semibold text-sm">
           <li>
-            <Link href="/" className={isActive("home")}>
-              Startseite
+            <Link href="/" className={`nav-link ${isActive("home")}`}>
+              Home
             </Link>
           </li>
           <li>
-            <button onClick={() => handleScrollTo("events")} className={isActive("events")}>
+            <button
+              onClick={() => handleScrollTo("events")}
+              className={`nav-link ${isActive("events")}`}
+            >
               Events entdecken
             </button>
           </li>
           <li>
-            <button onClick={() => handleScrollTo("kategorien")} className={isActive("kategorien")}>
+            <button
+              onClick={() => handleScrollTo("kategorien")}
+              className={`nav-link ${isActive("kategorien")}`}
+            >
               Kategorien
             </button>
           </li>
           <li>
-            <Link href="/event-erstellen" className={linkStyle("/event-erstellen")}>Event erstellen</Link>
+            <Link
+              href="/event-erstellen"
+              className={`nav-link ${linkStyle("/event-erstellen")}`}
+            >
+              Event erstellen
+            </Link>
           </li>
+          <SignedOut>
+            <>
+              <li>
+                <SignInButton mode="redirect" redirecturl="/sign-in">
+                  <button className={`nav-link ${linkStyle("/sign-in")}`}>
+                    Login
+                  </button>
+                </SignInButton>
+              </li>
+              <li>
+                <SignUpButton mode="modal">
+                  <button className={`nav-link ${linkStyle("/sign-up")}`}>
+                    Registrieren
+                  </button>
+                </SignUpButton>
+              </li>
+            </>
+          </SignedOut>
+          {/* Profil-Schaltfläche - nur für eingeloggte Benutzer sichtbar */}
+          <SignedIn>
+            <li>
+              <Link
+                href="/profil"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="nav-link text-white"
+              >
+                Mein Profil
+              </Link>
+            </li>
+            <li>
+              <Link href="/warenkorb" className="relative group">
+                <ShoppingCart className="w-6 h-6 text-white group-hover:text-pink-400 transition" />
+              </Link>
+            </li>
+            <li>
+              <UserButton />
+            </li>
+          </SignedIn>
         </ul>
 
-        {/* 🔷 Icons rechts */}
-        <div className="flex items-center gap-5  text-white font-semibold text-sm md:text-base">
-          <Link href="/login" className={linkStyle("/login")}>
-            Mein Bereich
-          </Link>
+        {/* Mobile Buttons - rechts */}
 
-          <Link href="/warenkorb" className="relative group">
-            <ShoppingCart className="w-6 h-6 text-white group-hover:text-pink-400 transition" />
-          </Link>
-
-          {/* Mobile Burger Menü */}
-          <button
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="md:hidden text-white"
-            aria-label="Menü öffnen"
-          >
-            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
-        </div>
+        <button
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          className="md:hidden nav-text"
+          aria-label="Menü öffnen"
+        >
+          {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+        </button>
       </div>
 
-      {/* 🔽 Mobiles Menü */}
+      {/* 🔽 Mobiles Menü - Fullscreen Overlay */}
       {isMobileMenuOpen && (
-        <div className="md:hidden bg-[#1c1f3c] text-white text-center py-4 space-y-4">
-          <Link href="/" onClick={() => setIsMobileMenuOpen(false)} className={isActive("home")}>
-            Startseite
-          </Link>
-          <button onClick={() => handleScrollTo("events")} className={isActive("events")}>
-            Events entdecken
-          </button>
-          <button onClick={() => handleScrollTo("kategorien")} className={isActive("kategorien")}>
-            Kategorien
-          </button>
-          <Link href="/event-erstellen" onClick={() => setIsMobileMenuOpen(false)} className={linkStyle("/event-erstellen")}>
-            Event erstellen
-          </Link>
+        <div
+          className={`fixed top-0 left-0 w-full z-10 transition-all duration-700 ease-in-out
+              ${
+                isVisible
+                  ? "opacity-100 translate-y-0"
+                  : "opacity-0 -translate-y-5"
+              }
+              backdrop-blur-xl bg-gradient-to-r from-[#070815]/95 to-[#121430]/95 shadow-md`}
+        >
+          {/* Menü-Header mit Schließen-Button */}
+          <div className="py-4 text-center border-b border-gray-800">
+            <h2 className="text-white text-xl font-bold">Menu</h2>
+            <button
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="absolute top-6 right-6 nav-text"
+            >
+              <X size={24} />
+            </button>
+          </div>
+
+          {/* Menü-Links - rechts ausgerichtet mit 15px Abstand */}
+          <div className="flex flex-col items-end justify-start px-6 py-4 space-y-[15px] text-lg font-medium">
+            <Link
+              href="/"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="nav-link text-white"
+            >
+              Startseite
+            </Link>
+
+            {/* Profil-Schaltfläche - jeder kann sie sehen, aber nur angemeldete Benutzer können sie verwenden */}
+            <Link
+              href={isSignedIn ? "/profil" : "/sign-up"}
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="nav-link text-white"
+            >
+              Mein Profil
+            </Link>
+
+            <button
+              onClick={() => {
+                handleScrollTo("events");
+                setIsMobileMenuOpen(false);
+              }}
+              className="nav-link nav-text"
+            >
+              Events entdecken
+            </button>
+
+            <Link
+              href={isSignedIn ? "/event-erstellen" : "/sign-up"}
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="nav-link nav-text"
+            >
+              Event erstellen
+            </Link>
+
+            <button
+              onClick={() => {
+                handleScrollTo("kategorien");
+                setIsMobileMenuOpen(false);
+              }}
+              className="nav-link nav-text"
+            >
+              Kategorien
+            </button>
+
+            {/* Auth-Buttons */}
+            <SignedOut>
+              <SignInButton mode="modal">
+                <button
+                  className="nav-link nav-text"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Login
+                </button>
+              </SignInButton>
+
+              <SignUpButton mode="modal">
+                <button
+                  className="nav-link nav-text"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Registrieren
+                </button>
+              </SignUpButton>
+            </SignedOut>
+
+            {/* Warenkorb - nur für eingeloggte Benutzer sichtbar */}
+            <SignedIn>
+              <Link
+                href="/warenkorb"
+                className="nav-link text-white"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Warenkorb
+              </Link>
+            </SignedIn>
+          </div>
         </div>
       )}
     </nav>

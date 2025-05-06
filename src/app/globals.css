@@ -152,3 +152,6 @@ body {
   @apply dark:invert dark:brightness-150;
   cursor: pointer;
 }
+.nav-text {
+  @apply text-white cursor-pointer
+}

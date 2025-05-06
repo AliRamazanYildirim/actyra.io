@@ -28,7 +28,7 @@ export default function Footer() {
   return (
     <footer className="relative overflow-hidden bg-[#0D0E25] text-white pt-10">
     {/* ✨ Stars */}
-    <div className="absolute inset-0 z-0 pointer-events-none" suppressHydrationWarning>
+    <div className="absolute inset-0 z-0 pointer-events-none">
       {stars.map((star) => (
         <div
           key={star.id}

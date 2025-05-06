@@ -41,7 +41,7 @@ export default function EditCategoryPage() {
 
   return (
     <div className="h-screen w-screen flex items-center justify-center bg-gray-100 px-4">
-      <div className="w-full max-w-3xl bg-[#0f172a] text-white p-16 rounded-2xl shadow-2xl space-y-10">
+      <div className="w-full max-w-7xl bg-[#0f172a] text-white p-16 rounded-2xl shadow-2xl space-y-10">
         <h1 className="text-4xl font-bold text-center">Kategorie bearbeiten</h1>
 
         <form onSubmit={handleSubmit} className="space-y-8">
@@ -69,7 +69,7 @@ export default function EditCategoryPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full text-lg font-semibold bg-gradient-to-r from-purple-600 to-pink-500 text-white py-4 rounded-xl"
+            className="ticket-button"
           >
             {loading ? 'Wird gespeichert...' : 'Änderungen speichern'}
           </button>

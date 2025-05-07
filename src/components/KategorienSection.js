@@ -26,7 +26,7 @@ const kategorien = [
 
 export default function KategorienSection() {
   return (
-<section className="scroll-mt-24 bg-white dark:bg-[#0D0E25] text-black dark:text-white">
+<section className="scroll-mt-24 dark-light-mode">
   <div className="py-20 px-6 md:px-10 max-w-7xl mx-auto">
     
     {/* H2 mit Farbverlauf */}

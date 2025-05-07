@@ -154,3 +154,10 @@ body {
 .nav-text {
   @apply text-white cursor-pointer
 }
+.löschen-button {
+  @apply w-1/4 mx-auto text-white rounded-lg transition duration-300 block;
+  background-color: oklch(0.577 0.245 27.325);
+}
+.dark-light-mode {
+  @apply bg-white dark:bg-[#0D0E25] text-black dark:text-white;
+}

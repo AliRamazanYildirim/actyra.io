@@ -23,14 +23,14 @@ export default function CategoryAdminPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 py-24 px-4 sm:px-8 lg:px-24">
+    <div className="min-h-screen dark-light-mode py-24 px-4 sm:px-8 lg:px-24">
       <div className="w-full max-w-7xl mx-auto space-y-12 px-4">
         {/* Titel */}
         <div className="text-center">
-          <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight mb-2">
+          <h1 className="text-4xl font-extrabold tracking-tight mb-2">
             🗂️ Kategorien verwalten
           </h1>
-          <p className="text-gray-600">
+          <p>
             Hier kannst du neue Kategorien erstellen oder bestehende verwalten.
           </p>
         </div>
@@ -77,13 +77,12 @@ export default function CategoryAdminPage() {
                           Bearbeiten
                         </Button>
                       </Link>
-                      <Button
-                        variant="destructive"
-                        size="sm"
+                      <button
+                        className='löschen-button'
                         onClick={() => handleDelete(cat.id)}
                       >
                         Löschen
-                      </Button>
+                      </button>
                       <Button
                         variant="outline"
                         size="sm"

@@ -26,41 +26,45 @@ const kategorien = [
 
 export default function KategorienSection() {
   return (
-    <section id="kategorien" className="scroll-mt-24 bg-white py-20 px-6 md:px-10 max-w-7xl mx-auto">
-      
-      {/* H2 mit Farbverlauf */}
-      <h2 className="text-4xl font-extrabold mb-4 text-left">
-        <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-pink-500">
-          Kategorien
-        </span>
-      </h2>
-      
-      {/* Untertitel, nur "Events nach Kategorien" mit Verlauf */}
-      <p className="mb-10 text-gray-700 text-lg leading-relaxed text-left">
-        Entdecke{" "}
-        <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-pink-500">
-          Events nach Kategorien
-        </span>{" "}
-        – finde dein Highlight und unterstütze dabei gute Zwecke.
-      </p>
+<section className="scroll-mt-24 bg-white dark:bg-[#0D0E25] text-black dark:text-white">
+  <div className="py-20 px-6 md:px-10 max-w-7xl mx-auto">
+    
+    {/* H2 mit Farbverlauf */}
+    <h2 className="text-4xl font-extrabold mb-4 text-left">
+      <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-pink-500">
+        Kategorien
+      </span>
+    </h2>
+    
+    {/* Untertitel, nur "Events nach Kategorien" mit Verlauf */}
+    <p className="mb-10 text-lg leading-relaxed text-left">
+      Entdecke{" "}
+      <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-pink-500">
+        Events nach Kategorien
+      </span>{" "}
+      – finde dein Highlight und unterstütze dabei gute Zwecke.
+    </p>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-        {kategorien.map((kategorie, index) => {
-          const IconComponent = kategorie.icon;
-          return (
-            <Link
-              key={index}
-              href={`/kategorien/${kategorie.slug}`}
-              className="group bg-white rounded-2xl shadow-lg transform transition hover:scale-[1.02] hover:bg-gradient-to-br hover:from-purple-600 hover:to-pink-600 p-6 flex flex-col items-center"
-            >
-              <IconComponent className="w-20 h-20 mb-4 text-[#613583] group-hover:text-white" />
-              <p className="text-center text-base font-semibold text-[#1c1f3c] group-hover:text-white">
-                {kategorie.name}
-              </p>
-            </Link>
-          );
-        })}
-      </div>
-    </section>
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+      {kategorien.map((kategorie, index) => {
+        const IconComponent = kategorie.icon;
+        return (
+          <Link
+            key={index}
+            href={`/kategorien/${kategorie.slug}`}
+            className="group bg-white rounded-2xl shadow-lg transform transition hover:scale-[1.02] hover:bg-gradient-to-br hover:from-purple-600 hover:to-pink-600 p-6 flex flex-col items-center"
+          >
+            <IconComponent className="w-20 h-20 mb-4 text-[#613583] group-hover:text-white" />
+            <p className="text-center text-base font-semibold text-[#1c1f3c] group-hover:text-white">
+              {kategorie.name}
+            </p>
+          </Link>
+        );
+      })}
+    </div>
+
+  </div>
+</section>
+
   );
 }

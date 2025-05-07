@@ -88,7 +88,8 @@ const formatDate = (dateStr) => {
 
 export default function EventListSection() {
   return (
-    <section id="events" className="bg-white dark:bg-[#0D0E25] text-black dark:text-white py-20 px-6 md:px-10 max-w-8xl mx-auto">
+    <section id="events" className="bg-white dark:bg-[#0D0E25] text-black dark:text-white">
+     <div className="py-20 px-6 md:px-10 max-w-7xl mx-auto">
       <h2 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-pink-500 mb-4">
         Aktuelle Events
       </h2>
@@ -162,6 +163,7 @@ export default function EventListSection() {
           </div>
         ))}
       </div>
+      </div> 
     </section>
   );
 }

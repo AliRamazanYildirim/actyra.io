@@ -161,3 +161,6 @@ body {
 .dark-light-mode {
   @apply bg-white dark:bg-[#0D0E25] text-black dark:text-white;
 }
+.event-background {
+  @apply bg-gradient-to-br from-[#383a8b] to-[#f8f8f9];
+}

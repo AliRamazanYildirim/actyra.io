@@ -38,7 +38,7 @@ export default function CategoryAdminPage() {
         {/* Button */}
         <div className="text-right">
           <Link href="/admin/categories/create">
-            <Button className="bg-gradient-to-r from-purple-600 to-pink-500 text-white hover:from-pink-500 hover:to-purple-600 transition">
+            <Button className="bg-gradient-to-r from-purple-600 to-pink-500 text-white hover:from-pink-500 hover:to-purple-600 transition cursor-pointer">
               + Kategorie hinzufügen
             </Button>
           </Link>
@@ -72,13 +72,13 @@ export default function CategoryAdminPage() {
                         <Button
                           variant="outline"
                           size="sm"
-                          className="bg-white text-black hover:bg-gray-200"
+                          className="bg-white text-black hover:bg-gray-200 cursor-pointer"
                         >
                           Bearbeiten
                         </Button>
                       </Link>
                       <button
-                        className='löschen-button'
+                        className='löschen-button cursor-pointer'
                         onClick={() => handleDelete(cat.id)}
                       >
                         Löschen
@@ -86,7 +86,7 @@ export default function CategoryAdminPage() {
                       <Button
                         variant="outline"
                         size="sm"
-                        className="bg-white text-black hover:bg-gray-200"
+                        className="bg-white text-black hover:bg-gray-200 cursor-pointer"
                         onClick={() => toggleActive(cat.id)}
                       >
                         {cat.isActive ? 'Deaktivieren' : 'Aktivieren'}

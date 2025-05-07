@@ -40,7 +40,7 @@ export default function EditCategoryPage() {
   }
 
   return (
-    <div className="h-screen w-screen flex items-center justify-center bg-gray-100 px-4">
+    <div className="h-screen w-screen flex items-center justify-center dark-light-mode px-4">
       <div className="w-full max-w-7xl bg-[#0f172a] text-white p-16 rounded-2xl shadow-2xl space-y-10">
         <h1 className="text-4xl font-bold text-center">Kategorie bearbeiten</h1>
 
@@ -62,14 +62,14 @@ export default function EditCategoryPage() {
               type="text"
               value={icon}
               onChange={(e) => setIcon(e.target.value)}
-              className="w-full bg-white text-black border border-gray-300 px-4 py-4 rounded-md"
+              className="w-full bg-white text-black border px-4 py-4 rounded-md"
             />
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="ticket-button"
+            className="ticket-button cursor-pointer"
           >
             {loading ? 'Wird gespeichert...' : 'Änderungen speichern'}
           </button>

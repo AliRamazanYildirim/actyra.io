@@ -31,7 +31,7 @@ export default function EventCardsIntro() {
   ];
 
   return (
-    <div className="bg-white dark:bg-[#0D0E25] text-black dark:text-white py-20 px-6 md:px-10">
+    <div className="dark-light-mode py-20 px-6 md:px-10">
       {/* Maximalbreite + Zentrierung */}
       <div className="max-w-6xl mx-auto">
         {/* Überschrift */}

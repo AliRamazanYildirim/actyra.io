@@ -129,7 +129,7 @@ useEffect(() => {
               className="py-2 px-4 bg-transparent text-black placeholder-gray-600 outline-none flex-1 text-sm"
             />
             <button
-              className="bg-pink-600 hover:bg-pink-700 transition p-3 rounded-r-md"
+              className="bg-pink-600 hover:bg-pink-700 transition p-3 rounded-r-md cursor-pointer"
               aria-label="Suchen"
             >
               <RiSearchEyeLine />

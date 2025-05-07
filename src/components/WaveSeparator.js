@@ -54,7 +54,7 @@ export default function WaveSeparator() {
 
   return (
     <div
-      className="w-full overflow-hidden leading-none"
+      className="w-full overflow-hidden leading-none bg-white dark:bg-[#0D0E25] text-black dark:text-white"
       ref={waveRef}
     >
       <svg

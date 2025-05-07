@@ -31,11 +31,11 @@ export default function EventCardsIntro() {
   ];
 
   return (
-    <div className="bg-white text-black py-20 px-6 md:px-10">
+    <div className="bg-white dark:bg-[#0D0E25] text-black dark:text-white py-20 px-6 md:px-10">
       {/* Maximalbreite + Zentrierung */}
       <div className="max-w-6xl mx-auto">
         {/* Überschrift */}
-        <h2 className="text-4xl font-extrabold text-gray-900 mb-8 border-b border-gray-200 pb-4">
+        <h2 className="text-4xl font-extrabold  mb-8 border-b border-gray-200 pb-4">
           Was ist{" "}
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-pink-500">
             Actyra?
@@ -43,7 +43,7 @@ export default function EventCardsIntro() {
         </h2>
 
         {/* Einführungstext */}
-        <p className="text-lg text-gray-800 mb-14 leading-relaxed">
+        <p className="text-lg mb-14 leading-relaxed">
           <strong>Actyra</strong> ist deine neue Plattform für{" "}
           <strong>soziale Erlebnisse</strong>. Von pulsierenden Clubnächten über
           entspannte Open-Air-Festivals bis hin zu gemütlichen Game-Nights – hier

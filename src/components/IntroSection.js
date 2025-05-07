@@ -2,7 +2,7 @@
 
 export default function IntroSection() {
     return (
-      <section className="bg-white text-black py-20 px-6 md:px-10 max-w-6xl mx-auto animate-fade-in-up">
+      <section className=" bg-white dark:bg-[#0D0E25] text-black dark:text-white py-20 px-6 md:px-10 max-w-6xl mx-auto animate-fade-in-up">
         {/* Titel */}
         <h2 className="text-4xl font-extrabold text-gray-900 mb-8 border-b border-gray-200 pb-4">
           Was ist {" "}

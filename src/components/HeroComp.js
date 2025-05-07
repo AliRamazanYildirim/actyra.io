@@ -5,10 +5,10 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 import Tilt from "react-parallax-tilt";
-import Stars from "./DynamicStars";
 import { useEffect, useState } from "react";
 import { Play, Heart } from "lucide-react";
 import ModalVideo from "./ModalVideo";
+import Stars from "./Stars";
 
 // Wörter für animierte Laufschrift
 const WORDS = [
@@ -46,7 +46,7 @@ export default function HeroComp() {
   }, [letterIndex, index]);
 
   return (
-    <header id="home" className="relative overflow-hidden bg-[#0D0E25] text-white">
+    <header id="home" className="relative overflow-hidden bg-white dark:bg-[#0D0E25] text-black dark:text-white">
       <Stars />
       <div className="relative z-10 max-w-7xl mx-auto px-6 pt-20 md:pt-40 pb-16 grid grid-cols-1 md:grid-cols-[1.2fr_1fr] gap-10 items-center">
         <div className="space-y-6 text-center md:text-left">
@@ -56,14 +56,14 @@ export default function HeroComp() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3, duration: 0.8 }}
           >
-            <h1 className="text-4xl sm:text-5xl font-extrabold leading-tight text-white">
+            <h1 className="text-4xl sm:text-5xl font-extrabold leading-tight">
               Finde dein nächstes Social Event&nbsp;
               <span className="bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 text-transparent bg-clip-text">
                 {displayedText}
               </span>
             </h1>
 
-            <div className="flex flex-col items-center md:items-start text-white gap-2">
+            <div className="flex flex-col items-center md:items-start gap-2">
               <p className="flex items-center text-base font-bold">
                 <Heart size={18} className="mr-2 text-pink-500 animate-pulse" />
                 Actyra macht dein Ticket zum guten Zweck:
@@ -83,7 +83,7 @@ export default function HeroComp() {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-              <button className="px-6 py-3 font-semibold rounded bg-gradient-to-r from-indigo-600 to-pink-500 hover:opacity-90 transition cursor-pointer">
+              <button className="px-6 py-3 font-semibold rounded bg-gradient-to-r text-white from-indigo-600 to-pink-500 hover:opacity-90 transition cursor-pointer">
                 Jetzt entdecken
               </button>
               <button className="px-6 py-3 font-semibold rounded border border-pink-500 text-pink-400 hover:bg-pink-600 hover:text-white transition cursor-pointer">

@@ -7,7 +7,7 @@ import Tilt from "react-parallax-tilt";
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-[#0D0E25] text-white px-6 pt-24 pb-16 text-center space-y-8">
+    <div className="min-h-screen flex flex-col items-center justify-center dark-light-mode px-6 pt-24 pb-16 text-center space-y-8">
       {/* ↑ pt-24 sorgt für Abstand zur Navigation */}
 
       {/* Logo oben */}
@@ -26,7 +26,7 @@ export default function NotFound() {
       </h1>
 
       {/* Beschreibung */}
-      <h2 className="text-2xl md:text-3xl font-semibold text-white">
+      <h2 className="text-2xl md:text-3xl font-semibold">
         Leider ist die gewünschte Seite nicht vorhanden.
       </h2>
 

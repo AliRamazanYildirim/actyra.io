@@ -65,7 +65,7 @@ export default function PaymentPage() {
               placeholder="Dein Name"
               value={form.name}
               onChange={handleChange}
-              className="w-full px-4 py-2 rounded bg-gray-800 border border-gray-600"
+              className="ticket-input placeholder:text-gray-600"
             />
             <input
               type="email"
@@ -73,7 +73,7 @@ export default function PaymentPage() {
               placeholder="E-Mail-Adresse"
               value={form.email}
               onChange={handleChange}
-              className="w-full px-4 py-2 rounded bg-gray-800 border border-gray-600"
+              className="ticket-input placeholder:text-gray-600"
             />
           </div>
 

@@ -131,7 +131,7 @@ body {
 }
 
 .ticket-input {
-  @apply w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-[#1f2937] text-gray-800 dark:text-gray-100 mb-4;
+  @apply w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-200 text-gray-800 dark:text-gray-600 mb-4;
 }
 
 .ticket-summary {
@@ -162,5 +162,5 @@ body {
   @apply bg-white dark:bg-[#0D0E25] text-black dark:text-white;
 }
 .event-background {
-  @apply bg-gradient-to-br from-[#383a8b] to-[#f8f8f9];
+  @apply bg-gradient-to-br from-[#111138] to-[#f8f8f9];
 }

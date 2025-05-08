@@ -5,25 +5,35 @@ import { useState } from "react";
 import ModalVideo from "./ModalVideo";
 import { Play } from "lucide-react";
 import Tilt from "react-parallax-tilt";
+import { Heart } from "lucide-react";
 
 export default function HeroEventErstellen() {
   const [showVideo, setShowVideo] = useState(false);
 
   return (
-    <header className="relative overflow-hidden bg-gradient-to-br from-[#0D0E25] to-[#1C1F3C] text-white py-16">
-      <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-[1.2fr_1fr] gap-10 items-center">
-        
+    <header className="dark-light-mode">
+      <div className="max-w-7xl mx-auto px-8 grid grid-cols-1 md:grid-cols-[1.2fr_1fr] gap-10 items-center">
         {/* Textblock */}
         <div className="space-y-6 text-center md:text-left">
           <div className="space-y-4 mt-4">
-            <h1 className="text-3xl sm:text-4xl font-extrabold leading-snug">
+            <h1 className="flex items-center text-3xl sm:text-4xl font-extrabold leading-snug">
+            <Heart size={18} className="mr-2 text-pink-500 animate-pulse" />
               Event erstellen und verkaufen
             </h1>
             <p className="text-base sm:text-lg">
-              Verkaufen Sie Ihr Event mit Actyra!
+              Verkaufen Sie Ihr Event mit Actyra – präsentieren Sie Ihre
+              Veranstaltung auf unserer modernen Plattform und erreichen Sie
+              gezielt Ihr Publikum schnell.
             </p>
             <p className="text-base sm:text-lg">
-              Erreichen Sie Ihr Publikum – und unterstützen Sie Projekte, die Gutes bewirken.
+              Ein Teil jeder
+              Buchung fließt direkt in Initiativen, die unsere Gesellschaft
+              positiv verändern.
+            </p>
+            <p className="text-base sm:text-lg">
+              Starten Sie jetzt und machen Sie Ihr Event sichtbar – für
+              Menschen, die nicht nur erleben, sondern auch etwas bewirken
+              möchten.
             </p>
           </div>
         </div>

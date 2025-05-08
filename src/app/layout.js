@@ -24,7 +24,7 @@ export default function RootLayout({ children }) {
     <ClerkProvider>
     <html lang="de" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col dark-light-mode`}
       >
         <NavBar />
         <main className="flex-grow">{children}</main>

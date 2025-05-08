@@ -7,12 +7,13 @@ import { useState } from "react";
 import ModalVideo from "./ModalVideo";
 import { Play } from "lucide-react";
 import Tilt from "react-parallax-tilt";
+import { Heart } from "lucide-react";
 
 export default function HeroDetailComp() {
   const [showVideo, setShowVideo] = useState(false);
 
   return (
-    <header className="relative overflow-hidden bg-gradient-to-br from-[#0D0E25] to-[#1C1F3C] text-white py-16">
+    <header className="dark-light-mode">
       <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-[1.2fr_1fr] gap-10 items-center">
         
         {/* Textblock mit Logo */}
@@ -21,7 +22,8 @@ export default function HeroDetailComp() {
 
           {/* Text */}
           <div className="space-y-4 mt-4">
-            <h1 className="text-3xl sm:text-4xl font-extrabold leading-snug">
+            <h1 className="flex items-center text-3xl sm:text-3xl font-extrabold leading-snug">
+            <Heart size={18} className="mr-2 text-pink-500 animate-pulse" />
               Actyra macht dein Ticket zum guten Zweck:
             </h1>
             <p className="text-base sm:text-lg">

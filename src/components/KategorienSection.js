@@ -24,9 +24,19 @@ const kategorien = [
   { slug: 'sonstige-events', icon: KategorieSonstigeEvents, name: 'Sonstige Events' },
 ];
 
+const handleScrollTo = (id) => {
+  setIsMobileMenuOpen(false);
+  if (pathname !== "/") {
+    router.push(`/#${id}`);
+  } else {
+    const section = document.getElementById(id);
+    section?.scrollIntoView({ behavior: "smooth" });
+  }
+};
+
 export default function KategorienSection() {
   return (
-<section className="scroll-mt-24 dark-light-mode">
+<section id="kategorien" className="scroll-mt-24 dark-light-mode">
   <div className="py-20 px-6 md:px-10 max-w-7xl mx-auto">
     
     {/* H2 mit Farbverlauf */}

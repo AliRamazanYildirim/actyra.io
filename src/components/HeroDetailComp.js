@@ -13,7 +13,7 @@ export default function HeroDetailComp() {
   const [showVideo, setShowVideo] = useState(false);
 
   return (
-    <header className="dark-light-mode">
+    <header className="">
       <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-[1.2fr_1fr] gap-10 items-center">
         
         {/* Textblock mit Logo */}

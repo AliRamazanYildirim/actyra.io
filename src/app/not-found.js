@@ -7,7 +7,7 @@ import Tilt from "react-parallax-tilt";
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center dark-light-mode px-6 pt-24 pb-16 text-center space-y-8">
+    <div className="min-h-screen flex flex-col items-center justify-center px-6 pt-24 pb-16 text-center space-y-8">
       {/* ↑ pt-24 sorgt für Abstand zur Navigation */}
 
       {/* Logo oben */}

@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useRouter, useParams } from 'next/navigation';
-import { useState } from 'react';
-import { categorySeedData } from '@/data/categorySeedData';
+import { useRouter, useParams } from "next/navigation";
+import { useState } from "react";
+import { categorySeedData } from "@/data/categorySeedData";
 
 export default function EditCategoryPage() {
   const { id } = useParams();
@@ -11,8 +11,8 @@ export default function EditCategoryPage() {
   // Kategorie aus statischer Seed-Datei finden
   const category = categorySeedData.find((c) => c.id === id);
 
-  const [name, setName] = useState(category?.name || '');
-  const [icon, setIcon] = useState(category?.icon || '');
+  const [name, setName] = useState(category?.name || "");
+  const [icon, setIcon] = useState(category?.icon || "");
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = (e) => {
@@ -20,14 +20,14 @@ export default function EditCategoryPage() {
     setLoading(true);
 
     setTimeout(() => {
-      console.log('Kategorie aktualisiert:', {
+      console.log("Kategorie aktualisiert:", {
         id,
         name,
         icon,
         createdAt: category.createdAt,
         isActive: category.isActive,
       });
-      router.push('/admin/categories');
+      router.push("/admin/categories");
     }, 800);
   };
 
@@ -40,7 +40,7 @@ export default function EditCategoryPage() {
   }
 
   return (
-    <div className="h-screen w-screen flex items-center justify-center dark-light-mode px-4">
+    <div className="h-screen w-screen flex items-center justify-center  px-4">
       <div className="w-full max-w-7xl bg-[#0f172a] text-white p-16 rounded-2xl shadow-2xl space-y-10">
         <h1 className="text-4xl font-bold text-center">Kategorie bearbeiten</h1>
 
@@ -71,7 +71,7 @@ export default function EditCategoryPage() {
             disabled={loading}
             className="ticket-button cursor-pointer"
           >
-            {loading ? 'Wird gespeichert...' : 'Änderungen speichern'}
+            {loading ? "Wird gespeichert..." : "Änderungen speichern"}
           </button>
         </form>
       </div>

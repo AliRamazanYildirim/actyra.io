@@ -14,6 +14,7 @@ import {
   useUser,
 } from "@clerk/nextjs";
 import { RiSearchEyeLine } from "react-icons/ri";
+import ThemeToggle from "./ThemeToggle";
 
 export default function NavBar() {
   const [isVisible, setIsVisible] = useState(false);
@@ -206,6 +207,9 @@ useEffect(() => {
               <UserButton />
             </li>
           </SignedIn>
+          <li>
+            <ThemeToggle />
+          </li>
         </ul>
 
         {/* Mobile Buttons - rechts */}
@@ -319,6 +323,7 @@ useEffect(() => {
                 Warenkorb
               </Link>
             </SignedIn>
+            <ThemeToggle />
           </div>
         </div>
       )}

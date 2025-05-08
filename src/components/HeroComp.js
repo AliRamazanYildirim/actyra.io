@@ -46,7 +46,7 @@ export default function HeroComp() {
   }, [letterIndex, index]);
 
   return (
-    <header id="home" className="relative overflow-hidden bg-white dark:bg-[#0D0E25] text-black dark:text-white">
+    <header id="home" className="relative overflow-hidden">
       <Stars />
       <div className="relative z-10 max-w-7xl mx-auto px-6 pt-20 md:pt-40 pb-16 grid grid-cols-1 md:grid-cols-[1.2fr_1fr] gap-10 items-center">
         <div className="space-y-6 text-center md:text-left">

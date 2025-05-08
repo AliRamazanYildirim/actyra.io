@@ -6,7 +6,6 @@ import categories from "../data/categories";
 import ImageUpload from "./ImageUpload";
 import EventPreview from "./EventPreview";
 
-
 const EventForm = () => {
   const [formData, setFormData] = useState({
     title: "",
@@ -63,17 +62,21 @@ const EventForm = () => {
   }
 
   return (
-    <main className="dark-light-mode">
+    <main className="">
       {/* Hero Bereich neu eingebunden */}
 
       {/* Formular Bereich */}
-      <section className="py-5 dark-light-mode">
+      <section className="py-5 ">
         <div className="event-background rounded-xl shadow-lg max-w-5xl mx-auto p-8">
           <form onSubmit={handlePreview} className="space-y-6">
             {/* Titel */}
-            <h1 className="text-3xl md:text-4xl font-extrabold bg-gradient-to-r from-purple-400 to-pink-500 text-transparent bg-clip-text text-center">🎟️ Tragen Sie hier Ihr Event ein!</h1>
+            <h1 className="text-3xl md:text-4xl font-extrabold bg-gradient-to-r from-purple-400 to-pink-500 text-transparent bg-clip-text text-center">
+              🎟️ Tragen Sie hier Ihr Event ein!
+            </h1>
             <div>
-              <label className="block font-semibold mb-1 text-white">Titel</label>
+              <label className="block font-semibold mb-1 text-white">
+                Titel
+              </label>
               <input
                 type="text"
                 name="title"
@@ -87,7 +90,9 @@ const EventForm = () => {
 
             {/* Beschreibung */}
             <div>
-              <label className="block font-semibold mb-1 text-white">Beschreibung</label>
+              <label className="block font-semibold mb-1 text-white">
+                Beschreibung
+              </label>
               <textarea
                 name="description"
                 placeholder="Hier können Sie Ihr Event beschreiben..."
@@ -114,7 +119,9 @@ const EventForm = () => {
 
             {/* Kategorie */}
             <div>
-              <label className="block font-semibold mb-1 text-white">Kategorie</label>
+              <label className="block font-semibold mb-1 text-white">
+                Kategorie
+              </label>
               <select
                 name="category"
                 value={formData.category}
@@ -122,7 +129,9 @@ const EventForm = () => {
                 className="ticket-input text-black dark:text-white placeholder-black dark:placeholder-white"
                 required
               >
-                <option value="" className="text-black">Bitte wählen</option>
+                <option value="" className="text-black">
+                  Bitte wählen
+                </option>
                 {categories.map((cat) => (
                   <option key={cat} value={cat}>
                     {cat}
@@ -133,7 +142,9 @@ const EventForm = () => {
 
             {/* Datum */}
             <div>
-              <label className="block font-semibold mb-1 text-white">Datum</label>
+              <label className="block font-semibold mb-1 text-white">
+                Datum
+              </label>
               <input
                 type="date"
                 name="date"
@@ -146,7 +157,9 @@ const EventForm = () => {
 
             {/* Ticketanzahl */}
             <div>
-              <label className="block font-semibold mb-1 text-white">Ticketanzahl</label>
+              <label className="block font-semibold mb-1 text-white">
+                Ticketanzahl
+              </label>
               <input
                 type="number"
                 name="tickets"
@@ -160,7 +173,9 @@ const EventForm = () => {
 
             {/* Preis */}
             <div>
-              <label className="block font-semibold mb-1 text-white">Preis (€)</label>
+              <label className="block font-semibold mb-1 text-white">
+                Preis (€)
+              </label>
               <input
                 type="number"
                 name="price"
@@ -174,7 +189,9 @@ const EventForm = () => {
 
             {/* Spendenbetrag */}
             <div>
-              <label className="block font-semibold mb-1 text-white">Spendenbetrag (€)</label>
+              <label className="block font-semibold mb-1 text-white">
+                Spendenbetrag (€)
+              </label>
               <input
                 type="number"
                 name="donation"
@@ -188,16 +205,15 @@ const EventForm = () => {
 
             {/* Bild-Upload */}
             <div>
-              <label className="block font-semibold mb-1 text-white">Eventbild/Flyer</label>
+              <label className="block font-semibold mb-1 text-white">
+                Eventbild/Flyer
+              </label>
               <ImageUpload onImageUpload={handleImageUpload} />
             </div>
 
             {/* Vorschau-Button */}
             <div className="flex justify-center">
-              <button
-                type="submit"
-                className="ticket-button cursor-pointer"
-              >
+              <button type="submit" className="ticket-button cursor-pointer">
                 Vorschau anzeigen
               </button>
             </div>

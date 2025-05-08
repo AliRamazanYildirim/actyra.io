@@ -7,18 +7,20 @@ import { MapPin, Calendar, Euro } from "lucide-react"; // Annahme: Lucide-Icons 
 
 const EventPreview = ({ formData, onBack, onSubmit }) => {
   return (
-    <main className="min-h-screen dark-light-mode">
+    <main className="min-h-screen ">
       <div className="max-w-5xl mx-auto p-4">
         <div className="bg-[#12192f] rounded-xl overflow-hidden shadow-xl text-white">
           {formData.image ? (
-            <div className="relative w-full h-64">
-              <Image
-                src={formData.image}
-                alt="Event Bild"
-                className="object-contain"
-                fill
-              />
-            </div>
+           <div className="w-full aspect-[3/2] relative">
+           <Image
+             src={formData.image}
+             alt="Event Bild"
+             fill
+             className="object-contain"
+           />
+         </div>
+         
+          
           ) : (
             <div className="w-full h-64 bg-gradient-to-r from-purple-800 to-pink-700 flex items-center justify-center">
               <span className="text-white text-xl">Kein Bild verfügbar</span>

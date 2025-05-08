@@ -1,166 +1,149 @@
 @import "tailwindcss";
-
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #ffffff;
-    --foreground: #0a0a0a;
-  }
-}
-
+@custom-variant dark (&:where(.dark, .dark *));
+/* === GLOBAL === */
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@apply transition-colors duration-300;
+@apply bg-white text-black dark:bg-[#0D0E25] dark:text-white;
+font-family: Arial, Helvetica, sans-serif;
 }
 
-/* Gloweffect für Logo */
+/* === GLOW EFFECT FÜR LOGO === */
 @keyframes pulseGlow {
-  0%, 100% {
-    filter: drop-shadow(0 0 6px rgba(255, 0, 128, 0.8));
-  }
-  50% {
-    filter: drop-shadow(0 0 30px rgba(255, 0, 128, 1));
-  }
+0%, 100% {
+filter: drop-shadow(0 0 6px rgba(255, 0, 128, 0.8));
+}
+50% {
+filter: drop-shadow(0 0 30px rgba(255, 0, 128, 1));
+}
 }
 
 .animate-pulseGlow {
-  animation: pulseGlow 2s infinite;
+animation: pulseGlow 2s infinite;
 }
 
-/* Sternenhimmel */
+/* === STERNENHIMMEL === */
 @keyframes starBlink {
-  0%, 100% {
-    opacity: 0.2;
-    transform: scale(1) rotate(0deg);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.6) rotate(30deg);
-  }
+0%, 100% {
+opacity: 0.2;
+transform: scale(1) rotate(0deg);
+}
+50% {
+opacity: 1;
+transform: scale(1.6) rotate(30deg);
+}
 }
 
 @keyframes twinkle {
-  0%, 100% {
-    opacity: 0.2;
-    transform: scale(0.8);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.2);
-  }
+0%, 100% {
+opacity: 0.2;
+transform: scale(0.8);
 }
-.star {
-  position: absolute;
-  opacity: 0.6;
-  font-size: 1rem;
-  animation: starBlink 2.5s infinite ease-in-out;
-  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.8));
-  pointer-events: none;
-  transition: transform 0.3s ease;
-  font-family: 'serif';
-  text-shadow: 0 0 6px #ffffff, 0 0 10px #a855f7;
+50% {
+opacity: 1;
+transform: scale(1.2);
+}
 }
 
-/* Marquee Animation */
+.star {
+position: absolute;
+opacity: 0.6;
+font-size: 1rem;
+animation: starBlink 2.5s infinite ease-in-out;
+filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.8));
+pointer-events: none;
+transition: transform 0.3s ease;
+font-family: 'serif';
+text-shadow: 0 0 6px #ffffff, 0 0 10px #a855f7;
+}
+
+/* === MARQUEE === */
 @keyframes marquee {
-  0% {
-    transform: translateX(0%);
-  }
-  100% {
-    transform: translateX(-50%);
-  }
+0% {
+transform: translateX(0%);
+}
+100% {
+transform: translateX(-50%);
+}
 }
 
 .animate-marquee {
-  display: flex;
-  white-space: nowrap;
-  animation: marquee 15s linear infinite;
+display: flex;
+white-space: nowrap;
+animation: marquee 15s linear infinite;
 }
 
-
-
-/* === NAVIGATION HOVER EFFEKTE === */
+/* === NAVIGATION HOVER === */
 .nav-link {
-  position: relative;
-  display: inline-block;
-  transition: color 0.3s ease;
+position: relative;
+display: inline-block;
+transition: color 0.3s ease;
 }
 
 .nav-link::after {
-  content: "";
-  position: absolute;
-  width: 0%;
-  height: 2px;
-  left: 0;
-  bottom: -2px;
-  background: linear-gradient(to right, #a855f7, #ec4899);
-  transition: width 0.3s ease;
+content: "";
+position: absolute;
+width: 0%;
+height: 2px;
+left: 0;
+bottom: -2px;
+background: linear-gradient(to right, #a855f7, #ec4899);
+transition: width 0.3s ease;
 }
 
 .nav-link:hover {
-  color: #ec4899; /* Tailwind pink-500 */
+color: #ec4899;
 }
 
 .nav-link:hover::after {
-  width: 100%;
+width: 100%;
 }
 
-/* === TICKET SELECTOR DESIGN === */
+/* === TICKET BOX === */
 .ticket-box {
-  @apply bg-white dark:bg-[#111827] text-gray-800 dark:text-gray-100 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 p-6 max-w-md w-full mx-auto transition-all duration-300;
+@apply bg-white dark:bg-[#111827] text-gray-800 dark:text-gray-100 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 p-6 max-w-md w-full mx-auto transition-all duration-300;
 }
 
 .ticket-heading {
-  @apply text-2xl font-bold mb-4 text-pink-600 dark:text-pink-400;
+@apply text-2xl font-bold mb-4 text-pink-600 dark:text-pink-400;
 }
 
 .ticket-label {
-  @apply block text-sm font-medium mb-1;
+@apply block text-sm font-medium mb-1;
 }
 
 .ticket-input {
-  @apply w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-200 text-gray-800 dark:text-gray-600 mb-4;
+@apply w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-200 text-gray-800 dark:text-gray-600 mb-4;
 }
 
 .ticket-summary {
-  @apply text-sm text-white dark:text-gray-300 mb-2;
+@apply text-sm text-white dark:text-gray-300 mb-2;
 }
 
 .ticket-total {
-  @apply font-semibold text-lg mb-4 text-white dark:text-gray-100;
+@apply font-semibold text-lg mb-4 text-white dark:text-gray-100;
 }
 
 .ticket-button {
-  @apply w-1/2 mx-auto bg-pink-600 hover:bg-pink-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300 block;
+@apply w-1/2 mx-auto bg-pink-600 hover:bg-pink-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300 block;
 }
 
-/* Tailwind Dark Mode für Datumsfeld von Event Erstellen Seite */
+/* === DATE FIELD DARK MODE === */
 .date-input::-webkit-calendar-picker-indicator {
-  @apply dark:invert dark:brightness-150;
-  cursor: pointer;
+@apply dark:invert dark:brightness-150;
+cursor: pointer;
 }
+
+/* === NAV TEXT & DELETE BUTTON === */
 .nav-text {
-  @apply text-white cursor-pointer
+@apply text-white cursor-pointer;
 }
+
 .löschen-button {
-  @apply w-1/4 mx-auto text-white rounded-lg transition duration-300 block;
-  background-color: oklch(0.577 0.245 27.325);
+@apply w-1/4 mx-auto text-white rounded-lg transition duration-300 block;
+background-color: oklch(0.577 0.245 27.325);
 }
-.dark-light-mode {
-  @apply bg-white dark:bg-[#0D0E25] text-black dark:text-white;
-}
+
+/* === EVENT BG === */
 .event-background {
-  @apply bg-gradient-to-br from-[#111138] to-[#f8f8f9];
+@apply bg-gradient-to-br from-[#111138] to-[#f8f8f9];
 }

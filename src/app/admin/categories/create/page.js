@@ -1,13 +1,13 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function CreateCategoryPage() {
   const router = useRouter();
 
-  const [name, setName] = useState('');
-  const [icon, setIcon] = useState('');
+  const [name, setName] = useState("");
+  const [icon, setIcon] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = (e) => {
@@ -15,19 +15,19 @@ export default function CreateCategoryPage() {
     setLoading(true);
 
     setTimeout(() => {
-      console.log('Kategorie erstellt:', {
+      console.log("Kategorie erstellt:", {
         id: Date.now().toString(),
         name,
         icon,
         createdAt: new Date().toISOString(),
         isActive: true,
       });
-      router.push('/admin/categories');
+      router.push("/admin/categories");
     }, 800);
   };
 
   return (
-    <div className="h-screen w-screen flex items-center justify-center dark-light-mode px-4">
+    <div className="h-screen w-screen flex items-center justify-center  px-4">
       <div className="w-full max-w-7xl bg-[#0f172a] text-white p-16 rounded-2xl shadow-2xl space-y-10">
         <h1 className="text-4xl font-bold text-center">
           Neue Kategorie erstellen
@@ -56,7 +56,11 @@ export default function CreateCategoryPage() {
           </div>
 
           <div className="flex justify-center">
-            <button type="submit" disabled={loading} className="ticket-button cursor-pointer">
+            <button
+              type="submit"
+              disabled={loading}
+              className="ticket-button cursor-pointer"
+            >
               {loading ? "Wird gespeichert..." : "Speichern"}
             </button>
           </div>

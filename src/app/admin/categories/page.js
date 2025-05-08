@@ -1,16 +1,16 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { format } from 'date-fns';
-import Link from 'next/link';
-import { categorySeedData } from '@/data/categorySeedData';
-import { Button } from '@/components/ui/button';
+import { useState } from "react";
+import { format } from "date-fns";
+import Link from "next/link";
+import { categorySeedData } from "@/data/categorySeedData";
+import { Button } from "@/components/ui/button";
 
 export default function CategoryAdminPage() {
   const [categories, setCategories] = useState(categorySeedData);
 
   const handleDelete = (id) => {
-    if (!confirm('Möchtest du diese Kategorie wirklich löschen?')) return;
+    if (!confirm("Möchtest du diese Kategorie wirklich löschen?")) return;
     setCategories((prev) => prev.filter((cat) => cat.id !== id));
   };
 
@@ -23,7 +23,7 @@ export default function CategoryAdminPage() {
   };
 
   return (
-    <div className="min-h-screen dark-light-mode py-24 px-4 sm:px-8 lg:px-24">
+    <div className="min-h-screen  py-24 px-4 sm:px-8 lg:px-24">
       <div className="w-full max-w-7xl mx-auto space-y-12 px-4">
         {/* Titel */}
         <div className="text-center">
@@ -62,9 +62,9 @@ export default function CategoryAdminPage() {
                   className="border-t border-gray-700 hover:bg-gray-800/50 transition text-base"
                 >
                   <td className="px-8 py-4">{cat.name}</td>
-                  <td className="px-8 py-4">{cat.icon || '—'}</td>
+                  <td className="px-8 py-4">{cat.icon || "—"}</td>
                   <td className="px-8 py-4">
-                    {format(new Date(cat.createdAt), 'dd.MM.yyyy')}
+                    {format(new Date(cat.createdAt), "dd.MM.yyyy")}
                   </td>
                   <td className="px-8 py-4">
                     <div className="flex flex-wrap gap-3">
@@ -78,7 +78,7 @@ export default function CategoryAdminPage() {
                         </Button>
                       </Link>
                       <button
-                        className='löschen-button cursor-pointer'
+                        className="löschen-button cursor-pointer"
                         onClick={() => handleDelete(cat.id)}
                       >
                         Löschen
@@ -89,7 +89,7 @@ export default function CategoryAdminPage() {
                         className="bg-white text-black hover:bg-gray-200 cursor-pointer"
                         onClick={() => toggleActive(cat.id)}
                       >
-                        {cat.isActive ? 'Deaktivieren' : 'Aktivieren'}
+                        {cat.isActive ? "Deaktivieren" : "Aktivieren"}
                       </Button>
                     </div>
                   </td>

@@ -19,7 +19,7 @@ export default function Footer() {
    
 
   return (
-    <footer className="relative overflow-hidden bg-white dark:bg-[#0D0E25] text-black dark:text-white pt-10">
+    <footer className="relative overflow-hidden pt-10">
       {/* ✨ Stars */}
       <Stars />
 

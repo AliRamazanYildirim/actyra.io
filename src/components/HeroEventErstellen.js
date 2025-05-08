@@ -11,13 +11,13 @@ export default function HeroEventErstellen() {
   const [showVideo, setShowVideo] = useState(false);
 
   return (
-    <header className="dark-light-mode">
+    <header className="">
       <div className="max-w-7xl mx-auto px-8 grid grid-cols-1 md:grid-cols-[1.2fr_1fr] gap-10 items-center">
         {/* Textblock */}
         <div className="space-y-6 text-center md:text-left">
           <div className="space-y-4 mt-4">
             <h1 className="flex items-center text-3xl sm:text-4xl font-extrabold leading-snug">
-            <Heart size={18} className="mr-2 text-pink-500 animate-pulse" />
+              <Heart size={18} className="mr-2 text-pink-500 animate-pulse" />
               Event erstellen und verkaufen
             </h1>
             <p className="text-base sm:text-lg">
@@ -26,9 +26,8 @@ export default function HeroEventErstellen() {
               gezielt Ihr Publikum schnell.
             </p>
             <p className="text-base sm:text-lg">
-              Ein Teil jeder
-              Buchung fließt direkt in Initiativen, die unsere Gesellschaft
-              positiv verändern.
+              Ein Teil jeder Buchung fließt direkt in Initiativen, die unsere
+              Gesellschaft positiv verändern.
             </p>
             <p className="text-base sm:text-lg">
               Starten Sie jetzt und machen Sie Ihr Event sichtbar – für

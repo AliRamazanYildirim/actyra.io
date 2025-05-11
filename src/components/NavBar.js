@@ -15,11 +15,14 @@ import {
 } from "@clerk/nextjs";
 import { RiSearchEyeLine } from "react-icons/ri";
 import ThemeToggle from "./ThemeToggle";
+import useTicketStore from "@/store/ticketStore";
 
 export default function NavBar() {
   const [isVisible, setIsVisible] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("home");
+  const [clientTicketCount, setClientTicketCount] = useState(0);
+  const totalTicketCount = useTicketStore(state => state.getTotalTicketCount());
   const pathname = usePathname();
   const router = useRouter();
   const { isSignedIn } = useUser();
@@ -53,6 +56,10 @@ export default function NavBar() {
     }
   }, [pathname]);
 
+  useEffect(() => {
+  // Erst nach dem Client-Rendering den echten Wert setzen
+  setClientTicketCount(totalTicketCount);
+}, [totalTicketCount]);
 
 // Close mobile menu on resize
 
@@ -201,6 +208,11 @@ useEffect(() => {
             <li>
               <Link href="/warenkorb" className="relative group">
                 <ShoppingCart className="w-6 h-6 text-white group-hover:text-pink-400 transition" />
+                {clientTicketCount > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-pink-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full">
+                    {clientTicketCount}
+                  </span>
+                )}
               </Link>
             </li>
             <li>
@@ -216,10 +228,15 @@ useEffect(() => {
 
         <button
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className="md:hidden nav-text"
+          className="md:hidden nav-text relative"
           aria-label="Menü öffnen"
         >
           {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          {clientTicketCount > 0 && (
+            <span className="absolute -top-2 -right-3 bg-pink-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full">
+              {clientTicketCount}
+            </span>
+          )}
         </button>
       </div>
 
@@ -321,6 +338,11 @@ useEffect(() => {
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Warenkorb
+                {clientTicketCount > 0 && (
+                  <span className="absolute -top-1 -right-4 bg-pink-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full">
+                    {clientTicketCount}
+                  </span>
+                )}
               </Link>
             </SignedIn>
             <ThemeToggle />

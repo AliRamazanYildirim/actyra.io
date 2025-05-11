@@ -10,16 +10,6 @@ export default function NotFound() {
     <div className="min-h-screen flex flex-col items-center justify-center px-6 pt-24 pb-16 text-center space-y-8">
       {/* ↑ pt-24 sorgt für Abstand zur Navigation */}
 
-      {/* Logo oben */}
-      <Image
-        src="/logo-actyra.png"
-        alt="Actyra Logo"
-        width={90}
-        height={90}
-        className="rounded-lg shadow-md hover:scale-105 transition duration-300"
-        priority
-      />
-
       {/* Großes 404 */}
       <h1 className="text-6xl md:text-8xl font-extrabold text-pink-500">
         404

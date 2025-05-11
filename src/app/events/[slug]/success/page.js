@@ -1,6 +1,6 @@
 "use client";
 
-import { notFound } from "next/navigation";
+import { notFound, useSearchParams } from "next/navigation";
 import eventsData from "@/data/events";
 import NavBar from "@/components/NavBar";
 import HeroDetailComp from "@/components/HeroDetailComp";
@@ -8,6 +8,7 @@ import Image from "next/image";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { use, useEffect, useState } from "react";
+import { generateTicketPdf } from '@/lib/generateTicketPdf';
 
 const QRCode = dynamic(() => import("react-qr-code"), { ssr: false });
 
@@ -15,6 +16,9 @@ export default function TicketSuccessPage({ params }) {
   // state für die Bestellnummer
   // params auflösen mit React.use()
   const [orderNumber, setOrderNumber] = useState("wird geladen...");
+  const searchParams = useSearchParams();
+  const name = searchParams.get('name') || 'Teilnehmer';
+  const eventTitle = searchParams.get('title') || 'Event';
   
   const resolvedParams = use(params);
 
@@ -53,7 +57,8 @@ export default function TicketSuccessPage({ params }) {
 
             {/* Bestellnummer */}
             <p className="text-gray-300 text-lg">
-              Deine Bestellnummer: <span className="font-bold text-white">{orderNumber}</span>
+              Deine Bestellnummer:{" "}
+              <span className="font-bold text-white">{orderNumber}</span>
             </p>
 
             {/* QR Code */}
@@ -69,12 +74,20 @@ export default function TicketSuccessPage({ params }) {
               Dein Ticket haben wir soeben an deine E-Mail-Adresse versendet.
             </p>
 
+            <button
+              onClick={() =>
+                generateTicketPdf({ name, eventTitle, orderNumber })
+              }
+              className="mt-4 bg-pink-600 hover:bg-pink-700 text-white font-semibold px-4 py-2 rounded-full transition cursor-pointer"
+            >
+              🎫 PDF herunterladen
+            </button>
+
             {/* Zurück Button */}
             <div className="mt-6">
               <Link href="/">
-                <button className="px-6 py-3 bg-pink-600 hover:bg-pink-700 text-white font-semibold rounded-full transition duration-300 cursor-pointer">Bild auswählen
-
-                  Zurück zur Startseite
+                <button className="px-6 py-3 bg-pink-600 hover:bg-pink-700 text-white font-semibold rounded-full transition duration-300 cursor-pointer">
+                  Bild auswählen Zurück zur Startseite
                 </button>
               </Link>
             </div>

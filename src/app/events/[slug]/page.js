@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Calendar, MapPin, Euro } from "lucide-react";
+import { Calendar, MapPin, Euro, ChevronLeft } from "lucide-react";
 
 import NavBar from "@/components/NavBar";
 import HeroDetailComp from "@/components/HeroDetailComp";
@@ -68,12 +68,23 @@ export default async function EventDetailPage({ params }) {
               {event.longDescription}
             </p>
 
-            {/* Button zur Ticketseite */}
-            <Link href={`/events/${event.slug}/tickets`}>
-              <button className="mt-6 px-6 py-3 bg-pink-600 hover:bg-pink-700 text-white font-semibold rounded-full transition duration-300 cursor-pointer">
-                Jetzt Ticket sichern
-              </button>
-            </Link>
+            {/* Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4 pt-2">
+              {/* Zurück-Button */}
+              <Link href="/events">
+                <button className="flex items-center justify-center gap-1 px-6 py-3 bg-gray-700 hover:bg-gray-600 text-white font-semibold rounded-full transition duration-300 cursor-pointer">
+                  <ChevronLeft className="w-5 h-5" />
+                  Zurück zur Übersicht
+                </button>
+              </Link>
+
+              {/* Button zur Ticketseite */}
+              <Link href={`/events/${event.slug}/tickets`}>
+                <button className="px-6 py-3 bg-pink-600 hover:bg-pink-700 text-white font-semibold rounded-full transition duration-300 cursor-pointer">
+                  Jetzt Ticket sichern
+                </button>
+              </Link>
+            </div>
           </div>
         </div>
       </main>

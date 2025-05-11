@@ -22,7 +22,8 @@ export default function NavBar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("home");
   const [clientTicketCount, setClientTicketCount] = useState(0);
-  const totalTicketCount = useTicketStore(state => state.getTotalTicketCount());
+  const tickets = useTicketStore(state => state.tickets);
+  const totalTicketCount = tickets.reduce((sum, ticket) => sum + ticket.quantity, 0);
   const pathname = usePathname();
   const router = useRouter();
   const { isSignedIn } = useUser();

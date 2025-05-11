@@ -268,7 +268,7 @@ export default function ProfilPage() {
                 <h2 className="text-2xl font-bold mb-1">
                   {name || "Name nicht angegeben"}
                 </h2>
-                <p className="text-gray-300 mb-2">
+                <p className="text-gray-100 mb-2">
                   {user.emailAddresses[0].emailAddress}
                 </p>
               </div>
@@ -333,7 +333,7 @@ export default function ProfilPage() {
                         </span>
                       )}
                     </div>
-                    <p className="text-xs text-gray-400 mt-1">
+                    <p className="text-xs text-gray-200 mt-1">
                       Maximale Dateigröße: 5MB
                     </p>
                   </div>
@@ -512,7 +512,7 @@ export default function ProfilPage() {
                     <div className="flex items-center justify-between">
                       <div>
                         <h4 className="font-medium">Passwort vergessen?</h4>
-                        <p className="text-sm text-gray-400 mt-1">
+                        <p className="text-sm text-gray-200 mt-1">
                           Sie können einen Link zum Zurücksetzen des Passworts an Ihre E-Mail senden
                         </p>
                       </div>

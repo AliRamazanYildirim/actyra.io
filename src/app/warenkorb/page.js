@@ -4,13 +4,14 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import useTicketStore from "@/store/ticketStore";
 import NavBar from "@/components/NavBar";
-import { Trash2, ShoppingBag, ArrowLeft } from "lucide-react"; // ShoppingBag für leeren Warenkorb hinzugefügt
+import { Trash2, ShoppingBag, ChevronLeft, Plus, Minus } from "lucide-react"; // Plus und Minus Icons hinzugefügt
 import Link from "next/link";
 
 export default function WarenkorbPage() {
   const router = useRouter();
   const tickets = useTicketStore(state => state.tickets);
   const removeTicket = useTicketStore(state => state.removeTicket);
+  const updateTicketQuantity = useTicketStore(state => state.updateTicketQuantity);
   const [isLoading, setIsLoading] = useState(true);
   const [isMounted, setIsMounted] = useState(false);
 
@@ -25,6 +26,22 @@ export default function WarenkorbPage() {
       // Umleitung entfernt - stattdessen zeigen wir die leere Warenkorb-Meldung
     }
   }, [tickets, router, isMounted]);
+
+  // Ticket-Menge erhöhen
+  const increaseQuantity = (slug) => {
+    const ticket = tickets.find(t => t.slug === slug);
+    if (ticket) {
+      updateTicketQuantity(slug, ticket.quantity + 1);
+    }
+  };
+
+  // Ticket-Menge verringern, mindestens 1
+  const decreaseQuantity = (slug) => {
+    const ticket = tickets.find(t => t.slug === slug);
+    if (ticket && ticket.quantity > 1) {
+      updateTicketQuantity(slug, ticket.quantity - 1);
+    }
+  };
 
   // Während des Server-Renderings oder wenn nicht gemounted ist, zeige Ladeindikator
   if (!isMounted || isLoading) return <div>Lädt...</div>;
@@ -81,7 +98,7 @@ export default function WarenkorbPage() {
                 <h2 className="text-xl font-bold">{ticket.eventTitle}</h2>
                 <button
                   onClick={() => removeTicket(ticket.slug)}
-                  className="bg-pink-600 hover:bg-pink-700 text-white p-2 rounded-full transition-colors"
+                  className="bg-pink-600 hover:bg-pink-700 text-white p-2 rounded-full transition-colors cursor-pointer"
                   title="Event entfernen"
                 >
                   <Trash2 size={18} />
@@ -94,10 +111,28 @@ export default function WarenkorbPage() {
               <p className="mb-2 flex items-center">
                 <span className="mr-2">📍</span> Ort: {ticket.location}
               </p>
-              <p className="mb-2 flex items-center">
+              
+              {/* Ticket-Mengensteuerung */}
+              <div className="mb-2 flex items-center">
                 <span className="mr-2">🎟️</span> Anzahl Tickets:{" "}
-                {ticket.quantity}
-              </p>
+                <div className="flex items-center ml-2 border border-gray-600 rounded-md">
+                  <button 
+                    onClick={() => decreaseQuantity(ticket.slug)} 
+                    className="px-2 py-1 bg-gray-700 hover:bg-gray-600 text-white rounded-l-md transition-colors cursor-pointer flex items-center justify-center"
+                    disabled={ticket.quantity <= 1}
+                  >
+                    <Minus size={16} className={ticket.quantity <= 1 ? "text-gray-500" : "text-white"} />
+                  </button>
+                  <span className="px-4 py-1 bg-gray-800">{ticket.quantity}</span>
+                  <button 
+                    onClick={() => increaseQuantity(ticket.slug)} 
+                    className="px-2 py-1 bg-gray-700 hover:bg-gray-600 text-white rounded-r-md transition-colors cursor-pointer flex items-center justify-center"
+                  >
+                    <Plus size={16} />
+                  </button>
+                </div>
+              </div>
+              
               <p className="mb-2 flex items-center">
                 <span className="mr-2">💶</span> Preis pro Ticket:{" "}
                 {ticket.price === 0 ? "Kostenlos" : `${ticket.price} €`}
@@ -124,7 +159,7 @@ export default function WarenkorbPage() {
               onClick={() => router.back()}
               className="flex items-center px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition text-white cursor-pointer"
             >
-              <ArrowLeft className="w-5 h-5 mr-2" />
+              <ChevronLeft className="w-5 h-5" />
               Zurück
             </button>
 

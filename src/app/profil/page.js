@@ -168,7 +168,7 @@ export default function ProfilPage() {
     alert(`Ein Link zum Zurücksetzen des Passworts wurde an ${user.emailAddresses[0].emailAddress} gesendet (nur Demo)`);
   };
 
-  // Tickets als Events formatieren - mit Daten aus events.js anreichern
+    // Tickets als Events formatieren - mit Daten aus events.js anreichern
   const ticketsAsEvents = tickets.map(ticket => {
     // Finde das passende Event aus den eventsData basierend auf slug
     const matchingEvent = eventsData.find(event => event.slug === ticket.slug) || {};
@@ -180,7 +180,8 @@ export default function ProfilPage() {
       location: ticket.location,
       date: ticket.date,
       imageUrl: matchingEvent.imageUrl || '/images/event-default.webp',
-      price: ticket.price,
+      price: ticket.price * ticket.quantity, // Gesamtpreis (Einzelpreis × Anzahl)
+      pricePerTicket: ticket.price, // Optionale Einzelpreisangabe
       tags: ['Ticket', `${ticket.quantity}x`]
     };
   });

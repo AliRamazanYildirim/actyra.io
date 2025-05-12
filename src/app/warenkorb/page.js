@@ -84,8 +84,8 @@ export default function WarenkorbPage() {
       <NavBar />
       <main className="max-w-5xl mx-auto px-6 py-16">
         <div className="bg-[#0f172a] text-white rounded-2xl shadow-2xl overflow-hidden p-8 mt-10">
-          <h1 className="text-3xl font-extrabold bg-gradient-to-r from-purple-400 to-pink-500 text-transparent bg-clip-text mb-8">
-            Ihr Warenkorb
+          <h1 className="text-3xl font-extrabold text-center text-white mb-8">
+            Mein Warenkorb
           </h1>
 
           {/* Liste aller Events */}

@@ -1,20 +1,14 @@
 "use client";
 
-import { useRouter, useSearchParams, usePathname } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import NavBar from "@/components/NavBar";
-import HeroDetailComp from "@/components/HeroDetailComp";
+import useTicketStore from "@/store/ticketStore";
 
-export default function PaymentPage() {
+export default function CheckoutPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const pathname = usePathname();
-
-  // 🔧 slug'ı URL'den çıkarıyoruz (örneğin: /events/my-event/tickets/payment)
-  const slug = useMemo(() => {
-    const segments = pathname.split("/");
-    return segments[2] || ""; // /events/[slug]/tickets/payment → index 2 = slug
-  }, [pathname]);
+  const tickets = useTicketStore(state => state.tickets);
+  const resetTicketState = useTicketStore(state => state.resetTicketState);
 
   const [form, setForm] = useState({
     name: "",
@@ -22,9 +16,7 @@ export default function PaymentPage() {
     method: "paypal",
   });
 
-  const quantity = searchParams.get("quantity") || "1";
-  const price = searchParams.get("price") || "0";
-  const donation = searchParams.get("donation") || "3";
+  const isValid = form.name && form.email;
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -34,29 +26,43 @@ export default function PaymentPage() {
     setForm({ ...form, method });
   };
 
-  const handleSubmit = () => {
-    const query = new URLSearchParams({
-      quantity,
-      price,
-      donation,
+    const handleSubmit = () => {
+    // Falls keine Tickets vorhanden sind, zurück zur Hauptseite
+    if (!tickets || tickets.length === 0) {
+      router.push('/');
+      return;
+    }
+  
+    // Das erste Ticket für den Routing-Pfad verwenden
+    const firstTicket = tickets[0];
+    
+    // Query-Parameter erstellen
+    const queryParams = new URLSearchParams({
       name: form.name,
       email: form.email,
-      method: form.method,
+      title: firstTicket.eventTitle,
+      quantity: tickets.reduce((sum, t) => sum + t.quantity, 0),
+      paymentMethod: form.method,
+      totalAmount: (totalPrice + totalDonation).toString()
     }).toString();
-
-    router.push(`/events/${slug}/success?${query}`);
+    
+    // Warenkorb zurücksetzen
+    resetTicketState();
+    
+    // Zur Erfolgsseite navigieren
+    router.push(`/events/${firstTicket.slug}/success?${queryParams}`);
   };
 
-  const isValid = form.name && form.email;
+  const totalPrice = tickets.reduce((sum, t) => sum + t.totalPrice, 0);
+  const totalDonation = tickets.reduce((sum, t) => sum + t.totalDonation, 0);
+  const total = totalPrice + totalDonation;
 
   return (
     <>
       <NavBar />
-      <HeroDetailComp />
-
       <main className="max-w-5xl mx-auto px-6 py-24">
         <div className="bg-[#0f172a] text-white rounded-2xl shadow-2xl overflow-hidden p-8 space-y-6">
-          <h1 className="text-3xl font-bold text-center">Zahlungsmethode wählen</h1>
+          <h1 className="text-3xl font-bold text-center">Zahlung für alle Tickets</h1>
 
           <div className="space-y-4">
             <input
@@ -102,23 +108,20 @@ export default function PaymentPage() {
                     className="hidden"
                   />
                   {method.label}
-                  {method.id === "bank" && (
-                    <span className="block text-xs mt-1 text-gray-400">
-                      Bitte überweisen Sie den Betrag innerhalb von 5 Werktagen…
-                    </span>
-                  )}
                 </label>
               ))}
             </div>
+          </div>
+
+          <div className="text-right text-xl font-bold">
+            Gesamtsumme: {total} €
           </div>
 
           <button
             disabled={!isValid}
             onClick={handleSubmit}
             className={`ticket-button cursor-pointer ${
-              isValid
-                ? "bg-pink-600 hover:bg-pink-700"
-                : "bg-gray-700 cursor-not-allowed"
+              isValid ? "bg-pink-600 hover:bg-pink-700" : "bg-gray-700 cursor-not-allowed"
             }`}
           >
             Jetzt kostenpflichtig bestellen

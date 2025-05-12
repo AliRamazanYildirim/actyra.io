@@ -43,6 +43,8 @@ export default async function TicketBookingPage({ params }) {
                 price={event.price}
                 title={event.title}
                 slug={event.slug}
+                date={event.date}
+                location={event.location}
               />
             </div>
           </div>
@@ -51,4 +53,3 @@ export default async function TicketBookingPage({ params }) {
     </>
   );
 }
-

@@ -1,82 +1,115 @@
-// src/app/events/[slug]/page.js
-
-import Image from "next/image";
-import { notFound } from "next/navigation";
-import { Calendar, MapPin, Euro } from "lucide-react";
-
 import NavBar from "@/components/NavBar";
+import Link from "next/link";
+import Image from "next/image";
+import { MapPin, Calendar, Euro } from "lucide-react";
 
-import HeroDetailComp from "@/components/HeroDetailComp"; // 👈 Neue Hero-Komponente
-
-// Events dynamisch laden
-export async function generateStaticParams() {
+export default async function EventsPage() {
+  // Events laden
   const mod = await import("@/data/events.js");
   const events = mod?.default || [];
 
-  return events.map((event) => ({ slug: event.slug }));
-}
-
-export default async function EventDetailPage({ params }) {
-  const mod = await import("@/data/events.js");
-  const events = mod?.default || [];
-
-  const event = events.find((e) => e.slug === params.slug);
-
-  if (!event) return notFound();
+  // Hilfsfunktion zum Formatieren des Datums
+  const formatDate = (dateStr) => {
+    const options = { day: "2-digit", month: "short" };
+    return new Date(dateStr).toLocaleDateString("de-DE", options);
+  };
 
   return (
     <>
       <NavBar />
-      <HeroDetailComp />
+      
+      <main className="max-w-7xl mx-auto px-6 pt-24 pb-16">
+        <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-pink-500 mb-4">
+          Aktuelle Events
+        </h1>
+        
+        <p className="mb-10 text-lg leading-relaxed">
+          Willkommen bei <span className="font-semibold text-purple-700">Actyra</span> – deiner Plattform für unvergessliche Begegnungen, echte Erlebnisse und soziale Highlights.
+        </p>
 
-      <main className="max-w-5xl mx-auto px-6 py-16">
-        <div className="bg-[#0f172a] text-white rounded-2xl shadow-2xl overflow-hidden">
-          {/* Bild */}
-          <div className="relative w-full h-72 md:h-[400px]">
-            <Image
-              src={event.imageUrl}
-              alt={event.title}
-              fill
-              className="object-cover"
-              priority
-            />
-          </div>
-
-          {/* Eventdetails */}
-          <div className="p-8 space-y-6">
-            <h1 className="text-4xl font-extrabold bg-gradient-to-r from-purple-400 to-pink-500 text-transparent bg-clip-text">
-              {event.title}
-            </h1>
-
-            <div className="flex flex-col sm:flex-row sm:items-center gap-4 text-pink-100 text-sm">
-              <div className="flex items-center gap-2">
-                <Calendar className="w-4 h-4" />
-                {new Date(event.date).toLocaleDateString("de-DE")}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
+          {events.map((event) => (
+            <div 
+              key={event.id || event.slug}
+              className="relative bg-[#0f172a] text-white rounded-2xl overflow-hidden shadow-lg transition-all duration-500 hover:scale-[1.02] hover:bg-gradient-to-br hover:from-purple-600 hover:to-pink-600"
+            >
+              {/* Datum oben links */}
+              <div className="absolute top-3 left-3 bg-pink-600 text-white text-xs px-3 py-1 rounded-full z-10 font-bold">
+                {formatDate(event.date)}
               </div>
-              <div className="flex items-center gap-2">
-                <MapPin className="w-4 h-4" />
-                {event.location}
-              </div>
-              <div className="flex items-center gap-2">
-                <Euro className="w-4 h-4" />
-                {event.price === 0 ? "Kostenlos / Spende" : `${event.price} €`}
+
+              {/* Event Bild */}
+              {event.imageUrl ? (
+                <Image
+                  src={event.imageUrl}
+                  alt={event.title}
+                  width={600}
+                  height={400}
+                  className="w-full h-48 object-cover"
+                />
+              ) : (
+                <div className="w-full h-48 bg-gradient-to-r from-purple-600 to-pink-600 flex items-center justify-center">
+                  <span className="text-white font-bold">{event.title}</span>
+                </div>
+              )}
+              
+              {/* Event Inhalt */}
+              <div className="p-5 space-y-2">
+                {/* Tags */}
+                <div className="flex flex-wrap gap-2">
+                  {event.tags && event.tags.map((tag, idx) => (
+                    <span 
+                      key={idx} 
+                      className="bg-pink-700 text-white text-xs px-2 py-1 rounded-full"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+
+                {/* Titel */}
+                <h3 className="text-xl font-semibold mt-2">{event.title}</h3>
+                
+                {/* Ort */}
+                <div className="flex items-center gap-1 text-sm text-pink-100">
+                  <MapPin className="w-4 h-4" /> 
+                  {event.location}
+                </div>
+                
+                {/* Datum */}
+                <div className="flex items-center gap-1 text-sm text-pink-100">
+                  <Calendar className="w-4 h-4" />
+                  {new Date(event.date).toLocaleDateString("de-DE")}
+                </div>
+                
+                {/* Preis */}
+                <div className="flex items-center gap-1 text-sm text-white">
+                  <Euro className="w-4 h-4" />
+                  {event.price === 0 ? (
+                    "Kostenlos / Spende"
+                  ) : (
+                    `${event.price} €`
+                  )}
+                </div>
+                
+                {/* CTA-Button mit Link zur Detailseite */}
+                <Link href={`/events/${event.slug}`} passHref>
+                  <button className="mt-4 px-4 py-2 rounded-full bg-pink-700 hover:bg-pink-700 text-white font-semibold w-full cursor-pointer">
+                    Jetzt teilnehmen
+                  </button>
+                </Link>
               </div>
             </div>
-
-            <p className="text-lg text-white">{event.shortDescription}</p>
-
-            <p className="text-sm text-gray-300 border-t border-pink-500 pt-4 leading-relaxed">
-              {event.longDescription}
-            </p>
-
-            <button className="mt-6 px-6 py-3 bg-pink-600 hover:bg-pink-700 text-white font-semibold rounded-full transition duration-300 cursor-pointer">
-              Jetzt Ticket sichern
-            </button>
-          </div>
+          ))}
         </div>
+        
+        {events.length === 0 && (
+          <div className="text-center py-10">
+            <p className="text-gray-400 text-lg">Keine Events gefunden.</p>
+            <p className="text-gray-500 mt-2">Schau später noch einmal vorbei.</p>
+          </div>
+        )}
       </main>
-
-      
     </>
   );
 }

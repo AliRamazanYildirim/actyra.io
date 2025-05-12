@@ -59,13 +59,13 @@ const EventPreview = ({ formData, onBack, onSubmit }) => {
             <div className="flex flex-col sm:flex-row gap-3 justify-between">
               <button
                 onClick={onBack}
-                className="bg-gray-600 hover:bg-gray-700 text-white px-5 py-2 rounded-lg font-semibold transition"
+                className="bg-gray-600 hover:bg-gray-700 text-white px-5 py-2 rounded-lg font-semibold transition cursor-pointer"
               >
                 Zurück bearbeiten
               </button>
               <button
                 onClick={onSubmit}
-                className="bg-pink-600 hover:bg-pink-700 text-white px-5 py-2 rounded-lg font-semibold transition"
+                className="bg-pink-600 hover:bg-pink-700 text-white px-5 py-2 rounded-lg font-semibold transition cursor-pointer"
               >
                 Event speichern
               </button>

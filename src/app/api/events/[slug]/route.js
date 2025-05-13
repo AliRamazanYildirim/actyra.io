@@ -1,28 +1,35 @@
-import { NextResponse } from 'next/server';
-import dbConnect from '@/lib/db';
-import Event from '@/models/Event';
+import { NextResponse } from "next/server";
+import dbConnect from "@/lib/db";
+import Event from "@/models/Event";
+import eventsData from "@/data/eventSeedData";
 
 export async function GET(request, { params }) {
+  const { slug } = params;
+
   try {
-    const { slug } = params;
-    
     await dbConnect();
-    
+
     const event = await Event.findOne({ slug });
-    
-    if (!event) {
-      return NextResponse.json(
-        { error: 'Event nicht gefunden' },
-        { status: 404 }
-      );
+    if (event) {
+      return NextResponse.json({
+        event: JSON.parse(JSON.stringify(event)),
+        source: "database",
+      });
     }
-    
-    return NextResponse.json({ event });
-  } catch (error) {
-    console.error('Fehler beim Abrufen des Events:', error);
-    return NextResponse.json(
-      { error: 'Beim Abrufen des Events ist ein Fehler aufgetreten.' },
-      { status: 500 }
-    );
+  } catch (dbError) {
+    console.error("Datenbankfehler:", dbError);
   }
+
+  const seedEvent = eventsData.find((e) => e.slug === slug);
+  if (seedEvent) {
+    return NextResponse.json({
+      event: seedEvent,
+      source: "seed",
+    });
+  }
+
+  return NextResponse.json(
+    { error: "Event nicht gefunden" },
+    { status: 404 }
+  );
 }

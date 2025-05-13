@@ -50,6 +50,3 @@ coverage/
 
 # Optional: misc
 *.local
-
-# Bild output
-/public/uploads

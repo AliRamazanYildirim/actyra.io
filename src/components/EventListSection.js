@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { MapPin, Calendar, Tag, Euro } from "lucide-react";
-import fallbackEvents from "@/data/events"; // Fallback-Daten werden aus events.js importiert
+import fallbackEvents from "@/data/eventSeedData"; // Fallback-Daten werden aus events.js importiert
 
 const formatDate = (dateStr) => {
   const options = { day: "2-digit", month: "short" };
@@ -23,13 +23,13 @@ export default function EventListSection() {
       try {
         setIsLoading(true);
         const response = await fetch("/api/events");
-        
+
         if (!response.ok) {
           throw new Error("Fehler beim Laden der Daten");
         }
-        
+
         const data = await response.json();
-        
+
         if (data.events && Array.isArray(data.events)) {
           setEvents(data.events);
         } else {
@@ -45,7 +45,7 @@ export default function EventListSection() {
         setIsLoading(false);
       }
     };
-    
+
     fetchEvents();
   }, []);
 
@@ -106,14 +106,15 @@ export default function EventListSection() {
                 <div className="p-5 space-y-2">
                   {/* Tags */}
                   <div className="flex flex-wrap gap-2">
-                    {event.tags && event.tags.map((tag, i) => (
-                      <span
-                        key={i}
-                        className="bg-pink-700 text-white text-xs px-2 py-1 rounded-full"
-                      >
-                        {tag}
-                      </span>
-                    ))}
+                    {event.tags &&
+                      event.tags.map((tag, i) => (
+                        <span
+                          key={i}
+                          className="bg-pink-700 text-white text-xs px-2 py-1 rounded-full"
+                        >
+                          {tag}
+                        </span>
+                      ))}
                   </div>
 
                   {/* Titel */}
@@ -150,7 +151,7 @@ export default function EventListSection() {
             ))}
           </div>
         )}
-        
+
         {/* "Alle Events anzeigen"-Button - Nur anzeigen, wenn Daten geladen sind und kein Fehler vorliegt */}
         {!isLoading && !error && events.length > 0 && (
           <div className="mt-10 text-center">

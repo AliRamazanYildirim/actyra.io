@@ -4,7 +4,7 @@ import Image from "next/image";
 import { MapPin, Calendar, Euro } from "lucide-react";
 import dbConnect from "@/lib/db";
 import Event from "@/models/Event";
-import eventsData from "@/data/events.js"; // Fallback-Daten bei Fehlern oder leerer DB
+import eventSeedData from "@/data/eventSeedData.js"; // Fallback-Daten bei Fehlern oder leerer DB
 
 // Holt Events aus der MongoDB oder nutzt Fallback-Daten
 async function getEvents() {
@@ -21,12 +21,14 @@ async function getEvents() {
         };
       });
     } else {
-      console.log("Keine Events in der Datenbank gefunden. Fallback-Daten werden verwendet.");
-      return eventsData;
+      console.log(
+        "Keine Events in der Datenbank gefunden. Fallback-Daten werden verwendet."
+      );
+      return eventSeedData;
     }
   } catch (error) {
     console.error("Fehler beim Abrufen der Events:", error);
-    return eventsData;
+    return eventSeedData;
   }
 }
 
@@ -50,7 +52,10 @@ export default async function EventsPage() {
         </h1>
 
         <p className="mb-10 text-lg leading-relaxed">
-          Willkommen bei <span className="font-semibold text-purple-700">Actyra</span> – deiner Plattform für unvergessliche Begegnungen, echte Erlebnisse und soziale Highlights.
+          Willkommen bei{" "}
+          <span className="font-semibold text-purple-700">Actyra</span> – deiner
+          Plattform für unvergessliche Begegnungen, echte Erlebnisse und soziale
+          Highlights.
         </p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
@@ -83,14 +88,15 @@ export default async function EventsPage() {
               <div className="p-5 space-y-2">
                 {/* Tags */}
                 <div className="flex flex-wrap gap-2">
-                  {event.tags && event.tags.map((tag, idx) => (
-                    <span
-                      key={idx}
-                      className="bg-pink-700 text-white text-xs px-2 py-1 rounded-full"
-                    >
-                      {tag}
-                    </span>
-                  ))}
+                  {event.tags &&
+                    event.tags.map((tag, idx) => (
+                      <span
+                        key={idx}
+                        className="bg-pink-700 text-white text-xs px-2 py-1 rounded-full"
+                      >
+                        {tag}
+                      </span>
+                    ))}
                 </div>
 
                 {/* Titel */}
@@ -111,7 +117,9 @@ export default async function EventsPage() {
                 {/* Preis */}
                 <div className="flex items-center gap-1 text-sm text-white">
                   <Euro className="w-4 h-4" />
-                  {event.price === 0 ? "Kostenlos / Spende" : `${event.price} €`}
+                  {event.price === 0
+                    ? "Kostenlos / Spende"
+                    : `${event.price} €`}
                 </div>
 
                 {/* Call to Action */}
@@ -129,7 +137,9 @@ export default async function EventsPage() {
         {events.length === 0 && (
           <div className="text-center py-10">
             <p className="text-gray-400 text-lg">Keine Events gefunden.</p>
-            <p className="text-gray-500 mt-2">Schau später noch einmal vorbei.</p>
+            <p className="text-gray-500 mt-2">
+              Schau später noch einmal vorbei.
+            </p>
           </div>
         )}
       </main>

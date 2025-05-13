@@ -9,21 +9,8 @@ import NavBar from "@/components/NavBar";
 import HeroDetailComp from "@/components/HeroDetailComp";
 import dbConnect from "@/lib/db";
 import Event from "@/models/Event";
+import eventSeedData from "@/data/eventSeedData";
 
-export async function generateStaticParams() {
-  try {
-    await dbConnect();
-    const events = await Event.find({});
-    return events.map(event => ({ 
-      slug: event.slug 
-    }));
-  } catch (error) {
-    console.error("Statik parametre getirme hatası:", error);
-    return [];
-  }
-}
-
-// Veritabanından event bilgisini getiren yardımcı fonksiyon
 async function getEventBySlug(slug) {
   try {
     await dbConnect();
@@ -36,14 +23,29 @@ async function getEventBySlug(slug) {
 }
 
 export default async function EventDetailPage({ params }) {
-  // Slug değerini doğrudan params'tan alalım
-  const { slug } = params;
-  
-  // Önce veritabanından deneyelim
-  const event = await getEventBySlug(slug);
+  // Wenn params ein Promise ist, warten wir darauf
+  const resolvedParams = await Promise.resolve(params);
+  const slug = resolvedParams.slug;
 
-  // Eğer etkinlik bulunamadıysa 404 sayfasına yönlendir
-  if (!event) return notFound();
+  // Oder alternativ, wenn du sicher bist, dass params kein Promise ist:
+  // const slug = params?.slug;
+
+  // Versuche zuerst, das Event aus der Datenbank zu laden
+  let event = await getEventBySlug(slug);
+
+  // Wenn nicht in der Datenbank gefunden, versuche es mit den Seed-Daten
+  if (!event) {
+    console.log(`Event ${slug} nicht in DB gefunden, suche in Seed-Daten`);
+    event = eventSeedData.find((e) => e.slug === slug);
+
+    if (!event) {
+      console.log(`Event ${slug} auch nicht in Seed-Daten gefunden`);
+      return notFound();
+    }
+    console.log(`Event ${slug} in Seed-Daten gefunden`);
+  } else {
+    console.log(`Event ${slug} in DB gefunden`);
+  }
 
   return (
     <>

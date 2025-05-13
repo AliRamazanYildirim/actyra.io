@@ -1,43 +1,55 @@
-'use client';
+"use client";
 
-import { useUser, SignOutButton } from '@clerk/nextjs';
-import { useRouter } from 'next/navigation';
-import { useState, useEffect, useRef } from 'react';
-import NavBar from '@/components/NavBar';
-import { Button } from '@/components/ui/button';
-import Image from 'next/image';
-import { Calendar, MapPin, Ticket, Clock, CheckCircle, ChevronRight, 
-  Eye as EyeIcon, EyeOff as EyeOffIcon, Lock as LockIcon, Key as KeyIcon, 
-  RefreshCw as RefreshCwIcon, Upload as UploadIcon, X as XIcon } from 'lucide-react';
-import Link from 'next/link';
-import useTicketStore from '@/store/ticketStore';
-import EventList from '@/components/EventList';
-import eventsData from '@/data/events.js';
+import { useUser, SignOutButton } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
+import { useState, useEffect, useRef } from "react";
+import NavBar from "@/components/NavBar";
+import { Button } from "@/components/ui/button";
+import Image from "next/image";
+import {
+  Calendar,
+  MapPin,
+  Ticket,
+  Clock,
+  CheckCircle,
+  ChevronRight,
+  Eye as EyeIcon,
+  EyeOff as EyeOffIcon,
+  Lock as LockIcon,
+  Key as KeyIcon,
+  RefreshCw as RefreshCwIcon,
+  Upload as UploadIcon,
+  X as XIcon,
+} from "lucide-react";
+import Link from "next/link";
+import useTicketStore from "@/store/ticketStore";
+import EventList from "@/components/EventList";
+import eventSeedData from "@/data/eventSeedData.js";
 
 export default function ProfilPage() {
   const { user, isLoaded } = useUser();
   const router = useRouter();
-  
+
   // Ticket store hooks
   const tickets = useTicketStore((state) => state.tickets);
   const fetchTickets = useTicketStore((state) => state.fetchTickets);
   const isLoading = useTicketStore((state) => state.isLoading);
   const error = useTicketStore((state) => state.error);
   const clearError = useTicketStore((state) => state.clearError);
-  
+
   const fileInputRef = useRef(null);
 
   const [editing, setEditing] = useState(false);
-  const [name, setName] = useState('');
-  const [image, setImage] = useState('');
+  const [name, setName] = useState("");
+  const [image, setImage] = useState("");
   const [uploadedImage, setUploadedImage] = useState(null);
-  const [activeTab, setActiveTab] = useState('profil');
+  const [activeTab, setActiveTab] = useState("profil");
   const [imageError, setImageError] = useState(false);
-  
+
   // Beispieldaten - später durch echte Daten ersetzen
   const [attendedEvents, setAttendedEvents] = useState([]);
   const [upcomingEvents, setUpcomingEvents] = useState([]);
-  
+
   // Passwort-Änderung
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -48,42 +60,42 @@ export default function ProfilPage() {
   // Benutzerprofileinstellungen und Beispieldaten laden
   useEffect(() => {
     if (user) {
-      setName(user.fullName || '');
-      setImage(user.imageUrl || '');
+      setName(user.fullName || "");
+      setImage(user.imageUrl || "");
       setImageError(false);
       setUploadedImage(null);
-      
+
       // Verwende die echten Event-Daten aus events.js
-      if (eventsData && eventsData.length > 0) {
+      if (eventSeedData && eventSeedData.length > 0) {
         // Die ersten zwei Events als "besuchte Events" verwenden
         setAttendedEvents([
           {
-            ...eventsData[0],
-            id: eventsData[0].slug,
-            date: new Date(eventsData[0].date).toLocaleDateString("de-DE")
+            ...eventSeedData[0],
+            id: eventSeedData[0].slug,
+            date: new Date(eventSeedData[0].date).toLocaleDateString("de-DE"),
           },
           {
-            ...eventsData[1],
-            id: eventsData[1].slug,
-            date: new Date(eventsData[1].date).toLocaleDateString("de-DE")
-          }
+            ...eventSeedData[1],
+            id: eventSeedData[1].slug,
+            date: new Date(eventSeedData[1].date).toLocaleDateString("de-DE"),
+          },
         ]);
-        
+
         // Die nächsten zwei Events als "kommende Events" verwenden
         setUpcomingEvents([
           {
-            ...eventsData[2],
-            id: eventsData[2].slug,
-            date: new Date(eventsData[2].date).toLocaleDateString("de-DE")
+            ...eventSeedData[2],
+            id: eventSeedData[2].slug,
+            date: new Date(eventSeedData[2].date).toLocaleDateString("de-DE"),
           },
           {
-            ...eventsData[3],
-            id: eventsData[3].slug,
-            date: new Date(eventsData[3].date).toLocaleDateString("de-DE")
-          }
+            ...eventSeedData[3],
+            id: eventSeedData[3].slug,
+            date: new Date(eventSeedData[3].date).toLocaleDateString("de-DE"),
+          },
         ]);
       }
-      
+
       // Tickets beim Laden der Seite abrufen
       fetchTickets();
     }
@@ -91,11 +103,11 @@ export default function ProfilPage() {
 
   // Tickets bei jedem Wechsel zum Tickets-Tab neu laden
   useEffect(() => {
-    if (activeTab === 'tickets' && user) {
+    if (activeTab === "tickets" && user) {
       fetchTickets();
     }
-    
-    if (activeTab !== 'tickets') {
+
+    if (activeTab !== "tickets") {
       clearError();
     }
   }, [activeTab, user, fetchTickets, clearError]);
@@ -115,96 +127,108 @@ export default function ProfilPage() {
   }
 
   if (!user) {
-    router.push('/');
+    router.push("/");
     return null;
   }
-  
+
   // Bild-Upload-Handler
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (!file) return;
-    
-    if (!file.type.startsWith('image/')) {
-      alert('Bitte wählen Sie eine Bilddatei aus.');
+
+    if (!file.type.startsWith("image/")) {
+      alert("Bitte wählen Sie eine Bilddatei aus.");
       return;
     }
-    
+
     if (file.size > 5 * 1024 * 1024) {
-      alert('Die Datei ist zu groß. Bitte wählen Sie eine Datei unter 5MB.');
+      alert("Die Datei ist zu groß. Bitte wählen Sie eine Datei unter 5MB.");
       return;
     }
-    
+
     const reader = new FileReader();
     reader.onload = (upload) => {
       setUploadedImage(upload.target.result);
-      setImage(''); // URL-Eingabe zurücksetzen, da wir jetzt ein hochgeladenes Bild verwenden
+      setImage(""); // URL-Eingabe zurücksetzen, da wir jetzt ein hochgeladenes Bild verwenden
     };
-    
+
     reader.readAsDataURL(file);
   };
-  
+
   const clearUploadedImage = () => {
     setUploadedImage(null);
     if (fileInputRef.current) {
-      fileInputRef.current.value = '';
+      fileInputRef.current.value = "";
     }
   };
 
   const handleSave = () => {
     // Wenn wir ein hochgeladenes Bild haben, verwenden wir dieses
     const finalImage = uploadedImage || image;
-    
+
     // URL-Validierung nur prüfen, wenn wir eine URL und kein hochgeladenes Bild verwenden
-    if (!uploadedImage && image && !image.startsWith('http')) {
-      alert('Bitte geben Sie eine gültige Bild-URL ein.');
+    if (!uploadedImage && image && !image.startsWith("http")) {
+      alert("Bitte geben Sie eine gültige Bild-URL ein.");
       return;
     }
-    
-    alert(`Name: ${name}\nBild wurde aktualisiert\nProfil aktualisiert (nur Demo)`);
+
+    alert(
+      `Name: ${name}\nBild wurde aktualisiert\nProfil aktualisiert (nur Demo)`
+    );
     setEditing(false);
   };
 
-  // Passwort-Änderung  
+  // Passwort-Änderung
   const handlePasswordChange = () => {
     // Passwortüberprüfung und Kontrollen
     if (newPassword.length < 8) {
-      setPasswordError('Das Passwort muss mindestens 8 Zeichen lang sein');
+      setPasswordError("Das Passwort muss mindestens 8 Zeichen lang sein");
       return;
     }
-    
+
     if (newPassword !== confirmPassword) {
-      setPasswordError('Die Passwörter stimmen nicht überein');
+      setPasswordError("Die Passwörter stimmen nicht überein");
       return;
     }
-    
+
     // Für die Demo ein Alert, in der echten Anwendung sollte es mit der Clerk-API integriert werden.
-    alert('Passwort wurde aktualisiert (nur Demo)');
-    setCurrentPassword('');
-    setNewPassword('');
-    setConfirmPassword('');
-    setPasswordError('');
+    alert("Passwort wurde aktualisiert (nur Demo)");
+    setCurrentPassword("");
+    setNewPassword("");
+    setConfirmPassword("");
+    setPasswordError("");
   };
 
   const handlePasswordReset = () => {
     // Für die Demo ein Alert, in der echten Anwendung sollte es mit der Clerk-API integriert werden.
-    alert(`Ein Link zum Zurücksetzen des Passworts wurde an ${user.emailAddresses[0].emailAddress} gesendet (nur Demo)`);
+    alert(
+      `Ein Link zum Zurücksetzen des Passworts wurde an ${user.emailAddresses[0].emailAddress} gesendet (nur Demo)`
+    );
   };
 
   // Tickets als Events formatieren - mit Daten aus events.js anreichern
-  const ticketsAsEvents = tickets.map(ticket => {
-    // Finde das passende Event aus den eventsData basierend auf slug
-    const matchingEvent = eventsData.find(event => event.slug === ticket.slug) || {};
-    
+  const ticketsAsEvents = tickets.map((ticket) => {
+    // Finde das passende Event aus den eventSeedData basierend auf slug
+    const matchingEvent =
+      eventSeedData.find((event) => event.slug === ticket.slug) || {};
+
     return {
       id: ticket._id || ticket.slug, // MongoDB ID verwenden, wenn vorhanden
       slug: ticket.slug,
       title: ticket.eventTitle,
       location: ticket.location,
       date: ticket.date,
-      imageUrl: ticket.imageUrl || matchingEvent.imageUrl || '/images/event-default.webp',
+      imageUrl:
+        ticket.imageUrl ||
+        matchingEvent.imageUrl ||
+        "/images/event-default.webp",
       price: ticket.totalPrice,
       pricePerTicket: ticket.price,
-      tags: ['Ticket', `${ticket.quantity}x`, ticket.orderNumber ? `#${ticket.orderNumber.substring(0, 6)}` : '']
+      tags: [
+        "Ticket",
+        `${ticket.quantity}x`,
+        ticket.orderNumber ? `#${ticket.orderNumber.substring(0, 6)}` : "",
+      ],
     };
   });
 
@@ -317,25 +341,23 @@ export default function ProfilPage() {
 
                 {/* Profilbild-Upload-Bereich */}
                 <div>
-                  <label
-                    className="block text-sm font-medium mb-1"
-                  >
+                  <label className="block text-sm font-medium mb-1">
                     Profilbild
                   </label>
-                  
+
                   {/* Datei-Upload */}
                   <div className="mb-4">
                     <div className="flex items-center gap-3">
-                      <Button 
-                        type="button" 
-                        variant="outline" 
+                      <Button
+                        type="button"
+                        variant="outline"
                         className="flex items-center gap-2 bg-gray-700/30 cursor-pointer"
                         onClick={() => fileInputRef.current?.click()}
                       >
                         <UploadIcon className="w-4 h-4" />
                         Bild hochladen
                       </Button>
-                      
+
                       <input
                         type="file"
                         ref={fileInputRef}
@@ -343,11 +365,11 @@ export default function ProfilPage() {
                         accept="image/*"
                         className="hidden"
                       />
-                      
+
                       {uploadedImage && (
                         <span className="text-sm text-green-400 flex items-center gap-1">
                           Bild hochgeladen
-                          <button 
+                          <button
                             onClick={clearUploadedImage}
                             className="ml-1 p-1 bg-gray-700 rounded-full hover:bg-gray-600 cursor-pointer"
                           >
@@ -360,11 +382,14 @@ export default function ProfilPage() {
                       Maximale Dateigröße: 5MB
                     </p>
                   </div>
-                  
+
                   {/* URL-Eingabe */}
                   <div className="flex gap-4 items-center">
                     <div className="flex-1">
-                      <label htmlFor="image" className="block text-xs font-medium mb-1">
+                      <label
+                        htmlFor="image"
+                        className="block text-xs font-medium mb-1"
+                      >
                         Oder verwende eine Bild-URL:
                       </label>
                       <input
@@ -396,18 +421,21 @@ export default function ProfilPage() {
                     </div>
                   </div>
                 </div>
-            
+
                 {/* Abschnitt zum Ändern des Passworts */}
                 <div className="mt-8 pt-6 border-t border-gray-700">
                   <h3 className="text-xl font-semibold mb-4 flex items-center">
                     <LockIcon className="w-5 h-5 mr-2 text-pink-500" />
                     Passwort ändern
                   </h3>
-                  
+
                   <div className="space-y-4 bg-gray-800/30 p-4 rounded-lg">
                     {/* Aktuelles Passwort */}
                     <div>
-                      <label htmlFor="currentPassword" className="block text-sm font-medium mb-1">
+                      <label
+                        htmlFor="currentPassword"
+                        className="block text-sm font-medium mb-1"
+                      >
                         Aktuelles Passwort
                       </label>
                       <div className="relative">
@@ -418,7 +446,7 @@ export default function ProfilPage() {
                           onChange={(e) => setCurrentPassword(e.target.value)}
                           className="w-full px-4 py-2 bg-gray-700/50 rounded-lg focus:ring-2 focus:ring-pink-500 outline-none pr-10"
                         />
-                        <button 
+                        <button
                           type="button"
                           onClick={() => setShowPassword(!showPassword)}
                           className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white cursor-pointer"
@@ -431,10 +459,13 @@ export default function ProfilPage() {
                         </button>
                       </div>
                     </div>
-                    
+
                     {/* Neues Passwort */}
                     <div>
-                      <label htmlFor="newPassword" className="block text-sm font-medium mb-1">
+                      <label
+                        htmlFor="newPassword"
+                        className="block text-sm font-medium mb-1"
+                      >
                         Neues Passwort
                       </label>
                       <div className="relative">
@@ -445,7 +476,7 @@ export default function ProfilPage() {
                           onChange={(e) => setNewPassword(e.target.value)}
                           className="w-full px-4 py-2 bg-gray-700/50 rounded-lg focus:ring-2 focus:ring-pink-500 outline-none pr-10"
                         />
-                        <button 
+                        <button
                           type="button"
                           onClick={() => setShowPassword(!showPassword)}
                           className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white cursor-pointer"
@@ -457,30 +488,44 @@ export default function ProfilPage() {
                           )}
                         </button>
                       </div>
-                      
+
                       {/* Passwort-Stärke-Anzeige */}
                       {newPassword && (
                         <div className="mt-2">
                           <div className="h-1.5 w-full bg-gray-700 rounded-full overflow-hidden">
-                            <div 
+                            <div
                               className={`h-full ${
-                                newPassword.length < 6 ? 'bg-red-500' : 
-                                newPassword.length < 10 ? 'bg-yellow-500' : 'bg-green-500'
+                                newPassword.length < 6
+                                  ? "bg-red-500"
+                                  : newPassword.length < 10
+                                  ? "bg-yellow-500"
+                                  : "bg-green-500"
                               }`}
-                              style={{ width: `${Math.min(100, newPassword.length * 10)}%` }}
+                              style={{
+                                width: `${Math.min(
+                                  100,
+                                  newPassword.length * 10
+                                )}%`,
+                              }}
                             ></div>
                           </div>
                           <p className="text-xs mt-1 text-gray-400">
-                            {newPassword.length < 6 ? 'Schwaches Passwort' : 
-                             newPassword.length < 10 ? 'Mittleres Passwort' : 'Starkes Passwort'}
+                            {newPassword.length < 6
+                              ? "Schwaches Passwort"
+                              : newPassword.length < 10
+                              ? "Mittleres Passwort"
+                              : "Starkes Passwort"}
                           </p>
                         </div>
                       )}
                     </div>
-                    
+
                     {/* Passwort bestätigen */}
                     <div>
-                      <label htmlFor="confirmPassword" className="block text-sm font-medium mb-1">
+                      <label
+                        htmlFor="confirmPassword"
+                        className="block text-sm font-medium mb-1"
+                      >
                         Passwort bestätigen
                       </label>
                       <div className="relative">
@@ -490,10 +535,12 @@ export default function ProfilPage() {
                           value={confirmPassword}
                           onChange={(e) => setConfirmPassword(e.target.value)}
                           className={`w-full px-4 py-2 bg-gray-700/50 rounded-lg focus:ring-2 focus:ring-pink-500 outline-none pr-10 ${
-                            confirmPassword && newPassword !== confirmPassword ? 'border border-red-500' : ''
+                            confirmPassword && newPassword !== confirmPassword
+                              ? "border border-red-500"
+                              : ""
                           }`}
                         />
-                        <button 
+                        <button
                           type="button"
                           onClick={() => setShowPassword(!showPassword)}
                           className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white cursor-pointer"
@@ -511,36 +558,41 @@ export default function ProfilPage() {
                         </span>
                       )}
                     </div>
-                    
+
                     {passwordError && (
                       <div className="bg-red-500/20 text-red-200 p-3 rounded-md text-sm">
                         {passwordError}
                       </div>
                     )}
-                    
+
                     <div className="flex justify-end">
-                      <Button 
-                        onClick={handlePasswordChange} 
+                      <Button
+                        onClick={handlePasswordChange}
                         className="bg-pink-600 hover:bg-pink-700 text-white cursor-pointer"
-                        disabled={!currentPassword || !newPassword || newPassword !== confirmPassword}
+                        disabled={
+                          !currentPassword ||
+                          !newPassword ||
+                          newPassword !== confirmPassword
+                        }
                       >
                         <KeyIcon className="w-4 h-4 mr-2" />
                         Passwort ändern
                       </Button>
                     </div>
                   </div>
-                  
+
                   {/* Passwort-Zurücksetzungsbereich */}
                   <div className="mt-6 p-4 border border-gray-700 rounded-lg bg-gray-800/30">
                     <div className="flex items-center justify-between">
                       <div>
                         <h4 className="font-medium">Passwort vergessen?</h4>
                         <p className="text-sm text-gray-200 mt-1">
-                          Sie können einen Link zum Zurücksetzen des Passworts an Ihre E-Mail senden
+                          Sie können einen Link zum Zurücksetzen des Passworts
+                          an Ihre E-Mail senden
                         </p>
                       </div>
-                      <Button 
-                        variant="outline" 
+                      <Button
+                        variant="outline"
                         onClick={handlePasswordReset}
                         className="border-pink-500 text-pink-500 hover:bg-pink-500/10 cursor-pointer"
                       >
@@ -593,12 +645,14 @@ export default function ProfilPage() {
         {activeTab === "tickets" && (
           <div className="bg-[#0f172a] text-white rounded-2xl shadow-xl p-8">
             <h2 className="text-2xl font-bold mb-6">Meine Tickets</h2>
-            
+
             {/* Fehlermeldung */}
             {error && (
               <div className="bg-red-500/20 text-red-200 p-3 mb-4 rounded-md">
-                <p>Biletleri yüklerken bir hata oluştu. Lütfen tekrar deneyin.</p>
-                <button 
+                <p>
+                  Biletleri yüklerken bir hata oluştu. Lütfen tekrar deneyin.
+                </p>
+                <button
                   onClick={fetchTickets}
                   className="text-sm underline mt-2"
                 >
@@ -606,7 +660,7 @@ export default function ProfilPage() {
                 </button>
               </div>
             )}
-            
+
             {/* Ladezustand */}
             {isLoading ? (
               <div className="text-center py-10">

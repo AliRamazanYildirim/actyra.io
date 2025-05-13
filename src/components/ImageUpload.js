@@ -44,7 +44,7 @@ const ImageUpload = ({ onImageUpload }) => {
         >
           Bild auswählen
         </button>
-        <span className="text-gray-600">
+        <span className="text-black">
           {preview ? "Bild ausgewählt" : "Kein Bild ausgewählt"}
         </span>
       </div>

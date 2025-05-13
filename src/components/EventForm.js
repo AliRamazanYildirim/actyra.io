@@ -135,7 +135,7 @@ const EventForm = () => {
                 placeholder="Hier können Sie den Titel Ihres Events eingeben..."
                 value={formData.title}
                 onChange={handleChange}
-                className="ticket-input placeholder:text-gray-600"
+                className="ticket-input placeholder:text-black"
                 required
               />
             </div>
@@ -150,7 +150,7 @@ const EventForm = () => {
                 placeholder="Hier können Sie Ihr Event beschreiben..."
                 value={formData.description}
                 onChange={handleChange}
-                className="ticket-input placeholder:text-gray-600"
+                className="ticket-input placeholder:text-black"
                 required
               />
             </div>
@@ -164,7 +164,7 @@ const EventForm = () => {
                 placeholder="Hier können Sie den Ort Ihres Events eingeben..."
                 value={formData.location}
                 onChange={handleChange}
-                className="ticket-input placeholder:text-gray-600"
+                className="ticket-input placeholder:text-black"
                 required
               />
             </div>
@@ -218,7 +218,7 @@ const EventForm = () => {
                 placeholder="Hier können Sie die Ticketanzahl eingeben..."
                 value={formData.tickets}
                 onChange={handleChange}
-                className="ticket-input placeholder:text-gray-600"
+                className="ticket-input placeholder:text-black"
                 required
               />
             </div>
@@ -234,7 +234,7 @@ const EventForm = () => {
                 placeholder="Hier können Sie den Preis eingeben..."
                 value={formData.price}
                 onChange={handleChange}
-                className="ticket-input placeholder:text-gray-600"
+                className="ticket-input placeholder:text-black"
                 required
               />
             </div>
@@ -250,7 +250,7 @@ const EventForm = () => {
                 placeholder="Hier können Sie den Spendenbetrag eingeben..."
                 value={formData.donation}
                 onChange={handleChange}
-                className="ticket-input placeholder:text-gray-600"
+                className="ticket-input placeholder:text-black"
                 required
               />
             </div>

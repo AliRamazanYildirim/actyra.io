@@ -1,14 +1,14 @@
 "use client";
 
 import { notFound, useSearchParams } from "next/navigation";
-import eventsData from "@/data/events";
+import eventSeedData from "@/data/eventSeedData";
 import NavBar from "@/components/NavBar";
 import HeroDetailComp from "@/components/HeroDetailComp";
 import Image from "next/image";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { use, useEffect, useState } from "react";
-import { generateTicketPdf } from '@/lib/generateTicketPdf';
+import { generateTicketPdf } from "@/lib/generateTicketPdf";
 
 const QRCode = dynamic(() => import("react-qr-code"), { ssr: false });
 
@@ -17,18 +17,20 @@ export default function TicketSuccessPage({ params }) {
   // params auflösen mit React.use()
   const [orderNumber, setOrderNumber] = useState("wird geladen...");
   const searchParams = useSearchParams();
-  const name = searchParams.get('name') || 'Teilnehmer';
-  const eventTitle = searchParams.get('title') || 'Event';
-  
+  const name = searchParams.get("name") || "Teilnehmer";
+  const eventTitle = searchParams.get("title") || "Event";
+
   const resolvedParams = use(params);
 
   // Bestellnummer erst nach der Hydration generieren
   useEffect(() => {
-    const randomOrderNumber = `BNR${Math.floor(100000 + Math.random() * 900000)}`;
+    const randomOrderNumber = `BNR${Math.floor(
+      100000 + Math.random() * 900000
+    )}`;
     setOrderNumber(randomOrderNumber);
   }, []);
 
-  const event = eventsData.find((e) => e.slug === resolvedParams.slug);
+  const event = eventSeedData.find((e) => e.slug === resolvedParams.slug);
   if (!event) return notFound();
 
   return (

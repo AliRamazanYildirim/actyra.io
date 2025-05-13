@@ -17,7 +17,14 @@ import eventsData from '@/data/events.js';
 export default function ProfilPage() {
   const { user, isLoaded } = useUser();
   const router = useRouter();
+  
+  // Ticket store hooks
   const tickets = useTicketStore((state) => state.tickets);
+  const fetchTickets = useTicketStore((state) => state.fetchTickets);
+  const isLoading = useTicketStore((state) => state.isLoading);
+  const error = useTicketStore((state) => state.error);
+  const clearError = useTicketStore((state) => state.clearError);
+  
   const fileInputRef = useRef(null);
 
   const [editing, setEditing] = useState(false);
@@ -38,6 +45,7 @@ export default function ProfilPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [passwordError, setPasswordError] = useState("");
 
+  // Benutzerprofileinstellungen und Beispieldaten laden
   useEffect(() => {
     if (user) {
       setName(user.fullName || '');
@@ -75,8 +83,22 @@ export default function ProfilPage() {
           }
         ]);
       }
+      
+      // Tickets beim Laden der Seite abrufen
+      fetchTickets();
     }
-  }, [user]);
+  }, [user, fetchTickets]);
+
+  // Tickets bei jedem Wechsel zum Tickets-Tab neu laden
+  useEffect(() => {
+    if (activeTab === 'tickets' && user) {
+      fetchTickets();
+    }
+    
+    if (activeTab !== 'tickets') {
+      clearError();
+    }
+  }, [activeTab, user, fetchTickets, clearError]);
 
   useEffect(() => {
     if (image) {
@@ -168,21 +190,21 @@ export default function ProfilPage() {
     alert(`Ein Link zum Zurücksetzen des Passworts wurde an ${user.emailAddresses[0].emailAddress} gesendet (nur Demo)`);
   };
 
-    // Tickets als Events formatieren - mit Daten aus events.js anreichern
+  // Tickets als Events formatieren - mit Daten aus events.js anreichern
   const ticketsAsEvents = tickets.map(ticket => {
     // Finde das passende Event aus den eventsData basierend auf slug
     const matchingEvent = eventsData.find(event => event.slug === ticket.slug) || {};
     
     return {
-      id: ticket.slug,
-      slug: ticket.slug, // Slug für korrekte Links
+      id: ticket._id || ticket.slug, // MongoDB ID verwenden, wenn vorhanden
+      slug: ticket.slug,
       title: ticket.eventTitle,
       location: ticket.location,
       date: ticket.date,
-      imageUrl: matchingEvent.imageUrl || '/images/event-default.webp',
-      price: ticket.price * ticket.quantity, // Gesamtpreis (Einzelpreis × Anzahl)
-      pricePerTicket: ticket.price, // Optionale Einzelpreisangabe
-      tags: ['Ticket', `${ticket.quantity}x`]
+      imageUrl: ticket.imageUrl || matchingEvent.imageUrl || '/images/event-default.webp',
+      price: ticket.totalPrice,
+      pricePerTicket: ticket.price,
+      tags: ['Ticket', `${ticket.quantity}x`, ticket.orderNumber ? `#${ticket.orderNumber.substring(0, 6)}` : '']
     };
   });
 
@@ -567,13 +589,30 @@ export default function ProfilPage() {
           </div>
         )}
 
-        {/* Rest des Codes (Tickets, Events, etc.) bleibt unverändert... */}
-        {/* Tickets-Tab */}
+        {/* Tickets-Tab - Mit verbesserter API-Integration */}
         {activeTab === "tickets" && (
           <div className="bg-[#0f172a] text-white rounded-2xl shadow-xl p-8">
             <h2 className="text-2xl font-bold mb-6">Meine Tickets</h2>
-
-            {tickets.length === 0 ? (
+            
+            {/* Fehlermeldung */}
+            {error && (
+              <div className="bg-red-500/20 text-red-200 p-3 mb-4 rounded-md">
+                <p>Biletleri yüklerken bir hata oluştu. Lütfen tekrar deneyin.</p>
+                <button 
+                  onClick={fetchTickets}
+                  className="text-sm underline mt-2"
+                >
+                  Yeniden dene
+                </button>
+              </div>
+            )}
+            
+            {/* Ladezustand */}
+            {isLoading ? (
+              <div className="text-center py-10">
+                <p className="text-gray-400">Biletleriniz yükleniyor...</p>
+              </div>
+            ) : tickets.length === 0 ? (
               <div className="text-center py-10">
                 <Ticket className="w-16 h-16 mx-auto text-gray-500 mb-4" />
                 <p className="text-gray-400">

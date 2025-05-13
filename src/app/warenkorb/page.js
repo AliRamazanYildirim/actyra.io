@@ -10,7 +10,7 @@ import Link from "next/link";
 export default function WarenkorbPage() {
   const router = useRouter();
   const tickets = useTicketStore(state => state.tickets);
-  const removeTicket = useTicketStore(state => state.removeTicket);
+  const removeFromCart = useTicketStore(state => state.removeFromCart);
   const updateTicketQuantity = useTicketStore(state => state.updateTicketQuantity);
   const [isLoading, setIsLoading] = useState(true);
   const [isMounted, setIsMounted] = useState(false);
@@ -97,7 +97,7 @@ export default function WarenkorbPage() {
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-xl font-bold">{ticket.eventTitle}</h2>
                 <button
-                  onClick={() => removeTicket(ticket.slug)}
+                  onClick={() => removeFromCart(ticket.slug)}
                   className="bg-pink-600 hover:bg-pink-700 text-white p-2 rounded-full transition-colors cursor-pointer"
                   title="Event entfernen"
                 >

@@ -9,6 +9,7 @@ export default function CheckoutPage() {
   const router = useRouter();
   const tickets = useTicketStore(state => state.tickets);
   const resetTicketState = useTicketStore(state => state.resetTicketState);
+  const processPayment = useTicketStore(state => state.processPayment);
 
   const [form, setForm] = useState({
     name: "",
@@ -26,31 +27,49 @@ export default function CheckoutPage() {
     setForm({ ...form, method });
   };
 
-    const handleSubmit = () => {
+  const handleSubmit = async () => {
     // Falls keine Tickets vorhanden sind, zurück zur Hauptseite
     if (!tickets || tickets.length === 0) {
       router.push('/');
       return;
     }
   
-    // Das erste Ticket für den Routing-Pfad verwenden
-    const firstTicket = tickets[0];
-    
-    // Query-Parameter erstellen
-    const queryParams = new URLSearchParams({
-      name: form.name,
-      email: form.email,
-      title: firstTicket.eventTitle,
-      quantity: tickets.reduce((sum, t) => sum + t.quantity, 0),
-      paymentMethod: form.method,
-      totalAmount: (totalPrice + totalDonation).toString()
-    }).toString();
-    
-    // Warenkorb zurücksetzen
-    resetTicketState();
-    
-    // Zur Erfolgsseite navigieren
-    router.push(`/events/${firstTicket.slug}/success?${queryParams}`);
+    try {
+      // Zahlungsdaten vorbereiten
+      const paymentData = {
+        name: form.name,
+        email: form.email,
+        tickets: tickets,
+        paymentMethod: form.method,
+        totalAmount: totalPrice + totalDonation
+      };
+      
+      // Neue processPayment Funktion verwenden
+      const data = await processPayment(paymentData);
+      
+      // Das erste Ticket für den Routing-Pfad verwenden
+      const firstTicket = tickets[0];
+      
+      // Query-Parameter erstellen
+      const queryParams = new URLSearchParams({
+        name: form.name,
+        email: form.email,
+        title: firstTicket.eventTitle,
+        quantity: tickets.reduce((sum, t) => sum + t.quantity, 0),
+        paymentMethod: form.method,
+        totalAmount: (totalPrice + totalDonation).toString(),
+        orderNumber: data.orderNumber
+      }).toString();
+      
+      // Warenkorb zurücksetzen
+      resetTicketState();
+      
+      // Zur Erfolgsseite navigieren
+      router.push(`/events/${firstTicket.slug}/success?${queryParams}`);
+    } catch (error) {
+      console.error('Fehler bei der Verarbeitung:', error);
+      alert('Ein Fehler ist aufgetreten. Bitte versuche es später noch einmal.');
+    }
   };
 
   const totalPrice = tickets.reduce((sum, t) => sum + t.totalPrice, 0);

@@ -2,11 +2,14 @@
 "use client"; // Client-Komponente
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import categories from "../data/categories";
 import ImageUpload from "./ImageUpload";
 import EventPreview from "./EventPreview";
 
 const EventForm = () => {
+  const router = useRouter();
+  
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -20,6 +23,8 @@ const EventForm = () => {
   });
 
   const [showPreview, setShowPreview] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -45,11 +50,51 @@ const EventForm = () => {
     setShowPreview(false);
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Gespeichertes Event:", formData);
-    alert("Event gespeichert (Simulation)");
-  };
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+  
+  try {
+    setIsSubmitting(true);
+    setError("");
+    
+    // FormData oluştur
+    const data = new FormData();
+    
+    // FormData'ya değerleri eklerken console.log ile kontrol et
+    for (const key in formData) {
+      if (key === 'image' && formData[key]) {
+        console.log("Resim ekleniyor:", formData[key].name);
+        data.append('image', formData[key]);
+      } else {
+        data.append(key, formData[key]);
+      }
+    }
+    
+    console.log("Form gönderiliyor...");
+    
+    // API'ye gönder
+    const response = await fetch('/api/events', {
+      method: 'POST',
+      body: data, // headers Content-Type belirtmeyin, tarayıcı otomatik ekleyecek
+    });
+    
+    const result = await response.json();
+    
+    if (response.ok) {
+      alert('Event başarıyla oluşturuldu!');
+      router.push(`/events/${result.event.slug}`); // Oluşturulan etkinliğe yönlendir
+    } else {
+      setError(result.error || 'Bir sorun oluştu');
+      alert(`Hata: ${result.error || 'Bir sorun oluştu'}`);
+    }
+  } catch (error) {
+    console.error('Form gönderme hatası:', error);
+    setError('Event kaydedilirken bir hata oluştu.');
+    alert('Event kaydedilirken bir hata oluştu.');
+  } finally {
+    setIsSubmitting(false);
+  }
+};
 
   if (showPreview) {
     return (
@@ -57,6 +102,7 @@ const EventForm = () => {
         formData={formData}
         onBack={handleBack}
         onSubmit={handleSubmit}
+        isSubmitting={isSubmitting}
       />
     );
   }
@@ -68,6 +114,12 @@ const EventForm = () => {
       {/* Formular Bereich */}
       <section className="py-5 ">
         <div className="event-background rounded-xl shadow-lg max-w-5xl mx-auto p-8">
+          {error && (
+            <div className="bg-transparent border border-red-400 text-red-500 px-4 py-3 rounded mb-4">
+              {error}
+            </div>
+          )}
+          
           <form onSubmit={handlePreview} className="space-y-6">
             {/* Titel */}
             <h1 className="text-3xl md:text-4xl font-extrabold bg-gradient-to-r from-purple-400 to-pink-500 text-transparent bg-clip-text text-center">

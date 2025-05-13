@@ -1,26 +1,34 @@
 "use client";
 import Image from "next/image";
-import { MapPin, Calendar, Euro } from "lucide-react"; // Annahme: Lucide-Icons bereits in Verwendung
+import { MapPin, Calendar, Euro } from "lucide-react"; 
 
-// Client-Komponente wegen Button-Events
-// Eventvorschau exakt wie Live-Eventkarte mit Weißraum
-
-const EventPreview = ({ formData, onBack, onSubmit }) => {
+const EventPreview = ({ formData, onBack, onSubmit, isSubmitting }) => {
+  // Resim kaynağı için URL oluşturma fonksiyonu
+  const getImageSrc = () => {
+    if (!formData.image) return null;
+    
+    // Eğer resim bir File nesnesi ise URL oluştur
+    if (formData.image instanceof File) {
+      return URL.createObjectURL(formData.image);
+    }
+    
+    // Zaten URL ise doğrudan kullan
+    return formData.image;
+  };
+  
   return (
-    <main className="min-h-screen ">
+    <main className="min-h-screen">
       <div className="max-w-5xl mx-auto p-4">
         <div className="bg-[#12192f] rounded-xl overflow-hidden shadow-xl text-white">
           {formData.image ? (
-           <div className="w-full aspect-[3/2] relative">
-           <Image
-             src={formData.image}
-             alt="Event Bild"
-             fill
-             className="object-contain"
-           />
-         </div>
-         
-          
+            <div className="w-full aspect-[3/2] relative">
+              <Image
+                src={getImageSrc()}
+                alt="Event Bild"
+                fill
+                className="object-contain"
+              />
+            </div>
           ) : (
             <div className="w-full h-64 bg-gradient-to-r from-purple-800 to-pink-700 flex items-center justify-center">
               <span className="text-white text-xl">Kein Bild verfügbar</span>
@@ -59,15 +67,17 @@ const EventPreview = ({ formData, onBack, onSubmit }) => {
             <div className="flex flex-col sm:flex-row gap-3 justify-between">
               <button
                 onClick={onBack}
-                className="bg-gray-600 hover:bg-gray-700 text-white px-5 py-2 rounded-lg font-semibold transition cursor-pointer"
+                disabled={isSubmitting}
+                className="bg-gray-600 hover:bg-gray-700 text-white px-5 py-2 rounded-lg font-semibold transition cursor-pointer disabled:opacity-50"
               >
                 Zurück bearbeiten
               </button>
               <button
                 onClick={onSubmit}
-                className="bg-pink-600 hover:bg-pink-700 text-white px-5 py-2 rounded-lg font-semibold transition cursor-pointer"
+                disabled={isSubmitting}
+                className="bg-pink-600 hover:bg-pink-700 text-white px-5 py-2 rounded-lg font-semibold transition cursor-pointer disabled:opacity-50"
               >
-                Event speichern
+                {isSubmitting ? "Event wird gespeichert..." : "Event speichern"}
               </button>
             </div>
           </div>

@@ -7,20 +7,42 @@ import { Calendar, MapPin, Euro, ChevronLeft } from "lucide-react";
 
 import NavBar from "@/components/NavBar";
 import HeroDetailComp from "@/components/HeroDetailComp";
+import dbConnect from "@/lib/db";
+import Event from "@/models/Event";
 
 export async function generateStaticParams() {
-  const mod = await import("@/data/events.js");
-  const events = mod?.default || [];
-  return events.map((event) => ({ slug: event.slug }));
+  try {
+    await dbConnect();
+    const events = await Event.find({});
+    return events.map(event => ({ 
+      slug: event.slug 
+    }));
+  } catch (error) {
+    console.error("Statik parametre getirme hatası:", error);
+    return [];
+  }
+}
+
+// Veritabanından event bilgisini getiren yardımcı fonksiyon
+async function getEventBySlug(slug) {
+  try {
+    await dbConnect();
+    const event = await Event.findOne({ slug });
+    return event ? JSON.parse(JSON.stringify(event)) : null;
+  } catch (error) {
+    console.error("DB'den event getirme hatası:", error);
+    return null;
+  }
 }
 
 export default async function EventDetailPage({ params }) {
-  const mod = await import("@/data/events.js");
-  const events = mod?.default || [];
+  // Slug değerini doğrudan params'tan alalım
+  const { slug } = params;
+  
+  // Önce veritabanından deneyelim
+  const event = await getEventBySlug(slug);
 
-   // Params explizit auflösen
-   const resolvedParams = await Promise.resolve(params);
-   const event = events.find((e) => e.slug === resolvedParams.slug);
+  // Eğer etkinlik bulunamadıysa 404 sayfasına yönlendir
   if (!event) return notFound();
 
   return (
@@ -32,13 +54,19 @@ export default async function EventDetailPage({ params }) {
         <div className="bg-[#0f172a] text-white rounded-2xl shadow-2xl overflow-hidden">
           {/* Eventbild */}
           <div className="relative w-full h-72 md:h-[400px]">
-            <Image
-              src={event.imageUrl}
-              alt={event.title}
-              fill
-              className="object-cover"
-              priority
-            />
+            {event.imageUrl ? (
+              <Image
+                src={event.imageUrl}
+                alt={event.title}
+                fill
+                className="object-cover"
+                priority
+              />
+            ) : (
+              <div className="w-full h-full bg-gradient-to-r from-purple-800 to-pink-700 flex items-center justify-center">
+                <span className="text-white text-xl">Kein Bild verfügbar</span>
+              </div>
+            )}
           </div>
 
           {/* Eventinfos */}

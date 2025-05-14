@@ -12,6 +12,8 @@
   "dependencies": {
     "@clerk/nextjs": "^6.18.5",
     "@radix-ui/react-slot": "^1.2.0",
+    "@stripe/react-stripe-js": "^3.7.0",
+    "@stripe/stripe-js": "^7.3.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
@@ -29,6 +31,7 @@
     "react-parallax-tilt": "^1.7.289",
     "react-qr-code": "^2.0.15",
     "react-typed": "^2.0.12",
+    "stripe": "^18.1.0",
     "tailwind-merge": "^3.2.0",
     "zustand": "^5.0.4"
   },

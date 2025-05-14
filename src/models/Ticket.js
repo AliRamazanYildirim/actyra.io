@@ -53,7 +53,14 @@ const TicketSchema = new Schema({
   },
   customerName: String,
   customerEmail: String,
-  paymentMethod: String
+  paymentMethod: String,
+  // Neu hinzugefügte Felder
+  paymentStatus: {
+    type: String,
+    enum: ['pending', 'completed', 'failed', 'refunded'],
+    default: 'pending'
+  },
+  paymentId: String
 }, {
   timestamps: true
 });

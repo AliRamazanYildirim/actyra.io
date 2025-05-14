@@ -1,5 +1,3 @@
-// src/app/events/[slug]/page.js
-
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -17,7 +15,7 @@ async function getEventBySlug(slug) {
     const event = await Event.findOne({ slug });
     return event ? JSON.parse(JSON.stringify(event)) : null;
   } catch (error) {
-    console.error("DB'den event getirme hatası:", error);
+    console.error("Fehler beim Abrufen des Events aus der Datenbank:", error);
     return null;
   }
 }
@@ -27,7 +25,7 @@ export default async function EventDetailPage({ params }) {
   const resolvedParams = await Promise.resolve(params);
   const slug = resolvedParams.slug;
 
-  // Oder alternativ, wenn du sicher bist, dass params kein Promise ist:
+  // Alternativ, wenn sicher ist, dass params kein Promise ist:
   // const slug = params?.slug;
 
   // Versuche zuerst, das Event aus der Datenbank zu laden
@@ -35,16 +33,16 @@ export default async function EventDetailPage({ params }) {
 
   // Wenn nicht in der Datenbank gefunden, versuche es mit den Seed-Daten
   if (!event) {
-    console.log(`Event ${slug} nicht in DB gefunden, suche in Seed-Daten`);
+    console.log(`Event ${slug} nicht in der Datenbank gefunden, suche in den Seed-Daten`);
     event = eventSeedData.find((e) => e.slug === slug);
 
     if (!event) {
-      console.log(`Event ${slug} auch nicht in Seed-Daten gefunden`);
+      console.log(`Event ${slug} auch nicht in den Seed-Daten gefunden`);
       return notFound();
     }
-    console.log(`Event ${slug} in Seed-Daten gefunden`);
+    console.log(`Event ${slug} in den Seed-Daten gefunden`);
   } else {
-    console.log(`Event ${slug} in DB gefunden`);
+    console.log(`Event ${slug} in der Datenbank gefunden`);
   }
 
   return (
@@ -71,7 +69,7 @@ export default async function EventDetailPage({ params }) {
             )}
           </div>
 
-          {/* Eventinfos */}
+          {/* Eventinformationen */}
           <div className="p-8 space-y-6">
             <h1 className="text-4xl font-extrabold bg-gradient-to-r from-purple-400 to-pink-500 text-transparent bg-clip-text">
               {event.title}

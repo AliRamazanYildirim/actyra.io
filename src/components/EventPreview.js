@@ -3,16 +3,16 @@ import Image from "next/image";
 import { MapPin, Calendar, Euro } from "lucide-react"; 
 
 const EventPreview = ({ formData, onBack, onSubmit, isSubmitting }) => {
-  // Resim kaynağı için URL oluşturma fonksiyonu
+  // Funktion zum Erstellen einer URL für die Bildquelle
   const getImageSrc = () => {
     if (!formData.image) return null;
     
-    // Eğer resim bir File nesnesi ise URL oluştur
+    // Wenn das Bild ein File-Objekt ist, eine URL erstellen
     if (formData.image instanceof File) {
       return URL.createObjectURL(formData.image);
     }
     
-    // Zaten URL ise doğrudan kullan
+    // Wenn es bereits eine URL ist, direkt verwenden
     return formData.image;
   };
   

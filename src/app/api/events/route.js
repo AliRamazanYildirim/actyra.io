@@ -23,10 +23,10 @@ export async function POST(request) {
   try {
     const formData = await request.formData();
     
-    // Debug için form alanlarını log'a yazdır
-    console.log("Alınan form alanları:", [...formData.keys()]);
+    // Debug: Form-Felder im Log ausgeben
+    console.log("Erhaltene Form-Felder:", [...formData.keys()]);
     
-    // FormData'dan değerleri al
+    // Werte aus FormData extrahieren
     const title = formData.get('title');
     const location = formData.get('location');
     const date = formData.get('date');
@@ -36,65 +36,65 @@ export async function POST(request) {
     const tickets = Number(formData.get('tickets'));
     const donation = Number(formData.get('donation'));
     
-    // Debug için resim varlığını kontrol et
+    // Debug: Überprüfen, ob ein Bild vorhanden ist
     const image = formData.get('image');
-    console.log("Resim alındı mı:", image ? "Evet" : "Hayır");
+    console.log("Bild erhalten:", image ? "Ja" : "Nein");
     if (image) {
-      console.log("Resim tipi:", image.type);
-      console.log("Resim boyutu:", image.size);
+      console.log("Bildtyp:", image.type);
+      console.log("Bildgröße:", image.size);
     }
     
-    // Slug oluştur
+    // Slug erstellen
     const slug = title.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
     
-    // Diğer alanlar
+    // Weitere Felder
     const tags = category ? [category] : [];
     const shortDescription = description;
     const longDescription = description;
     
-    // Resim işleme
+    // Bildverarbeitung
     let imageUrl = '';
     
     if (image && image.size > 0) {
-      // uploads klasörü oluştur (yoksa)
+      // Upload-Ordner erstellen (falls nicht vorhanden)
       const uploadDir = path.join(process.cwd(), 'public', 'uploads');
-      console.log("Upload dizini:", uploadDir);
+      console.log("Upload-Verzeichnis:", uploadDir);
       
       try {
         await mkdir(uploadDir, { recursive: true });
-        console.log("Klasör oluşturuldu veya zaten var");
+        console.log("Ordner erstellt oder bereits vorhanden");
       } catch (error) {
-        console.error("Klasör oluşturma hatası:", error);
+        console.error("Fehler beim Erstellen des Ordners:", error);
       }
       
-      // Resmi kaydet
+      // Bild speichern
       const bytes = await image.arrayBuffer();
       const buffer = Buffer.from(bytes);
       
       const uniqueFilename = `${Date.now()}-${image.name.replace(/\s+/g, '-')}`;
       const filePath = path.join(uploadDir, uniqueFilename);
-      console.log("Dosya kaydediliyor:", filePath);
+      console.log("Datei wird gespeichert:", filePath);
       
       await writeFile(filePath, buffer);
       imageUrl = `/uploads/${uniqueFilename}`;
-      console.log("Resim URL'si:", imageUrl);
+      console.log("Bild-URL:", imageUrl);
     }
     
     await dbConnect();
     
-    // Slug kontrolü
+    // Slug-Überprüfung
     const existingEvent = await Event.findOne({ slug });
     if (existingEvent) {
-      return NextResponse.json({ error: 'Bu isimde bir etkinlik zaten mevcut.' }, { status: 400 });
+      return NextResponse.json({ error: 'Ein Event mit diesem Namen existiert bereits.' }, { status: 400 });
     }
     
-    // Event oluştur
+    // Event erstellen
     const newEvent = await Event.create({
       title,
       location,
       date,
       price,
-      imageUrl,  // Resim URL'si burada kaydedilir
+      imageUrl,  // Bild-URL wird hier gespeichert
       slug,
       tags,
       shortDescription,
@@ -102,11 +102,11 @@ export async function POST(request) {
       tickets
     });
     
-    console.log("Oluşturulan event:", newEvent);
+    console.log("Erstelltes Event:", newEvent);
     
     return NextResponse.json({ event: newEvent, success: true }, { status: 201 });
   } catch (error) {
-    console.error('Event oluşturma hatası:', error);
-    return NextResponse.json({ error: 'Event oluşturulurken bir hata oluştu.' }, { status: 500 });
+    console.error('Fehler beim Erstellen des Events:', error);
+    return NextResponse.json({ error: 'Beim Erstellen des Events ist ein Fehler aufgetreten.' }, { status: 500 });
   }
 }

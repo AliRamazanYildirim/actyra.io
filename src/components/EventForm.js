@@ -1,5 +1,4 @@
-// Scriptverantwortlicher : ASE
-"use client"; // Client-Komponente
+"use client"; 
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -26,6 +25,7 @@ const EventForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
 
+  // Funktion zum Verarbeiten von Eingabeänderungen
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -34,6 +34,7 @@ const EventForm = () => {
     }));
   };
 
+  // Funktion zum Hochladen von Bildern
   const handleImageUpload = (imageFile) => {
     setFormData((prev) => ({
       ...prev,
@@ -41,60 +42,63 @@ const EventForm = () => {
     }));
   };
 
+  // Funktion zum Anzeigen der Vorschau
   const handlePreview = (e) => {
     e.preventDefault();
     setShowPreview(true);
   };
 
+  // Funktion zum Zurückkehren von der Vorschau
   const handleBack = () => {
     setShowPreview(false);
   };
 
+  // Funktion zum Absenden des Formulars
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
   
-  try {
-    setIsSubmitting(true);
-    setError("");
-    
-    // FormData oluştur
-    const data = new FormData();
-    
-    // FormData'ya değerleri eklerken console.log ile kontrol et
-    for (const key in formData) {
-      if (key === 'image' && formData[key]) {
-        console.log("Resim ekleniyor:", formData[key].name);
-        data.append('image', formData[key]);
-      } else {
-        data.append(key, formData[key]);
+    try {
+      setIsSubmitting(true);
+      setError("");
+      
+      // FormData erstellen
+      const data = new FormData();
+      
+      // Werte zu FormData hinzufügen und mit console.log überprüfen
+      for (const key in formData) {
+        if (key === 'image' && formData[key]) {
+          console.log("Bild wird hinzugefügt:", formData[key].name);
+          data.append('image', formData[key]);
+        } else {
+          data.append(key, formData[key]);
+        }
       }
+      
+      console.log("Formular wird gesendet...");
+      
+      // An API senden
+      const response = await fetch('/api/events', {
+        method: 'POST',
+        body: data, // Content-Type-Header nicht angeben, wird automatisch hinzugefügt
+      });
+      
+      const result = await response.json();
+      
+      if (response.ok) {
+        alert('Event wurde erfolgreich erstellt!');
+        router.push(`/events/${result.event.slug}`); // Weiterleitung zum erstellten Event
+      } else {
+        setError(result.error || 'Ein Problem ist aufgetreten');
+        alert(`Fehler: ${result.error || 'Ein Problem ist aufgetreten'}`);
+      }
+    } catch (error) {
+      console.error('Fehler beim Senden des Formulars:', error);
+      setError('Beim Speichern des Events ist ein Fehler aufgetreten.');
+      alert('Beim Speichern des Events ist ein Fehler aufgetreten.');
+    } finally {
+      setIsSubmitting(false);
     }
-    
-    console.log("Form gönderiliyor...");
-    
-    // API'ye gönder
-    const response = await fetch('/api/events', {
-      method: 'POST',
-      body: data, // headers Content-Type belirtmeyin, tarayıcı otomatik ekleyecek
-    });
-    
-    const result = await response.json();
-    
-    if (response.ok) {
-      alert('Event başarıyla oluşturuldu!');
-      router.push(`/events/${result.event.slug}`); // Oluşturulan etkinliğe yönlendir
-    } else {
-      setError(result.error || 'Bir sorun oluştu');
-      alert(`Hata: ${result.error || 'Bir sorun oluştu'}`);
-    }
-  } catch (error) {
-    console.error('Form gönderme hatası:', error);
-    setError('Event kaydedilirken bir hata oluştu.');
-    alert('Event kaydedilirken bir hata oluştu.');
-  } finally {
-    setIsSubmitting(false);
-  }
-};
+  };
 
   if (showPreview) {
     return (
@@ -109,9 +113,9 @@ const EventForm = () => {
 
   return (
     <main className="">
-      {/* Hero Bereich neu eingebunden */}
+      {/* Hero-Bereich neu eingebunden */}
 
-      {/* Formular Bereich */}
+      {/* Formular-Bereich */}
       <section className="py-5 ">
         <div className="event-background rounded-xl shadow-lg max-w-5xl mx-auto p-8">
           {error && (

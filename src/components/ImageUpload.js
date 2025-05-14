@@ -1,6 +1,5 @@
 "use client";
 import { useState, useRef } from "react";
-import Image from "next/image";
 
 const ImageUpload = ({ onImageUpload }) => {
   const [preview, setPreview] = useState(null);
@@ -10,32 +9,32 @@ const ImageUpload = ({ onImageUpload }) => {
     const file = e.target.files[0];
     if (!file) return;
 
-    // Dosya kontrolü
+    // Dateiüberprüfung
     if (!file.type.startsWith("image/")) {
-      alert("Lütfen bir resim dosyası seçin.");
+      alert("Bitte wählen Sie eine Bilddatei aus.");
       return;
     }
 
-    // Dosya boyutu kontrolü (10MB)
+    // Dateigrößenüberprüfung (10MB)
     if (file.size > 10 * 1024 * 1024) {
-      alert("Dosya boyutu 10MB'dan küçük olmalıdır.");
+      alert("Die Dateigröße muss kleiner als 10MB sein.");
       return;
     }
 
-    // Önizleme için URL oluştur
+    // URL für Vorschau erstellen
     const reader = new FileReader();
     reader.onload = () => {
       setPreview(reader.result);
     };
     reader.readAsDataURL(file);
 
-    // Üst bileşene bildir
+    // An die übergeordnete Komponente melden
     onImageUpload(file);
   };
 
   return (
     <div className="space-y-4">
-      {/* Dosya seçme düğmesi */}
+      {/* Schaltfläche zum Auswählen der Datei */}
       <div className="flex items-center space-x-3">
         <button
           type="button"
@@ -49,7 +48,7 @@ const ImageUpload = ({ onImageUpload }) => {
         </span>
       </div>
 
-      {/* Gizli dosya girişi */}
+      {/* Verstecktes Datei-Input */}
       <input
         ref={fileInputRef}
         type="file"

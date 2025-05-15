@@ -57,7 +57,7 @@ export async function POST(request) {
     
     if (image && image.size > 0) {
       // Upload-Ordner erstellen (falls nicht vorhanden)
-      const uploadDir = path.join(process.cwd(), 'public', 'uploads');
+      const uploadDir = path.join(process.cwd(), 'public', 'images');
       console.log("Upload-Verzeichnis:", uploadDir);
       
       try {
@@ -76,7 +76,7 @@ export async function POST(request) {
       console.log("Datei wird gespeichert:", filePath);
       
       await writeFile(filePath, buffer);
-      imageUrl = `/uploads/${uniqueFilename}`;
+      imageUrl = `/images/${uniqueFilename}`;
       console.log("Bild-URL:", imageUrl);
     }
     

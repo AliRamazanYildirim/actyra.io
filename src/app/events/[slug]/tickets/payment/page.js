@@ -45,7 +45,7 @@ const CheckoutForm = ({ clientSecret, orderNumber, paymentData, onSuccess, onErr
   return (
     <form onSubmit={handleSubmit}>
       <div className="mb-6">
-        <label className="block text-sm font-medium mb-2">Kart Bilgileri</label>
+        <label className="block text-sm font-medium mb-2">Karteninformationen</label>
         <div className="p-4 bg-gray-800 rounded border border-gray-700">
           <CardElement
             options={{
@@ -70,7 +70,7 @@ const CheckoutForm = ({ clientSecret, orderNumber, paymentData, onSuccess, onErr
             : "bg-pink-600 hover:bg-pink-700"
         }`}
       >
-        {processing ? "İşleniyor..." : "Ödemeyi Tamamla"}
+        {processing ? "Wird bearbeitet..." : "Zahlung abschließen"}
       </button>
     </form>
   );
@@ -115,7 +115,7 @@ export default function CheckoutPage() {
         body: JSON.stringify(dataToSend),
       });
 
-      if (!response.ok) throw new Error("Ödeme başlatılamadı");
+      if (!response.ok) throw new Error("Die Zahlung konnte nicht gestartet werden.");
 
       const data = await response.json();
       setClientSecret(data.clientSecret);
@@ -160,14 +160,14 @@ export default function CheckoutPage() {
       <main className="max-w-5xl mx-auto px-6 py-24">
         <div className="bg-[#0f172a] text-white rounded-2xl shadow-2xl overflow-hidden p-8 space-y-6">
           <h1 className="text-3xl font-bold text-center">
-            {paymentStep === "form" ? "Ödeme Bilgileri" : "Ödeme"}
+            {paymentStep === "form" ? "Zahlungsinformationen" : "Zahlung"}
           </h1>
 
           {error && (
             <div className="bg-red-900/30 border border-red-700 p-4 rounded-md text-white">
               <p>{error}</p>
               <button onClick={() => setError(null)} className="text-sm underline mt-2">
-                Tekrar dene
+                Versuche es erneut
               </button>
             </div>
           )}
@@ -178,7 +178,7 @@ export default function CheckoutPage() {
                 <input
                   type="text"
                   name="name"
-                  placeholder="İsim"
+                  placeholder="Name"
                   value={form.name}
                   onChange={handleChange}
                   className="ticket-input placeholder:text-gray-600"
@@ -192,7 +192,7 @@ export default function CheckoutPage() {
                   className="ticket-input placeholder:text-gray-600"
                 />
               </div>
-              <div className="text-right text-xl font-bold">Toplam: {total} €</div>
+              <div className="text-right text-xl font-bold">Gesamt: {total} €</div>
               <button
                 disabled={!isValid}
                 onClick={handlePreparePayment}
@@ -200,7 +200,7 @@ export default function CheckoutPage() {
                   isValid ? "bg-pink-600 hover:bg-pink-700" : "bg-gray-700 cursor-not-allowed"
                 }`}
               >
-                Ödemeye Devam Et
+                Weiter Bezahlen
               </button>
             </>
           ) : clientSecret ? (

@@ -1,29 +1,38 @@
 'use client'
 
+import { useState } from "react";
 import { SlSocialFacebook } from "react-icons/sl";
 import { LiaLinkedin } from "react-icons/lia";
 import { FaXTwitter } from "react-icons/fa6";
 import { PiMicrosoftTeamsLogo } from "react-icons/pi";
 import Image from "next/image";
+import Link from "next/link";
 
 import Stars from "./DynamicStars";
+
+// ✅ Mini-Bilder mit jeweils eigener Event-URL
+const galleryImages = [
+  { src: "/images/event1.webp", href: "/events/neon-club-night" },   // Bild 1
+  { src: "/images/event2.webp", href: "/events/open-air-festival" },   // Bild 2
+  { src: "/images/event3.webp", href: "/events/tech-meetup" },    // Bild 3
+  { src: "/images/event4.webp", href: "/events/yoga-im-park" },        // Bild 4
+  { src: "/images/event5.webp", href: "/events/kunst-wein-abend" },    // Bild 5
+  { src: "/images/event6.webp", href: "/events/game-night" }, // Bild 6
+];
+
 export default function Footer() {
-  const galleryImages = [
-    "/images/event1.webp",
-    "/images/event2.webp",
-    "/images/event3.webp",
-    "/images/event4.webp",
-    "/images/event5.webp",
-    "/images/event6.webp",
-  ];
-   
+  const [newsletterSent, setNewsletterSent] = useState(false);
+
+  const handleNewsletter = (e) => {
+    e.preventDefault();
+    setNewsletterSent(true);
+    setTimeout(() => setNewsletterSent(false), 3000);
+  };
 
   return (
     <footer className="relative overflow-hidden pt-10">
-      {/* ✨ Stars */}
       <Stars />
 
-      {/* Footer content */}
       <div className="relative z-10">
         {/* Animated Logo Bar */}
         <div className="relative overflow-hidden bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 py-4">
@@ -67,62 +76,54 @@ export default function Footer() {
 
           {/* Quick Links */}
           <div>
-            <h3 className="font-semibold mb-4">
-              QUICK LINKS 
-            </h3>
+            <h3 className="font-semibold mb-4">QUICK LINKS</h3>
             <ul className="space-y-2">
-              {[
-                "Privacy & policy",
-                "Terms & conditions",
-                "FAQ",
-                "Customer support",
-                "Contact us",
-              ].map((item, index) => (
-                <li key={index}>
-                  <a
-                    href="#"
-                    className="hover:text-pink-500 transition duration-200 cursor-pointer block"
-                  >
-                    {item}
-                  </a>
-                </li>
-              ))}
+              <li><Link href="/privacy" className="hover:text-pink-500 block">Privacy & Policy</Link></li>
+              <li><Link href="/terms" className="hover:text-pink-500 block">Terms & Conditions</Link></li>
+              <li><Link href="/faq" className="hover:text-pink-500 block">FAQ</Link></li>
+              <li><Link href="/support" className="hover:text-pink-500 block">Customer Support</Link></li>
+              <li><Link href="/contact" className="hover:text-pink-500 block">Contact Us</Link></li>
             </ul>
           </div>
 
           {/* Newsletter */}
           <div>
-            <h3 className="font-semibold mb-4 text-center">
-              SUBSCRIP NEWSLETTER 
-            </h3>
-            <input
-              type="email"
-              placeholder="Enter your email"
-              className="w-full p-3 rounded border border-gray-700 dark:border-gray-600 bg-white dark:bg-white text-black dark:text-black placeholder-black dark:placeholder-gray-600 mb-4"
-            />
-
-            <button className="w-full py-3 rounded bg-gradient-to-r text-white from-indigo-600 to-pink-500 font-bold hover:opacity-90 transition duration-200 cursor-pointer">
-              SUBSCRIBE NOW
-            </button>
+            <h3 className="font-semibold mb-4 text-center">Newsletter abonnieren</h3>
+            <form onSubmit={handleNewsletter}>
+              <input
+                type="email"
+                placeholder="Deine E-Mail-Adresse"
+                required
+                className="w-full p-3 rounded border border-gray-700 dark:border-gray-600 bg-white dark:bg-white text-black dark:text-black placeholder-black dark:placeholder-gray-600 mb-4"
+              />
+              <button
+                type="submit"
+                className="w-full py-3 rounded bg-gradient-to-r text-white from-indigo-600 to-pink-500 font-bold hover:opacity-90 transition"
+              >
+                Jetzt abonnieren
+              </button>
+              {newsletterSent && (
+                <p className="text-green-500 text-sm mt-2 text-center">
+                  Vielen Dank – <span className="italic">Coming Soon</span>
+                </p>
+              )}
+            </form>
           </div>
 
           {/* Gallery */}
           <div>
-            <h3 className="font-semibold mb-4 text-center">
-              OUR GALLERY
-            </h3>
+            <h3 className="font-semibold mb-4 text-center">OUR GALLERY</h3>
             <div className="grid grid-cols-3 gap-1 sm:gap-2">
-              {galleryImages.map((src, i) => (
-                <a
+              {galleryImages.map((item, i) => (
+                <Link
                   key={i}
-                  href={src}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  href={item.href}
                   className="aspect-square max-w-[65px] sm:max-w-[70px] md:max-w-[80px] w-full rounded-lg relative group overflow-hidden block"
                 >
+                  {/* Bild {i + 1} */}
                   <Image
-                    src={src}
-                    alt={`gallery-${i}`}
+                    src={item.src}
+                    alt={`gallery-${i + 1}`}
                     width={80}
                     height={80}
                     priority
@@ -144,7 +145,7 @@ export default function Footer() {
                       />
                     </svg>
                   </div>
-                </a>
+                </Link>
               ))}
             </div>
           </div>
@@ -153,14 +154,16 @@ export default function Footer() {
         {/* Copyright */}
         <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white py-4 px-6 flex flex-col md:flex-row justify-between items-center text-sm">
           <p>Copyright © 2025 Actyra. All Rights Reserved</p>
-          <div className="flex gap-4">
-            <a href="#" className="hover:text-pink-400 cursor-pointer">
-              Privacy & Policy
-            </a>
+          <div className="flex flex-wrap gap-4 justify-center md:justify-end">
+            <Link href="/privacy" className="hover:text-pink-400">Privacy & Policy</Link>
             <span className="hidden md:inline">||</span>
-            <a href="#" className="hover:text-pink-400 cursor-pointer">
-              Terms & Conditions
-            </a>
+            <Link href="/terms" className="hover:text-pink-400">Terms & Conditions</Link>
+            <span className="hidden md:inline">||</span>
+            <Link href="/faq" className="hover:text-pink-400">FAQ</Link>
+            <span className="hidden md:inline">||</span>
+            <Link href="/support" className="hover:text-pink-400">Support</Link>
+            <span className="hidden md:inline">||</span>
+            <Link href="/contact" className="hover:text-pink-400">Contact</Link>
           </div>
         </div>
       </div>

@@ -22,8 +22,10 @@ export default function NavBar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("home");
   const [clientTicketCount, setClientTicketCount] = useState(0);
-  const tickets = useTicketStore(state => state.tickets);
-  const totalTicketCount = tickets.reduce((sum, ticket) => sum + ticket.quantity, 0);
+  const cartTickets = useTicketStore(state => state.cartTickets || []);
+  const totalTicketCount = Array.isArray(cartTickets) 
+  ? cartTickets.reduce((sum, ticket) => sum + (ticket?.quantity || 0), 0) 
+  : 0;
   const pathname = usePathname();
   const router = useRouter();
   const { isSignedIn } = useUser();
@@ -33,6 +35,13 @@ export default function NavBar() {
     const timeout = setTimeout(() => setIsVisible(true), 100);
     return () => clearTimeout(timeout);
   }, []);
+
+  useEffect(() => {
+  // Erst nach dem Client-Rendering den echten Wert setzen und nur wenn tickets ein Array ist
+  if (Array.isArray(cartTickets)) {
+    setClientTicketCount(totalTicketCount);
+  }
+}, [totalTicketCount, cartTickets]);
 
   useEffect(() => {
     if (pathname === "/") {

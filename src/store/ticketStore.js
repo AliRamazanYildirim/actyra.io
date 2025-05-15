@@ -1,21 +1,36 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-// Zustand Store ile sepet mantığı
 const useTicketStore = create(
   persist(
     (set, get) => ({
-      tickets: [],
+      cartTickets: [],         // Nur für Warenkorb
+      purchasedTickets: [],    // Nur für "Meine Tickets"
       isLoading: false,
       error: null,
 
-      // Sepete ürün ekleme
+      // Gekaufte Tickets aus der Datenbank laden
+      fetchTickets: async () => {
+        set({ isLoading: true, error: null });
+        try {
+          const response = await fetch('/api/tickets');
+          if (!response.ok) {
+            throw new Error('Fehler beim Laden der Tickets');
+          }
+          const data = await response.json();
+          set({ purchasedTickets: data.tickets || [], isLoading: false });
+        } catch (error) {
+          set({ error: error.message, isLoading: false });
+        }
+      },
+
+      // Warenkorb: Ticket hinzufügen
       addToCart: (newTicket) =>
         set((state) => {
-          const existing = state.tickets.find((t) => t.slug === newTicket.slug);
+          const existing = state.cartTickets.find((t) => t.slug === newTicket.slug);
           if (existing) {
             return {
-              tickets: state.tickets.map((t) =>
+              cartTickets: state.cartTickets.map((t) =>
                 t.slug === newTicket.slug
                   ? {
                       ...t,
@@ -27,23 +42,23 @@ const useTicketStore = create(
               ),
             };
           } else {
-            return { tickets: [...state.tickets, newTicket] };
+            return { cartTickets: [...state.cartTickets, newTicket] };
           }
         }),
 
-      // Sepetten ürün çıkarma
+      // Warenkorb: Ticket entfernen
       removeFromCart: (slug) =>
         set((state) => ({
-          tickets: state.tickets.filter((t) => t.slug !== slug),
+          cartTickets: state.cartTickets.filter((t) => t.slug !== slug),
         })),
 
-      // Sepeti sıfırlama
-      resetTicketState: () => set({ tickets: [] }),
+      // Warenkorb: Zurücksetzen
+      resetTicketState: () => set({ cartTickets: [] }),
 
-      // Ürün miktarını güncelleme
+      // Warenkorb: Anzahl aktualisieren
       updateTicketQuantity: (slug, newQuantity) =>
         set((state) => ({
-          tickets: state.tickets.map((ticket) =>
+          cartTickets: state.cartTickets.map((ticket) =>
             ticket.slug === slug
               ? {
                   ...ticket,
@@ -55,11 +70,10 @@ const useTicketStore = create(
           ),
         })),
 
-      // Hata durumunu temizleme
       clearError: () => set({ error: null }),
     }),
     {
-      name: "actyra-ticket-store",
+      name: 'actyra-ticket-store',
       getStorage: () => localStorage,
     }
   )

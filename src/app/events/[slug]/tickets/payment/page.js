@@ -78,7 +78,7 @@ const CheckoutForm = ({ clientSecret, orderNumber, paymentData, onSuccess, onErr
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const tickets = useTicketStore((state) => state.tickets);
+  const cartTickets = useTicketStore((state) => state.cartTickets);
   const resetTicketState = useTicketStore((state) => state.resetTicketState);
 
   const [paymentStep, setPaymentStep] = useState("form");
@@ -91,19 +91,19 @@ export default function CheckoutPage() {
   const [form, setForm] = useState({ name: "", email: "", method: "creditcard" });
   const isValid = form.name && form.email;
 
-  const totalPrice = tickets?.reduce((sum, t) => sum + t.totalPrice, 0) || 0;
-  const totalDonation = tickets?.reduce((sum, t) => sum + (t.totalDonation || 0), 0) || 0;
+  const totalPrice = cartTickets?.reduce((sum, t) => sum + t.totalPrice, 0) || 0;
+  const totalDonation = cartTickets?.reduce((sum, t) => sum + (t.totalDonation || 0), 0) || 0;
   const total = totalPrice + totalDonation;
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
   const handlePreparePayment = async () => {
-    if (!tickets || tickets.length === 0) return router.push("/");
+    if (!cartTickets || cartTickets.length === 0) return router.push("/");
 
     const dataToSend = {
       name: form.name,
       email: form.email,
-      tickets,
+      cartTickets,
       paymentMethod: form.method,
       totalAmount: total,
     };
@@ -132,12 +132,12 @@ export default function CheckoutPage() {
     setPaymentResult((prev) => ({ ...(prev || {}), ...result }));
     if (result.type === "completed") {
       resetTicketState();
-      const firstTicket = tickets[0];
+      const firstTicket = cartTickets[0];
       const queryParams = new URLSearchParams({
         name: form.name,
         email: form.email,
         title: firstTicket.eventTitle,
-        quantity: tickets.reduce((sum, t) => sum + t.quantity, 0),
+        quantity: cartTickets.reduce((sum, t) => sum + t.quantity, 0),
         paymentMethod: form.method,
         totalAmount: total.toString(),
         orderNumber: result.orderNumber,
@@ -214,7 +214,7 @@ export default function CheckoutPage() {
               />
             </Elements>
           ) : (
-            <p className="text-center">Yükleniyor...</p>
+            <p className="text-center">Wird geladen...</p>
           )}
         </div>
       </main>

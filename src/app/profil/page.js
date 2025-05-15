@@ -31,7 +31,7 @@ export default function ProfilPage() {
   const router = useRouter();
 
   // Ticket store hooks
-  const tickets = useTicketStore((state) => state.tickets);
+  const tickets = useTicketStore((state) => state.purchasedTickets);
   const fetchTickets = useTicketStore((state) => state.fetchTickets);
   const isLoading = useTicketStore((state) => state.isLoading);
   const error = useTicketStore((state) => state.error);
@@ -207,30 +207,32 @@ export default function ProfilPage() {
   };
 
   // Tickets als Events formatieren - mit Daten aus events.js anreichern
-  const ticketsAsEvents = tickets.map((ticket) => {
-    // Finde das passende Event aus den eventSeedData basierend auf slug
-    const matchingEvent =
-      eventSeedData.find((event) => event.slug === ticket.slug) || {};
+  const ticketsAsEvents = Array.isArray(tickets)
+    ? tickets.map((ticket) => {
+        // Finde das passende Event aus den eventSeedData basierend auf slug
+        const matchingEvent =
+          eventSeedData.find((event) => event.slug === ticket.slug) || {};
 
-    return {
-      id: ticket._id || ticket.slug, // MongoDB ID verwenden, wenn vorhanden
-      slug: ticket.slug,
-      title: ticket.eventTitle,
-      location: ticket.location,
-      date: ticket.date,
-      imageUrl:
-        ticket.imageUrl ||
-        matchingEvent.imageUrl ||
-        "/images/event-default.webp",
-      price: ticket.totalPrice,
-      pricePerTicket: ticket.price,
-      tags: [
-        "Ticket",
-        `${ticket.quantity}x`,
-        ticket.orderNumber ? `#${ticket.orderNumber.substring(0, 6)}` : "",
-      ],
-    };
-  });
+        return {
+          id: ticket._id || ticket.slug, // MongoDB ID verwenden, wenn vorhanden
+          slug: ticket.slug,
+          title: ticket.eventTitle,
+          location: ticket.location,
+          date: ticket.date,
+          imageUrl:
+            ticket.imageUrl ||
+            matchingEvent.imageUrl ||
+            "/images/event-default.webp",
+          price: ticket.totalPrice,
+          pricePerTicket: ticket.price,
+          tags: [
+            "Ticket",
+            `${ticket.quantity}x`,
+            ticket.orderNumber ? `#${ticket.orderNumber.substring(0, 6)}` : "",
+          ],
+        };
+      })
+    : [];
 
   // Bestimmen, welches Bild angezeigt wird
   const displayImage = uploadedImage || image;
@@ -650,13 +652,14 @@ export default function ProfilPage() {
             {error && (
               <div className="bg-red-500/20 text-red-200 p-3 mb-4 rounded-md">
                 <p>
-                  Biletleri yüklerken bir hata oluştu. Lütfen tekrar deneyin.
+                  Beim Laden der Tickets ist ein Fehler aufgetreten. Bitte
+                  versuchen Sie es erneut.
                 </p>
                 <button
                   onClick={fetchTickets}
                   className="text-sm underline mt-2"
                 >
-                  Yeniden dene
+                  Erneut versuchen
                 </button>
               </div>
             )}
@@ -664,7 +667,7 @@ export default function ProfilPage() {
             {/* Ladezustand */}
             {isLoading ? (
               <div className="text-center py-10">
-                <p className="text-gray-400">Biletleriniz yükleniyor...</p>
+                <p className="text-gray-400">Ihre Tickets werden geladen...</p>
               </div>
             ) : tickets.length === 0 ? (
               <div className="text-center py-10">
@@ -739,7 +742,7 @@ export default function ProfilPage() {
                         {event.location}
                       </div>
 
-                      <div className="mt-4 flex justify-end">
+                      {/* <div className="mt-4 flex justify-end">
                         <Button
                           variant="outline"
                           className="text-pink-400 border-pink-400 hover:bg-pink-400/10 cursor-pointer"
@@ -747,7 +750,7 @@ export default function ProfilPage() {
                         >
                           Bewertung schreiben
                         </Button>
-                      </div>
+                      </div> */}
                     </div>
                   </div>
                 ))}

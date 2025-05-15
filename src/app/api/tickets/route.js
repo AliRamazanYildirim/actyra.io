@@ -57,7 +57,7 @@ export async function POST(request) {
       payment_method_types: ['card'],
       metadata: {
         userId: userId || 'guest',
-        eventDetails: JSON.stringify(data.tickets.map(t => ({ 
+        eventDetails: JSON.stringify(data.cartTickets.map(t => ({ 
           slug: t.slug, 
           title: t.eventTitle,
           quantity: t.quantity
@@ -69,7 +69,7 @@ export async function POST(request) {
     const orderNumber = `BNR${Math.floor(100000 + Math.random() * 900000)}`;
     
     // Tickets in der Datenbank speichern
-    const savedTickets = await Promise.all(data.tickets.map(async (ticket) => {
+    const savedTickets = await Promise.all(data.cartTickets.map(async (ticket) => {
       const newTicket = new Ticket({
         userId: userId || 'guest',
         slug: ticket.slug,

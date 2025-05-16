@@ -25,7 +25,21 @@ const EventSchema = new Schema({
   },
   tags: [String],
   shortDescription: String,
-  longDescription: String
+  longDescription: String,
+   category: {
+    type: String,
+    required: true,
+    enum: [
+      "kultur-musik",
+      "sport-freizeit",
+      "bildung-workshop",
+      "business-networking",
+      "gesundheit",
+      "technologie-innovation",
+      "messen-ausstellungen",
+      "sonstige-events"
+    ]
+  }
 }, {
   timestamps: true
 });

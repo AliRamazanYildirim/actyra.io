@@ -4,14 +4,53 @@ import Event from '@/models/Event';
 import { writeFile, mkdir } from 'fs/promises';
 import path from 'path';
 
-// GET: Gibt alle Events zurück (sortiert nach Datum)
-export async function GET() {
+// GET: Gibt alle Events zurück (mit optionalem Kategoriefilter)
+export async function GET(request) {
   try {
     await dbConnect();
 
-    const events = await Event.find({}).sort({ date: 1 });
-
-    return NextResponse.json({ events });
+    // URL-Parameter abrufen (für eventuelle Filter)
+    const { searchParams } = new URL(request.url);
+    const category = searchParams.get('category');
+    
+    // Abfrageoptionen erstellen
+    const query = {};
+    
+    // Nach Kategorie filtern, wenn angegeben
+    if (category) {
+      if (category === 'sonstige-events') {
+        // Für "sonstige-events" spezielle Abfrage erstellen
+        const validCategories = [
+          "kultur-musik", "sport-freizeit", "bildung-workshop",
+          "business-networking", "gesundheit", "technologie-innovation",
+          "messen-ausstellungen"
+        ];
+        
+        query.$or = [
+          { category: { $nin: validCategories } },
+          { category: { $exists: false } },
+          { category: null },
+          { category: "" }
+        ];
+      } else {
+        // Für normale Kategorien
+        query.category = category;
+      }
+    }
+    
+    // Events aus der Datenbank abrufen und nach Datum sortieren
+    const events = await Event.find(query).sort({ date: 1 }).lean();
+    
+    // ObjectIds in Strings umwandeln für bessere JSON-Serialisierung
+    const serializedEvents = events.map(event => ({
+      ...event,
+      _id: event._id.toString()
+    }));
+    
+    // Debug-Informationen
+    console.log(`${serializedEvents.length} Events gefunden${category ? ` für Kategorie "${category}"` : ''}`);
+    
+    return NextResponse.json(serializedEvents);
   } catch (error) {
     console.error('Fehler beim Abrufen der Events:', error);
     return NextResponse.json({ error: 'Beim Abrufen der Events ist ein Fehler aufgetreten.' }, { status: 500 });
@@ -110,3 +149,4 @@ export async function POST(request) {
     return NextResponse.json({ error: 'Beim Erstellen des Events ist ein Fehler aufgetreten.' }, { status: 500 });
   }
 }
+

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-// 🗂️ İkonlar
+// 🗂️ İcons
 import KategorieKulturMusik from "@/icons/KategorieKulturMusik";
 import KategorieSportFreizeit from "@/icons/KategorieSportFreizeit";
 import KategorieBildungWorkshop from "@/icons/KategorieBildungWorkshop";
@@ -128,7 +128,7 @@ export default function KategorienSection() {
               return (
                 <div key={index}>
                   <div className="flex items-center justify-between mb-4">
-                    {/* Orta: Icon + h3 birlikte ortalanmış */}
+                    {/* Orta: Symbol + h3 zusammen zentriert */}
                     <div className="flex items-center mx-auto space-x-4">
                       <IconComponent className="w-10 h-10 text-[#613583]" />
                       <h3 className="text-2xl font-semibold text-[#1c1f3c] dark:text-white">
@@ -136,7 +136,7 @@ export default function KategorienSection() {
                       </h3>
                     </div>
 
-                    {/* Sağ: Link */}
+                    {/* Rechts: Link */}
                     <Link
                       href={`/kategorien/${kategorie.slug}`}
                       className="text-sm font-medium dark:text-white hover:underline"
@@ -150,7 +150,7 @@ export default function KategorienSection() {
                       <Link
                         key={event._id || `event-${index}-${eventIndex}`}
                         href={`/events/${event.slug || "#"}`}
-                        className="block p-4 rounded-xl shadow-md hover:scale-[1.02] hover:bg-gradient-to-br hover:from-purple-600 hover:to-pink-600"
+                        className="block p-4 rounded-xl dark:bg-pink-500 shadow-xl hover:shadow-2xl hover:scale-[1.02] hover:bg-gradient-to-br hover:from-purple-600 hover:to-pink-600 transition duration-300"
                       >
                         <h4 className="text-lg font-semibold text-black dark:text-white">
                           {event.title || "Unbenanntes Event"}

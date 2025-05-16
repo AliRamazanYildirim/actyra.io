@@ -69,11 +69,18 @@ export async function POST(request) {
     const title = formData.get('title');
     const location = formData.get('location');
     const date = formData.get('date');
-    const price = Number(formData.get('price'));
+    const price = Number(formData.get('price') || 0);
     const description = formData.get('description');
     const category = formData.get('category');
-    const tickets = Number(formData.get('tickets'));
-    const donation = Number(formData.get('donation'));
+    const tickets = Number(formData.get('tickets') || 0);
+    const donation = Number(formData.get('donation') || 0);
+    
+    // Pflichtfelder überprüfen
+    if (!title || !location || !date) {
+      return NextResponse.json({ 
+        error: 'Titel, Ort und Datum sind erforderlich' 
+      }, { status: 400 });
+    }
     
     // Debug: Überprüfen, ob ein Bild vorhanden ist
     const image = formData.get('image');
@@ -88,8 +95,8 @@ export async function POST(request) {
     
     // Weitere Felder
     const tags = category ? [category] : [];
-    const shortDescription = description;
-    const longDescription = description;
+    const shortDescription = description || "";
+    const longDescription = description || "";
     
     // Bildverarbeitung
     let imageUrl = '';
@@ -131,11 +138,12 @@ export async function POST(request) {
     const newEvent = await Event.create({
       title,
       location,
-      date,
+      date: new Date(date),
       price,
-      imageUrl,  // Bild-URL wird hier gespeichert
+      imageUrl,
       slug,
       tags,
+      category,  // Kategoriebereich
       shortDescription,
       longDescription,
       tickets
@@ -146,7 +154,10 @@ export async function POST(request) {
     return NextResponse.json({ event: newEvent, success: true }, { status: 201 });
   } catch (error) {
     console.error('Fehler beim Erstellen des Events:', error);
-    return NextResponse.json({ error: 'Beim Erstellen des Events ist ein Fehler aufgetreten.' }, { status: 500 });
+    console.error('Fehler-Details:', error.message);
+    return NextResponse.json({ 
+      error: 'Beim Erstellen des Events ist ein Fehler aufgetreten.', 
+      details: error.message
+    }, { status: 500 });
   }
 }
-

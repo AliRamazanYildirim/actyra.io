@@ -1,3 +1,184 @@
+# Entwicklung Footer Elemente ASE 14. und 15.05.2025
+# Dokumentation – Footer- und Kontaktanpassungen (Actyra)
+
+Diese Dokumentation beschreibt alle  vorgenommenen Änderungen am Projekt "Actyra", insbesondere an Footer, Kontaktformularen und allgemeinen Informationsseiten. 
+
+---
+
+## 1. Datei: `src/components/footer.js`
+
+### Änderungen:
+
+* **Newsletter-Formular** mit Dummy-Funktion ("Coming Soon" beim Absenden)
+* Überschrift korrigiert zu: `Newsletter abonnieren`
+* Button- und Eingabefeld-Styling vereinheitlicht (Dark-/Light-Mode unterstützt)
+* **Mini-Galerie (Gallery)**:
+
+  * Umgebaut auf Objektstruktur `{ src, href }`
+  * Jedes Bild hat eine eigene Event-Verlinkung
+  * Kommentiert mit `// Bild 1`, `// Bild 2`, usw.
+  * Verlinkungen zu Unterseiten erstellt z.B. FAQ
+
+### Pfad:
+
+`src/components/footer.js`
+
+---
+
+## 2. Datei: `src/app/privacy/page.js`
+
+### Änderungen:
+
+* `PrivacyPolicyComp` eingebunden
+* Hintergrundfarbe im Dark Mode angepasst: `dark:bg-[#0D0E25]` statt `black`
+
+### Pfad:
+
+`src/app/privacy/page.js`
+
+---
+
+## 3. Datei: `src/components/footer/PrivacyPolicyComp.js`
+
+### Inhalt:
+
+* Datenschutzrichtlinie mit verständlicher Gliederung (Abschnitte: Datenerhebung, Nutzung, Rechte, etc.)
+
+### Pfad:
+
+`src/components/footer/PrivacyPolicyComp.js`
+
+---
+
+## 4. Datei: `src/app/terms/page.js`
+
+### Änderungen:
+
+* `TermsComp` eingebunden
+* Dark Mode angepasst
+
+### Pfad:
+
+`src/app/terms/page.js`
+
+---
+
+## 5. Datei: `src/components/footer/TermsComp.js`
+
+### Inhalt:
+
+* AGB in klarer, verständlicher Sprache mit Gliederung
+
+### Pfad:
+
+`src/components/footer/TermsComp.js`
+
+---
+
+## 6. Datei: `src/app/faq/page.js`
+
+### Änderungen:
+
+* `FaqComp` eingebunden
+* Dark Mode Hintergrund angepasst
+
+### Pfad:
+
+`src/app/faq/page.js`
+
+---
+
+## 7. Datei: `src/components/footer/FaqComp.js`
+
+### Inhalt:
+
+* Strukturierte Fragen und Antworten (z. B. zu Actyra, Funktionen, Support)
+
+### Pfad:
+
+`src/components/footer/FaqComp.js`
+
+---
+
+## 8. Datei: `src/app/support/page.js`
+
+### Änderungen:
+
+* `SupportComp` eingebunden
+* Dark Mode angepasst
+
+### Pfad:
+
+`src/app/support/page.js`
+
+---
+
+## 9. Datei: `src/components/footer/SupportComp.js`
+
+### Inhalt:
+
+* Großes Supportbild (PNG, responsive, `rounded-2xl`)
+* Rechte Seite: Kontaktdaten (E-Mail, Telefonnummer)
+* Telefonnummer mit Frankfurter Vorwahl: `+49 69 555 555`
+
+### Pfad:
+
+`src/components/footer/SupportComp.js`
+
+---
+
+## 10. Datei: `src/app/contact/page.js`
+
+### Änderungen:
+
+* `ContactComp` eingebunden
+* Dark Mode korrekt angepasst
+
+### Pfad:
+
+`src/app/contact/page.js`
+
+---
+
+## 11. Datei: `src/components/footer/ContactComp.js`
+
+### Inhalt:
+
+* Kontaktformular mit Feldern: Name, Firma, Telefon, E-Mail
+* Dummy-Absenden mit "Coming Soon"
+* Unterhalb: **Google Maps Embed** für Standort Frankfurt
+* Kein Bild mehr eingebunden, sondern `<iframe>`
+
+### Pfad:
+
+`src/components/footer/ContactComp.js`
+
+---
+
+## 12. Dark Mode Hinweis
+
+Die Standardfarbe im Dark Mode wird zentral in `global.css` gesetzt über:
+
+```css
+body {
+  @apply bg-white text-black dark:bg-[#0D0E25] dark:text-white;
+}
+```
+
+Alle `main`-Container wurden angepasst, um `dark:bg-black` zu entfernen oder korrekt auf `dark:bg-[#0D0E25]` zu setzen.
+
+---
+
+## Hinweis zur Erweiterung
+
+
+* Newsletter-Formular ist vorbereitet für echte Anbindung (z. B. Mailchimp)
+* Die Seitenstruktur ist modular und sauber getrennt
+
+
+
+
+
 # Dokumentation ASE Entwicklung 06.05.2025
 KategorienSection.js  / war nur Platzhalter 
 Kategorien Kacheln eingefügt 

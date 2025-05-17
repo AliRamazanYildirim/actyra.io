@@ -2,7 +2,7 @@
 // Seite für Event-Erstellung - bindet das Event-Formular ein
 
 import HeroEventErstellen from "@/components/HeroEventErstellen";
-import EventForm from "@/components/EventForm";
+import EventErstellenForm from "@/components/EventErstellenForm";
 
 export const metadata = {
   title: "Event erstellen | Actyra",
@@ -18,7 +18,7 @@ const EventErstellenPage = () => {
       {/* Ab hier normaler gepaddeter Bereich */}
       <main className="min-h-screen  pt-5">
         <div className="container mx-auto">
-          <EventForm />
+          <EventErstellenForm />
         </div>
       </main>
     </>

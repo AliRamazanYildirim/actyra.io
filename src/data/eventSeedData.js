@@ -41,7 +41,7 @@ const events = [
   {
     title: "Yoga im Park",
     location: "Köln",
-    date: "2025-05-25",
+    date: "2025-05-30",
     price: 0,
     imageUrl: "/images/event4.webp",
     slug: "yoga-im-park",

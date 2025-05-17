@@ -50,5 +50,6 @@ coverage/
 
 # Optional: misc
 *.local
+
 # clerk configuration (can include secrets)
 /.clerk/

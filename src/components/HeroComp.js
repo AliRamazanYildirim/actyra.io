@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { Play, Heart } from "lucide-react";
 import ModalVideo from "./ModalVideo";
 import Stars from "./Stars";
+import { useRouter, usePathname } from "next/navigation";
 
 // Wörter für animierte Laufschrift
 const WORDS = [
@@ -22,10 +23,22 @@ const WORDS = [
 ];
 
 export default function HeroComp() {
+  const router = useRouter();
+  const pathname = usePathname();
   const [index, setIndex] = useState(0);
   const [displayedText, setDisplayedText] = useState("");
   const [letterIndex, setLetterIndex] = useState(0);
   const [showVideo, setShowVideo] = useState(false);
+
+  // Die handleScrollTo-Funktion
+  const handleScrollTo = (id) => {
+    if (pathname !== "/") {
+      router.push(`/#${id}`);
+    } else {
+      const section = document.getElementById(id);
+      section?.scrollIntoView({ behavior: "smooth" });
+    }
+  };
 
   useEffect(() => {
     const currentWord = WORDS[index];
@@ -72,10 +85,13 @@ export default function HeroComp() {
               <div className="h-2" />
 
               <p className="text-base">
-                Buche <strong>Konzerte, Kultur- oder Freizeitevents</strong> – ein Teil des Ticketpreises wird <strong>automatisch gespendet</strong>.
+                Buche <strong>Konzerte, Kultur- oder Freizeitevents</strong> –
+                ein Teil des Ticketpreises wird{" "}
+                <strong>automatisch gespendet</strong>.
               </p>
               <p className="text-base">
-                Du entscheidest, <strong>welche Organisation</strong> du unterstützen willst.
+                Du entscheidest, <strong>welche Organisation</strong> du
+                unterstützen willst.
               </p>
               <p className="text-base">
                 <strong>Erleben & helfen</strong> war noch nie so einfach.
@@ -83,10 +99,16 @@ export default function HeroComp() {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-              <button className="px-6 py-3 font-semibold rounded bg-gradient-to-r text-white from-indigo-600 to-pink-500 hover:opacity-90 transition cursor-pointer">
+              <button
+                onClick={() => handleScrollTo("events")}
+                className="px-6 py-3 font-semibold rounded bg-gradient-to-r text-white from-indigo-600 to-pink-500 hover:opacity-90 transition cursor-pointer"
+              >
                 Jetzt entdecken
               </button>
-              <button className="px-6 py-3 font-semibold rounded border border-pink-500 text-pink-400 hover:bg-pink-600 hover:text-white transition cursor-pointer">
+              <button
+                onClick={() => router.push("/event-erstellen")}
+                className="px-6 py-3 font-semibold rounded border border-pink-500 text-pink-400 hover:bg-pink-600 hover:text-white transition cursor-pointer"
+              >
                 Event erstellen
               </button>
             </div>

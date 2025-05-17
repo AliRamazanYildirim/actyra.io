@@ -1,86 +1,10 @@
-// src/components/EventListSection.js
-
 "use client";
 
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { MapPin, Calendar, Tag, Euro } from "lucide-react";
-
-const events = [
-  {
-    title: "Neon Club Night",
-    location: "Berlin",
-    date: "2025-06-01",
-    price: 15,
-    imageUrl: "/images/event1.webp",
-    slug: "neon-club-night",
-    tags: ["Party", "Berlin"],
-    shortDescription:
-      "Erlebe eine Nacht voller Neonlichter und Musik in Berlin.",
-    longDescription:
-      "Die Neon Club Night bringt Berlins Nachtleben zum Leuchten – mit internationalen DJs, spektakulären Lichteffekten und einer elektrisierenden Atmosphäre.",
-  },
-  {
-    title: "Open Air Festival",
-    location: "Hamburg",
-    date: "2025-07-15",
-    price: 0,
-    imageUrl: "/images/event2.webp",
-    slug: "open-air-festival",
-    tags: ["Festival", "Live Musik"],
-    shortDescription: "Feiere unter freiem Himmel mit Livemusik in Hamburg.",
-    longDescription:
-      "Genieße ein vielseitiges Line-up aus lokalen und internationalen Acts auf unserem familienfreundlichen Open Air Festival im Herzen Hamburgs.",
-  },
-  {
-    title: "Tech Meetup",
-    location: "München",
-    date: "2025-08-10",
-    price: 5,
-    imageUrl: "/images/event3.webp",
-    slug: "tech-meetup",
-    tags: ["Networking", "Tech"],
-    shortDescription: "Netzwerke mit Tech-Enthusiasten in München.",
-    longDescription:
-      "Ob Entwickler:in, Designer:in oder Tech-Founder – unser Meetup bietet Impulsvorträge, Networking und spannende Diskussionen.",
-  },
-  {
-    title: "Yoga im Park",
-    location: "Köln",
-    date: "2025-05-25",
-    price: 0,
-    imageUrl: "/images/event4.webp",
-    slug: "yoga-im-park",
-    tags: ["Outdoor", "Wellness"],
-    shortDescription: "Finde innere Ruhe bei einer Yoga-Session im Grünen.",
-    longDescription:
-      "Unser kostenloses Outdoor-Yoga bietet Bewegung, Achtsamkeit und frische Luft. Komm vorbei, egal ob Anfänger:in oder Fortgeschrittene:r.",
-  },
-  {
-    title: "Kunst & Wein Abend",
-    location: "Stuttgart",
-    date: "2025-09-01",
-    price: 12,
-    imageUrl: "/images/event5.webp",
-    slug: "kunst-wein-abend",
-    tags: ["Kunst", "Social"],
-    shortDescription: "Genieße Kunstwerke bei einem guten Glas Wein.",
-    longDescription:
-      "Ein inspirierender Abend mit regionalen Künstler:innen, geführter Ausstellung und Weinverkostung in stilvoller Atmosphäre.",
-  },
-  {
-    title: "Game Night",
-    location: "Leipzig",
-    date: "2025-10-05",
-    price: 3,
-    imageUrl: "/images/event6.webp",
-    slug: "game-night",
-    tags: ["Spiele", "Fun"],
-    shortDescription: "Zocke Brett- & Partyspiele mit neuen Leuten.",
-    longDescription:
-      "Unsere Game Night bietet Spielspaß in geselliger Runde mit Klassikern und neuen Favoriten. Snacks & gute Stimmung inklusive.",
-  },
-];
+import fallbackEvents from "@/data/eventSeedData"; // Fallback-Daten werden aus events.js importiert
 
 const formatDate = (dateStr) => {
   const options = { day: "2-digit", month: "short" };
@@ -88,6 +12,43 @@ const formatDate = (dateStr) => {
 };
 
 export default function EventListSection() {
+  // State-Definitionen
+  const [events, setEvents] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Daten von der API abrufen
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        setIsLoading(true);
+        const response = await fetch("/api/events");
+
+        if (!response.ok) {
+          throw new Error("Fehler beim Laden der Daten");
+        }
+
+        const data = await response.json();
+
+        if (data.events && Array.isArray(data.events)) {
+          setEvents(data.events);
+        } else {
+          // Fallback-Daten verwenden, wenn keine gültigen Daten von der API kommen
+          setEvents(fallbackEvents);
+        }
+      } catch (error) {
+        console.error("API-Fehler:", error);
+        setError("Fehler beim Laden der Events");
+        // Fallback-Daten im Fehlerfall verwenden
+        setEvents(fallbackEvents);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchEvents();
+  }, []);
+
   return (
     <section id="events" className="">
       <div className="py-20 px-6 md:px-10 max-w-7xl mx-auto">
@@ -101,73 +62,106 @@ export default function EventListSection() {
           Highlights.
         </p>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {events.map((event, index) => (
-            <div
-              key={index}
-              className="relative bg-[#0f172a] text-white rounded-2xl overflow-hidden shadow-lg transition-all duration-500 hover:scale-[1.02] hover:bg-gradient-to-br hover:from-purple-600 hover:to-pink-600"
-            >
-              {/* Datum oben links */}
-              <div className="absolute top-3 left-3 bg-pink-600 text-white text-xs px-3 py-1 rounded-full z-10 font-bold">
-                {formatDate(event.date)}
+        {isLoading ? (
+          // Ladezustand
+          <div className="text-center py-10">
+            <div className="inline-block w-8 h-8 border-4 border-pink-600 border-t-transparent rounded-full animate-spin mb-4"></div>
+            <p className="text-gray-600">Events werden geladen...</p>
+          </div>
+        ) : error ? (
+          // Fehlerzustand
+          <div className="text-center py-10">
+            <p className="text-red-500 mb-2">{error}</p>
+            <p className="text-gray-600">Fallback-Daten werden angezeigt.</p>
+          </div>
+        ) : (
+          // Normale Event-Karten
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {events.map((event, index) => (
+              <div
+                key={event._id || event.slug || index}
+                className="relative bg-[#0f172a] text-white rounded-2xl overflow-hidden shadow-lg transition-all duration-500 hover:scale-[1.02] hover:bg-gradient-to-br hover:from-purple-600 hover:to-pink-600"
+              >
+                {/* Datum oben links */}
+                <div className="absolute top-3 left-3 bg-pink-600 text-white text-xs px-3 py-1 rounded-full z-10 font-bold">
+                  {formatDate(event.date)}
+                </div>
+
+                {/* Event-Bild */}
+                {event.imageUrl ? (
+                  <Image
+                    src={event.imageUrl}
+                    alt={event.title}
+                    width={600}
+                    height={400}
+                    className="w-full h-48 object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-48 bg-gradient-to-r from-purple-600 to-pink-600 flex items-center justify-center">
+                    <span className="text-white font-bold">{event.title}</span>
+                  </div>
+                )}
+
+                {/* Event-Inhalt */}
+                <div className="p-5 space-y-2">
+                  {/* Tags */}
+                  <div className="flex flex-wrap gap-2">
+                    {event.tags &&
+                      event.tags.map((tag, i) => (
+                        <span
+                          key={i}
+                          className="bg-pink-700 text-white text-xs px-2 py-1 rounded-full"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                  </div>
+
+                  {/* Titel */}
+                  <h3 className="text-xl font-semibold mt-2">{event.title}</h3>
+
+                  {/* Ort */}
+                  <div className="flex items-center gap-1 text-sm text-pink-100">
+                    <MapPin className="w-4 h-4" />
+                    {event.location}
+                  </div>
+
+                  {/* Datum */}
+                  <div className="flex items-center gap-1 text-sm text-pink-100">
+                    <Calendar className="w-4 h-4" />
+                    {new Date(event.date).toLocaleDateString("de-DE")}
+                  </div>
+
+                  {/* Preis */}
+                  <div className="flex items-center gap-1 text-sm text-white">
+                    <Euro className="w-4 h-4" />
+                    {event.price === 0
+                      ? "Kostenlos / Spende"
+                      : `${event.price} €`}
+                  </div>
+
+                  {/* CTA-Button mit Link zur Detailseite */}
+                  <Link href={`/events/${event.slug}`} passHref>
+                    <button className="mt-4 px-4 py-2 rounded-full bg-pink-700 hover:bg-pink-700 text-white font-semibold w-full cursor-pointer">
+                      Jetzt teilnehmen
+                    </button>
+                  </Link>
+                </div>
               </div>
+            ))}
+          </div>
+        )}
 
-              {/* Event Bild */}
-              <Image
-                src={event.imageUrl}
-                alt={event.title}
-                width={600}
-                height={400}
-                className="w-full h-48 object-cover"
-              />
-
-              {/* Event Inhalt */}
-              <div className="p-5 space-y-2">
-                {/* Tags */}
-                <div className="flex flex-wrap gap-2">
-                  {event.tags.map((tag, i) => (
-                    <span
-                      key={i}
-                      className="bg-pink-700 text-white text-xs px-2 py-1 rounded-full"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-
-                {/* Titel */}
-                <h3 className="text-xl font-semibold mt-2">{event.title}</h3>
-
-                {/* Ort */}
-                <div className="flex items-center gap-1 text-sm text-pink-100">
-                  <MapPin className="w-4 h-4" />
-                  {event.location}
-                </div>
-
-                {/* Datum */}
-                <div className="flex items-center gap-1 text-sm text-pink-100">
-                  <Calendar className="w-4 h-4" />
-                  {new Date(event.date).toLocaleDateString("de-DE")}
-                </div>
-
-                {/* Preis */}
-                <div className="flex items-center gap-1 text-sm text-white">
-                  <Euro className="w-4 h-4" />
-                  {event.price === 0
-                    ? "Kostenlos / Spende"
-                    : `${event.price} €`}
-                </div>
-
-                {/* CTA-Button mit Link zur Detailseite */}
-                <Link href={`/events/${event.slug}`} passHref>
-                  <button className="mt-4 px-4 py-2 rounded-full bg-pink-700 hover:bg-pink-700 text-white font-semibold w-full cursor-pointer">
-                    Jetzt teilnehmen
-                  </button>
-                </Link>
-              </div>
-            </div>
-          ))}
-        </div>
+        {/* "Alle Events anzeigen"-Button - Nur anzeigen, wenn Daten geladen sind und kein Fehler vorliegt */}
+        {!isLoading && !error && events.length > 0 && (
+          <div className="mt-10 text-center">
+            <Link href="/events" passHref>
+              <button className="px-6 py-3 bg-pink-600 hover:bg-pink-700 text-white font-semibold rounded-full transition cursor-pointer">
+                Alle Events anzeigen
+              </button>
+            </Link>
+          </div>
+        )}
       </div>
     </section>
   );

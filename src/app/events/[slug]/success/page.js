@@ -1,35 +1,55 @@
-"use client";
-
-import { notFound, useSearchParams } from "next/navigation";
-import eventsData from "@/data/events";
+import { notFound } from "next/navigation";
 import NavBar from "@/components/NavBar";
 import HeroDetailComp from "@/components/HeroDetailComp";
 import Image from "next/image";
 import Link from "next/link";
-import dynamic from "next/dynamic";
-import { use, useEffect, useState } from "react";
-import { generateTicketPdf } from '@/lib/generateTicketPdf';
+import TicketDetails from "@/components/TicketDetails"; // Neue Client-Komponente
+import dbConnect from "@/lib/db";
+import Event from "@/models/Event";
+import eventSeedData from "@/data/eventSeedData"; // Für Fallback
 
-const QRCode = dynamic(() => import("react-qr-code"), { ssr: false });
+// Hilfsfunktion zum Abrufen des Events aus der Datenbank
+async function getEventBySlug(slug) {
+  try {
+    await dbConnect();
+    const event = await Event.findOne({ slug });
+    return event ? JSON.parse(JSON.stringify(event)) : null;
+  } catch (error) {
+    console.error("Fehler beim Abrufen des Events aus der Datenbank:", error);
+    return null;
+  }
+}
 
-export default function TicketSuccessPage({ params }) {
-  // state für die Bestellnummer
-  // params auflösen mit React.use()
-  const [orderNumber, setOrderNumber] = useState("wird geladen...");
-  const searchParams = useSearchParams();
-  const name = searchParams.get('name') || 'Teilnehmer';
-  const eventTitle = searchParams.get('title') || 'Event';
+export default async function TicketSuccessPage({ params, searchParams }) {
+  const slug = params.slug;
+  const name = searchParams.name || "Teilnehmer";
+  const email = searchParams.email || "kunde@example.com";
+  const eventTitle = searchParams.title || "Event";
+  const quantity = searchParams.quantity || "1";
+  const totalAmount = searchParams.totalAmount || "0";
+  const orderNumber = searchParams.orderNumber || "wird geladen...";
   
-  const resolvedParams = use(params);
+  console.log("DEBUG: URL-Parameter", {
+    slug: slug,
+    name, email, eventTitle, quantity, totalAmount, orderNumber
+  });
 
-  // Bestellnummer erst nach der Hydration generieren
-  useEffect(() => {
-    const randomOrderNumber = `BNR${Math.floor(100000 + Math.random() * 900000)}`;
-    setOrderNumber(randomOrderNumber);
-  }, []);
+  // Versuche zuerst, das Event aus der Datenbank zu laden
+  let event = await getEventBySlug(slug);
 
-  const event = eventsData.find((e) => e.slug === resolvedParams.slug);
-  if (!event) return notFound();
+  // Wenn nicht in der Datenbank gefunden, versuche es mit den Seed-Daten
+  if (!event) {
+    console.log(`Event ${slug} nicht in DB gefunden, suche in Seed-Daten`);
+    event = eventSeedData.find((e) => e.slug === slug);
+
+    if (!event) {
+      console.log(`Event ${slug} auch nicht in Seed-Daten gefunden`);
+      return notFound();
+    }
+    console.log(`Event ${slug} in Seed-Daten gefunden`);
+  } else {
+    console.log(`Event ${slug} in DB gefunden`);
+  }
 
   return (
     <>
@@ -41,7 +61,7 @@ export default function TicketSuccessPage({ params }) {
           {/* Eventbild */}
           <div className="relative w-full h-72 md:h-[400px]">
             <Image
-              src={event.imageUrl}
+              src={event.imageUrl || "/images/default-event.jpg"}
               alt={event.title}
               fill
               className="object-cover"
@@ -55,39 +75,21 @@ export default function TicketSuccessPage({ params }) {
               🎉 Buchung erfolgreich!
             </h1>
 
-            {/* Bestellnummer */}
-            <p className="text-gray-300 text-lg">
-              Deine Bestellnummer:{" "}
-              <span className="font-bold text-white">{orderNumber}</span>
-            </p>
-
-            {/* QR Code */}
-            <div className="space-y-2">
-              <h2 className="text-xl font-semibold">Ihr Ticket</h2>
-              <div className="bg-white p-4 rounded-xl inline-block">
-                <QRCode value="static-ticket-id" />
-              </div>
-            </div>
-
-            {/* Hinweis - jetzt größer */}
-            <p className="text-lg text-white font-semibold mt-6">
-              Dein Ticket haben wir soeben an deine E-Mail-Adresse versendet.
-            </p>
-
-            <button
-              onClick={() =>
-                generateTicketPdf({ name, eventTitle, orderNumber })
-              }
-              className="mt-4 bg-pink-600 hover:bg-pink-700 text-white font-semibold px-4 py-2 rounded-full transition cursor-pointer"
-            >
-              🎫 PDF herunterladen
-            </button>
+            {/* Client-Komponente für interaktive Elemente */}
+            <TicketDetails 
+              name={name}
+              email={email}
+              eventTitle={eventTitle}
+              quantity={quantity}
+              totalAmount={totalAmount}
+              orderNumber={orderNumber}
+            />
 
             {/* Zurück Button */}
             <div className="mt-6">
               <Link href="/">
                 <button className="px-6 py-3 bg-pink-600 hover:bg-pink-700 text-white font-semibold rounded-full transition duration-300 cursor-pointer">
-                  Bild auswählen Zurück zur Startseite
+                  Zurück zur Startseite
                 </button>
               </Link>
             </div>

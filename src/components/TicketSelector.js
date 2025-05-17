@@ -4,10 +4,12 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import useTicketStore from "@/store/ticketStore";
 import { ChevronLeft } from "lucide-react";
+import { useAuth } from "@clerk/nextjs";
 
 export default function TicketSelector({ price = 10, title = "Event", slug, location }) {
   const { addTicket } = useTicketStore();
   const router = useRouter();
+  const { isLoaded, isSignedIn } = useAuth(); // Auth-Status einbinden
 
   // Lokaler State für die Ticketanzahl (statt aus dem Store zu versuchen)
   const [ticketCount, setTicketCount] = useState(1);
@@ -32,21 +34,41 @@ export default function TicketSelector({ price = 10, title = "Event", slug, loca
   };
 
   const handleCheckout = () => {
-    // Ticket-Informationen im Store speichern
-    addTicket({
-      eventTitle: title,
-      quantity: ticketCount,
-      price: price,
-      donation: donation,
-      totalPrice: totalPrice,
-      totalDonation: totalDonation,
-      slug: slug,
-      date: new Date().toLocaleDateString(),
-      location: location,
-    });
-  
-    // Zur Warenkorbseite navigieren
-    router.push('/warenkorb');
+    if(!isLoaded) return;
+
+    // Prüfen, ob der User eingeloggt ist
+    if (!isSignedIn) {
+      // Falls nicht, zur Login-Seite navigieren
+      router.push("/sign-in");
+      return;
+    }
+
+    try {
+      // Einfacherer Ansatz: Ticket zum lokalen Warenkorb hinzufügen
+      // anstatt sofort API-Anfrage zu senden
+      const ticketData = {
+        eventTitle: title,
+        quantity: ticketCount,
+        price: price,
+        donation: donation,
+        totalPrice: totalPrice,
+        totalDonation: totalDonation,
+        slug: slug,
+        date: new Date().toISOString().split("T")[0], // ✔ ISO format
+        location: location,
+      };
+
+      // Verwende addToCart statt addTicket
+      useTicketStore.getState().addToCart(ticketData);
+
+      // Zur Warenkorbseite navigieren
+      router.push("/warenkorb");
+    } catch (error) {
+      console.error("Fehler beim Ticket-Hinzufügen:", error);
+      alert(
+        "Das Ticket konnte nicht hinzugefügt werden. Bitte versuchen Sie es später erneut."
+      );
+    }
   };
 
   return (

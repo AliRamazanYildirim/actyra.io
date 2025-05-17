@@ -1,68 +1,80 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-// Store mit Persist-Middleware für die Speicherung im localStorage
 const useTicketStore = create(
   persist(
-    (set) => ({
-      tickets: [],
+    (set, get) => ({
+      cartTickets: [],         // Nur für Warenkorb
+      purchasedTickets: [],    // Nur für "Meine Tickets"
+      isLoading: false,
+      error: null,
 
-      // Ticket zum Warenkorb hinzufügen
-      addTicket: (newTicket) => 
+      // Gekaufte Tickets aus der Datenbank laden
+      fetchTickets: async () => {
+        set({ isLoading: true, error: null });
+        try {
+          const response = await fetch('/api/tickets');
+          if (!response.ok) {
+            throw new Error('Fehler beim Laden der Tickets');
+          }
+          const data = await response.json();
+          set({ purchasedTickets: data.tickets || [], isLoading: false });
+        } catch (error) {
+          set({ error: error.message, isLoading: false });
+        }
+      },
+
+      // Warenkorb: Ticket hinzufügen
+      addToCart: (newTicket) =>
         set((state) => {
-          // Prüfen, ob das Ticket bereits im Warenkorb ist
-          const existingTicket = state.tickets.find(
-            (t) => t.slug === newTicket.slug
-          );
-
-          if (existingTicket) {
-            // Falls das Ticket bereits existiert, erhöhe die Menge
+          const existing = state.cartTickets.find((t) => t.slug === newTicket.slug);
+          if (existing) {
             return {
-              tickets: state.tickets.map((ticket) =>
-                ticket.slug === newTicket.slug
-                  ? { 
-                      ...ticket, 
-                      quantity: ticket.quantity + newTicket.quantity,
-                      totalPrice: ticket.price * (ticket.quantity + newTicket.quantity),
-                      totalDonation: ticket.donation * (ticket.quantity + newTicket.quantity)
+              cartTickets: state.cartTickets.map((t) =>
+                t.slug === newTicket.slug
+                  ? {
+                      ...t,
+                      quantity: t.quantity + newTicket.quantity,
+                      totalPrice: t.price * (t.quantity + newTicket.quantity),
+                      totalDonation: t.donation * (t.quantity + newTicket.quantity),
                     }
-                  : ticket
+                  : t
               ),
             };
           } else {
-            // Ansonsten füge das neue Ticket hinzu
-            return {
-              tickets: [...state.tickets, newTicket],
-            };
+            return { cartTickets: [...state.cartTickets, newTicket] };
           }
         }),
 
-      // Ticket aus dem Warenkorb entfernen
-      removeTicket: (slug) =>
+      // Warenkorb: Ticket entfernen
+      removeFromCart: (slug) =>
         set((state) => ({
-          tickets: state.tickets.filter((ticket) => ticket.slug !== slug),
+          cartTickets: state.cartTickets.filter((t) => t.slug !== slug),
         })),
 
-      // Alle Tickets zurücksetzen (z.B. nach dem Kauf)
-      resetTicketState: () => set({ tickets: [] }),
-      
-      // Neue Funktion: Ticketmenge aktualisieren
-      updateTicketQuantity: (slug, newQuantity) => 
+      // Warenkorb: Zurücksetzen
+      resetTicketState: () => set({ cartTickets: [] }),
+
+      // Warenkorb: Anzahl aktualisieren
+      updateTicketQuantity: (slug, newQuantity) =>
         set((state) => ({
-          tickets: state.tickets.map((ticket) =>
+          cartTickets: state.cartTickets.map((ticket) =>
             ticket.slug === slug
-              ? { 
-                  ...ticket, 
+              ? {
+                  ...ticket,
                   quantity: newQuantity,
                   totalPrice: ticket.price * newQuantity,
-                  totalDonation: ticket.donation * newQuantity
+                  totalDonation: ticket.donation * newQuantity,
                 }
               : ticket
           ),
         })),
+
+      clearError: () => set({ error: null }),
     }),
     {
-      name: 'actyra-ticket-store', // Name für localStorage
+      name: 'actyra-ticket-store',
+      getStorage: () => localStorage,
     }
   )
 );

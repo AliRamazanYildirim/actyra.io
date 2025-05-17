@@ -1,14 +1,44 @@
 import { notFound } from "next/navigation";
-import eventsData from "@/data/events";
+import eventSeedData from "@/data/eventSeedData";
 import TicketSelector from "@/components/TicketSelector";
 import NavBar from "@/components/NavBar";
 import HeroDetailComp from "@/components/HeroDetailComp";
+import dbConnect from "@/lib/db";
 import Image from "next/image";
+import Event from "@/models/Event";
+
+// Hilfsfunktion zum Abrufen des Events aus der Datenbank
+async function getEventBySlug(slug) {
+  try {
+    await dbConnect();
+    const event = await Event.findOne({ slug });
+    return event ? JSON.parse(JSON.stringify(event)) : null;
+  } catch (error) {
+    console.error("Fehler beim Abrufen des Events aus der Datenbank:", error);
+    return null;
+  }
+}
 
 export default async function TicketBookingPage({ params }) {
   const resolvedParams = await Promise.resolve(params);
-  const event = eventsData.find((e) => e.slug === resolvedParams.slug);
-  if (!event) return notFound();
+  const slug = resolvedParams.slug;
+
+  // Versuche zuerst, das Event aus der Datenbank zu laden
+  let event = await getEventBySlug(slug);
+
+  // Wenn nicht in der Datenbank gefunden, versuche es mit den Seed-Daten
+  if (!event) {
+    console.log(`Event ${slug} nicht in DB gefunden, suche in Seed-Daten`);
+    event = eventSeedData.find((e) => e.slug === slug);
+
+    if (!event) {
+      console.log(`Event ${slug} auch nicht in Seed-Daten gefunden`);
+      return notFound();
+    }
+    console.log(`Event ${slug} in Seed-Daten gefunden`);
+  } else {
+    console.log(`Event ${slug} in DB gefunden`);
+  }
 
   return (
     <>
@@ -21,7 +51,7 @@ export default async function TicketBookingPage({ params }) {
           {/* Eventbild */}
           <div className="relative w-full h-60 md:h-80">
             <Image
-              src={event.imageUrl}
+              src={event.imageUrl || "/images/default-event.jpg"}
               alt={event.title}
               fill
               className="object-cover"
@@ -35,7 +65,9 @@ export default async function TicketBookingPage({ params }) {
               🎟️ Ticket buchen für: {event.title}
             </h1>
 
-            <p className="text-gray-300 text-center">{event.shortDescription}</p>
+            <p className="text-gray-300 text-center">
+              {event.shortDescription}
+            </p>
 
             {/* TicketSelector in neuer Box */}
             <div className="mt-10">

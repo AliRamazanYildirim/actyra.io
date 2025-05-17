@@ -25,11 +25,11 @@ export default function EventList({ events }) {
             <h3 className="text-xl font-semibold text-pink-600">
               {event.title}
             </h3>
-            <div className="flex items-center gap-2 text-sm text-gray-500">
+            <div className="flex items-center gap-2 text-sm text-black">
               <MapPin className="w-4 h-4" />
               {event.location}
             </div>
-            <div className="flex items-center gap-2 text-sm text-gray-500">
+            <div className="flex items-center gap-2 text-sm text-black">
               <Calendar className="w-4 h-4" />
               {new Date(event.date).toLocaleDateString("de-DE", {
                 day: "2-digit",

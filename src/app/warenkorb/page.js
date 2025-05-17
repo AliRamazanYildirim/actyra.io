@@ -9,8 +9,8 @@ import Link from "next/link";
 
 export default function WarenkorbPage() {
   const router = useRouter();
-  const tickets = useTicketStore(state => state.tickets);
-  const removeTicket = useTicketStore(state => state.removeTicket);
+  const cartTickets = useTicketStore(state => state.cartTickets);
+  const removeFromCart = useTicketStore(state => state.removeFromCart);
   const updateTicketQuantity = useTicketStore(state => state.updateTicketQuantity);
   const [isLoading, setIsLoading] = useState(true);
   const [isMounted, setIsMounted] = useState(false);
@@ -25,7 +25,7 @@ export default function WarenkorbPage() {
       setIsLoading(false);
       // Umleitung entfernt - stattdessen zeigen wir die leere Warenkorb-Meldung
     }
-  }, [tickets, router, isMounted]);
+  }, [cartTickets, router, isMounted]);
 
   // Ticket-Menge erhöhen
   const increaseQuantity = (slug) => {
@@ -47,7 +47,7 @@ export default function WarenkorbPage() {
   if (!isMounted || isLoading) return <div>Lädt...</div>;
   
   // Leerer Warenkorb UI statt null oder Umleitung
-  if (!tickets || tickets.length === 0) {
+  if (!cartTickets || cartTickets.length === 0) {
     return (
       <>
         <NavBar />
@@ -76,8 +76,8 @@ export default function WarenkorbPage() {
   }
 
   // Gesamtsumme für alle Events berechnen
-  const totalPrice = tickets.reduce((sum, ticket) => sum + ticket.totalPrice, 0);
-  const totalDonation = tickets.reduce((sum, ticket) => sum + ticket.totalDonation, 0);
+  const totalPrice = cartTickets.reduce((sum, ticket) => sum + ticket.totalPrice, 0);
+  const totalDonation = cartTickets.reduce((sum, ticket) => sum + ticket.totalDonation, 0);
 
   return (
     <>
@@ -89,7 +89,7 @@ export default function WarenkorbPage() {
           </h1>
 
           {/* Liste aller Events */}
-          {tickets.map((ticket) => (
+          {cartTickets.map((ticket) => (
             <div
               key={ticket.slug}
               className="mb-8 border-b border-pink-500 pb-6"
@@ -97,7 +97,7 @@ export default function WarenkorbPage() {
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-xl font-bold">{ticket.eventTitle}</h2>
                 <button
-                  onClick={() => removeTicket(ticket.slug)}
+                  onClick={() => removeFromCart(ticket.slug)}
                   className="bg-pink-600 hover:bg-pink-700 text-white p-2 rounded-full transition-colors cursor-pointer"
                   title="Event entfernen"
                 >
@@ -166,8 +166,8 @@ export default function WarenkorbPage() {
             <button
               onClick={() => {
                 // Falls Tickets vorhanden sind, zur Zahlungsseite weiterleiten
-                tickets && tickets.length > 0
-                  ? router.push(`/events/${tickets[0].slug}/tickets/payment`)
+                cartTickets && cartTickets.length > 0
+                  ? router.push(`/events/${cartTickets[0].slug}/tickets/payment`)
                   : router.push("/");
               }}
               className="ticket-button cursor-pointer"

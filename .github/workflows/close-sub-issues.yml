@@ -1,0 +1,29 @@
+name: Close sub-issues when epic is closed
+
+on:
+  issues:
+    types: [closed]
+
+jobs:
+  close-sub-issues:
+    runs-on: ubuntu-latest
+    if: contains(github.event.issue.body, '- [ ] #')
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const issueBody = context.payload.issue.body;
+            const regex = /- \[.\] #(\d+)/g;
+            let match;
+            const subIssues = [];
+            while ((match = regex.exec(issueBody)) !== null) {
+              subIssues.push(match[1]);
+            }
+            for (const issueNumber of subIssues) {
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: Number(issueNumber),
+                state: 'closed'
+              });
+            }

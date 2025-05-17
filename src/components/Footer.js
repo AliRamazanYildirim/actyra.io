@@ -78,17 +78,51 @@ export default function Footer() {
           <div>
             <h3 className="font-semibold mb-4">QUICK LINKS</h3>
             <ul className="space-y-2">
-              <li><Link href="/privacy" className="hover:text-pink-500 block">Privacy & Policy</Link></li>
-              <li><Link href="/terms" className="hover:text-pink-500 block">Terms & Conditions</Link></li>
-              <li><Link href="/faq" className="hover:text-pink-500 block">FAQ</Link></li>
-              <li><Link href="/support" className="hover:text-pink-500 block">Customer Support</Link></li>
-              <li><Link href="/contact" className="hover:text-pink-500 block">Contact Us</Link></li>
+              <li>
+                <Link
+                  href="/footer/privacy"
+                  className="hover:text-pink-500 block"
+                >
+                  Privacy & Policy
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/footer/terms"
+                  className="hover:text-pink-500 block"
+                >
+                  Terms & Conditions
+                </Link>
+              </li>
+              <li>
+                <Link href="/footer/faq" className="hover:text-pink-500 block">
+                  FAQ
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/footer/support"
+                  className="hover:text-pink-500 block"
+                >
+                  Customer Support
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/footer/contact"
+                  className="hover:text-pink-500 block"
+                >
+                  Contact Us
+                </Link>
+              </li>
             </ul>
           </div>
 
           {/* Newsletter */}
           <div>
-            <h3 className="font-semibold mb-4 text-center">Newsletter abonnieren</h3>
+            <h3 className="font-semibold mb-4 text-center">
+              Newsletter abonnieren
+            </h3>
             <form onSubmit={handleNewsletter}>
               <input
                 type="email"
@@ -155,15 +189,25 @@ export default function Footer() {
         <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white py-4 px-6 flex flex-col md:flex-row justify-between items-center text-sm">
           <p>Copyright © 2025 Actyra. All Rights Reserved</p>
           <div className="flex flex-wrap gap-4 justify-center md:justify-end">
-            <Link href="/privacy" className="hover:text-pink-400">Privacy & Policy</Link>
+            <Link href="/footer/privacy" className="hover:text-pink-400">
+              Privacy & Policy
+            </Link>
             <span className="hidden md:inline">||</span>
-            <Link href="/terms" className="hover:text-pink-400">Terms & Conditions</Link>
+            <Link href="/footer/terms" className="hover:text-pink-400">
+              Terms & Conditions
+            </Link>
             <span className="hidden md:inline">||</span>
-            <Link href="/faq" className="hover:text-pink-400">FAQ</Link>
+            <Link href="/footer/faq" className="hover:text-pink-400">
+              FAQ
+            </Link>
             <span className="hidden md:inline">||</span>
-            <Link href="/support" className="hover:text-pink-400">Support</Link>
+            <Link href="/footer/support" className="hover:text-pink-400">
+              Support
+            </Link>
             <span className="hidden md:inline">||</span>
-            <Link href="/contact" className="hover:text-pink-400">Contact</Link>
+            <Link href="/footer/contact" className="hover:text-pink-400">
+              Contact
+            </Link>
           </div>
         </div>
       </div>

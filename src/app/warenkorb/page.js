@@ -29,7 +29,7 @@ export default function WarenkorbPage() {
 
   // Ticket-Menge erhöhen
   const increaseQuantity = (slug) => {
-    const ticket = tickets.find(t => t.slug === slug);
+    const ticket = cartTickets.find(t => t.slug === slug);
     if (ticket) {
       updateTicketQuantity(slug, ticket.quantity + 1);
     }
@@ -37,7 +37,7 @@ export default function WarenkorbPage() {
 
   // Ticket-Menge verringern, mindestens 1
   const decreaseQuantity = (slug) => {
-    const ticket = tickets.find(t => t.slug === slug);
+    const ticket = cartTickets.find(t => t.slug === slug);
     if (ticket && ticket.quantity > 1) {
       updateTicketQuantity(slug, ticket.quantity - 1);
     }

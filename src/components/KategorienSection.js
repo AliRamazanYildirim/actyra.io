@@ -106,8 +106,9 @@ export default function KategorienSection() {
         </p>
 
         {loading ? (
-          <div className="flex justify-center py-10">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
+          <div className="flex flex-col items-center py-10">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500 mb-4"></div>
+            <p className="text-gray-400">Ihre Kategorien werden geladen...</p>
           </div>
         ) : error ? (
           <div className="text-red-500 text-center py-8">

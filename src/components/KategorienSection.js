@@ -126,49 +126,49 @@ export default function KategorienSection() {
 
               if (events.length === 0) return null;
 
-              return (
+                return (
                 <div key={index}>
                   <div className="flex items-center justify-between mb-4">
-                    {/* Orta: Symbol + h3 zusammen zentriert */}
-                    <div className="flex items-center mx-auto space-x-4">
-                      <IconComponent className="w-10 h-10 text-[#613583]" />
-                      <h3 className="text-2xl font-semibold text-[#1c1f3c] dark:text-white">
-                        {kategorie.name}
-                      </h3>
-                    </div>
+                  {/* Orta: Symbol + h3 zusammen zentriert */}
+                  <div className="flex items-center mx-auto space-x-4">
+                    <IconComponent className="w-10 h-10 text-[#613583]" />
+                    <h3 className="text-2xl font-semibold text-[#1c1f3c] dark:text-white">
+                    {kategorie.name}
+                    </h3>
+                  </div>
 
-                    {/* Rechts: Link */}
-                    <Link
-                      href={`/kategorien/${kategorie.slug}`}
-                      className="text-sm font-medium dark:text-white hover:underline"
-                    >
-                      Alle anzeigen →
-                    </Link>
+                  {/* Rechts: Link */}
+                  <Link
+                    href={`/kategorien/${kategorie.slug}`}
+                    className="text-sm font-medium dark:text-white hover:underline"
+                  >
+                    Alle anzeigen →
+                  </Link>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 text-center">
-                    {events.map((event, eventIndex) => (
-                      <Link
-                        key={event._id || `event-${index}-${eventIndex}`}
-                        href={`/events/${event.slug || "#"}`}
-                        className="block p-4 rounded-xl dark:bg-pink-500 shadow-xl hover:shadow-2xl hover:scale-[1.02] hover:bg-gradient-to-br hover:from-purple-600 hover:to-pink-600 transition duration-300"
-                      >
-                        <h4 className="text-lg font-semibold text-black dark:text-white">
-                          {event.title || "Unbenanntes Event"}
-                        </h4>
-                        <p className="text-sm  text-black dark:text-white">
-                          {event.location || "Kein Ort angegeben"}
-                        </p>
-                        <p className="text-sm  text-black dark:text-white">
-                          {event.date
-                            ? new Date(event.date).toLocaleDateString("de-DE")
-                            : "Kein Datum"}
-                        </p>
-                      </Link>
-                    ))}
+                  {events.map((event, eventIndex) => (
+                    <Link
+                    key={event._id || `event-${index}-${eventIndex}`}
+                    href={`/events/${event.slug || "#"}`}
+                    className="block p-4 rounded-xl dark:bg-pink-500 shadow-xl hover:shadow-2xl hover:scale-[1.02] hover:bg-gradient-to-br hover:from-purple-600 hover:to-pink-600 transition duration-300 group"
+                    >
+                    <h4 className="text-lg font-semibold text-black dark:text-white group-hover:text-white">
+                      {event.title || "Unbenanntes Event"}
+                    </h4>
+                    <p className="text-sm text-black dark:text-white group-hover:text-white">
+                      {event.location || "Kein Ort angegeben"}
+                    </p>
+                    <p className="text-sm text-black dark:text-white group-hover:text-white">
+                      {event.date
+                      ? new Date(event.date).toLocaleDateString("de-DE")
+                      : "Kein Datum"}
+                    </p>
+                    </Link>
+                  ))}
                   </div>
                 </div>
-              );
+                );
             })}
           </div>
         )}

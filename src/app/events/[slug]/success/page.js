@@ -21,6 +21,10 @@ async function getEventBySlug(slug) {
 }
 
 export default async function TicketSuccessPage({ params, searchParams }) {
+   // Auf params und searchParams warten
+  params = await params;
+  searchParams = await searchParams;
+  
   const slug = params.slug;
   const name = searchParams.name || "Teilnehmer";
   const email = searchParams.email || "kunde@example.com";

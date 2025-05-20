@@ -15,7 +15,6 @@ const EventErstellenForm = () => {
     location: "",
     category: "",
     date: "",
-    tickets: "",
     price: "",
     donation: "",
     image: null,
@@ -223,22 +222,6 @@ const EventErstellenForm = () => {
                 value={formData.date}
                 onChange={handleChange}
                 className="ticket-input"
-                required
-              />
-            </div>
-
-            {/* Ticketanzahl */}
-            <div>
-              <label className="block font-semibold mb-1 text-white">
-                Ticketanzahl
-              </label>
-              <input
-                type="number"
-                name="tickets"
-                placeholder="Hier können Sie die Ticketanzahl eingeben..."
-                value={formData.tickets}
-                onChange={handleChange}
-                className="ticket-input placeholder:text-black"
                 required
               />
             </div>

@@ -1,8 +1,17 @@
-"use client";
-
+'use client';
+import { useEffect, useState } from "react";
 import Image from "next/image";
 
 export default function Loading() {
+  const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => setShow(true), 100); // 100–200ms Verzögerung
+    return () => clearTimeout(timeout);
+  }, []);
+
+  if (!show) return null;
+
   return (
     <div className="flex h-screen items-center justify-center bg-gradient-to-br from-[#0f0c29] via-[#18123c] to-[#1a1441]">
       <div className="flex flex-col items-center space-y-6">

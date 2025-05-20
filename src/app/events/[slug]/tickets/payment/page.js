@@ -46,14 +46,14 @@ const CheckoutForm = ({ clientSecret, orderNumber, paymentData, onSuccess, onErr
     <form onSubmit={handleSubmit}>
       <div className="mb-6">
         <label className="block text-sm font-medium mb-2">Karteninformationen</label>
-        <div className="p-4 bg-gray-800 rounded border border-gray-700">
+        <div className="p-4 bg-white rounded border border-gray-700">
           <CardElement
             options={{
               style: {
                 base: {
                   fontSize: "16px",
-                  color: "#ffffff",
-                  "::placeholder": { color: "#aab7c4" },
+                  color: "black",
+                  "::placeholder": { color: "black" },
                 },
                 invalid: { color: "#fa755a" },
               },
@@ -181,7 +181,7 @@ export default function CheckoutPage() {
                   placeholder="Name"
                   value={form.name}
                   onChange={handleChange}
-                  className="ticket-input placeholder:text-gray-600"
+                  className="ticket-input placeholder:text-black"
                 />
                 <input
                   type="email"
@@ -189,7 +189,7 @@ export default function CheckoutPage() {
                   placeholder="E-posta"
                   value={form.email}
                   onChange={handleChange}
-                  className="ticket-input placeholder:text-gray-600"
+                  className="ticket-input placeholder:text-black"
                 />
               </div>
               <div className="text-right text-xl font-bold">Gesamt: {total} €</div>

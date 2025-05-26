@@ -48,7 +48,7 @@ export async function getEvents(slug) {
     }
     
     const events = await response.json();
-    console.log(`${slug} kategorisinde ${events.length} etkinlik bulundu`);
+    console.log(`${slug}-Kategorie enthält ${events.length} Veranstaltungen`);
     return events;
   } catch (error) {
     console.error("Fehler beim Abrufen der Events:", error);

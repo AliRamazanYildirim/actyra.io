@@ -77,6 +77,7 @@ export default async function TicketBookingPage({ params }) {
                 slug={event.slug}
                 date={event.date}
                 location={event.location}
+                imageUrl={event.imageUrl}
               />
             </div>
           </div>

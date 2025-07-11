@@ -2,18 +2,25 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import useTicketStore from "@/store/ticketStore";
 import { ChevronLeft } from "lucide-react";
 import { useAuth } from "@clerk/nextjs";
 
-export default function TicketSelector({ price = 10, title = "Event", slug, location }) {
+export default function TicketSelector({
+  price = 10,
+  title = "Event",
+  slug,
+  location,
+  imageUrl,
+}) {
   const { addTicket } = useTicketStore();
   const router = useRouter();
   const { isLoaded, isSignedIn } = useAuth(); // Auth-Status einbinden
 
   // Lokaler State für die Ticketanzahl (statt aus dem Store zu versuchen)
   const [ticketCount, setTicketCount] = useState(1);
-  
+
   // Lokaler State für das Input-Feld
   const [inputValue, setInputValue] = useState("1");
 
@@ -24,7 +31,7 @@ export default function TicketSelector({ price = 10, title = "Event", slug, loca
   const handleInputChange = (e) => {
     const value = e.target.value;
     setInputValue(value);
-    
+
     if (value === "") {
       setTicketCount(0);
     } else {
@@ -34,7 +41,7 @@ export default function TicketSelector({ price = 10, title = "Event", slug, loca
   };
 
   const handleCheckout = () => {
-    if(!isLoaded) return;
+    if (!isLoaded) return;
 
     // Prüfen, ob der User eingeloggt ist
     if (!isSignedIn) {
@@ -56,6 +63,7 @@ export default function TicketSelector({ price = 10, title = "Event", slug, loca
         slug: slug,
         date: new Date().toISOString().split("T")[0], // ✔ ISO format
         location: location,
+        imageUrl: imageUrl,
       };
 
       // Verwende addToCart statt addTicket
@@ -73,6 +81,27 @@ export default function TicketSelector({ price = 10, title = "Event", slug, loca
 
   return (
     <div className="bg-[#0f172a] text-white rounded-2xl shadow-2xl overflow-hidden p-8 space-y-6 mt-16">
+      {/* Event Görseli Ekleme */}
+      {imageUrl && (
+        <div className="relative w-full h-48 rounded-xl overflow-hidden mb-6">
+          <Image
+            src={imageUrl}
+            alt={title}
+            fill
+            className="object-cover"
+            onError={(e) => {
+              console.error("Image load error for:", imageUrl);
+              e.target.src = "/images/event-default.webp";
+            }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+          <div className="absolute bottom-4 left-4 text-white">
+            <h3 className="text-xl font-bold">{title}</h3>
+            <p className="text-gray-300">{location}</p>
+          </div>
+        </div>
+      )}
+
       <h2 className="ticket-heading">Tickets buchen</h2>
 
       <label htmlFor="quantity" className="ticket-label">

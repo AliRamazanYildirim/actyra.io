@@ -19,6 +19,10 @@ export default function EventList({ events }) {
               alt={event.title}
               fill
               className="object-cover group-hover:scale-105 transition-transform duration-300"
+              onError={(e) => {
+                console.error("Image load error for:", event.imageUrl);
+                e.target.src = "/images/event-default.webp";
+              }}
             />
           </div>
           <div className="p-4 space-y-3">

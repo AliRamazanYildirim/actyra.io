@@ -41,6 +41,11 @@ const EventSchema = new Schema(
         "sonstige-events",
       ],
     },
+    status: {
+      type: String,
+      enum: ["pending", "active", "completed", "cancelled"],
+      default: "active",
+    },
   },
   {
     timestamps: true,

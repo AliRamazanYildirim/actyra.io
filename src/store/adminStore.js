@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-// Basit admin store
+// Einfacher Admin-Store
 const useAdminStore = create((set, get) => ({
   // Stats
   stats: {
@@ -14,6 +14,13 @@ const useAdminStore = create((set, get) => ({
     failedPayments: 0,
   },
 
+  // Chart data
+  chartData: {
+    userGrowth: [],
+    eventStats: [],
+    revenueFlow: [],
+  },
+
   // Loading
   loading: {
     dashboard: true,
@@ -24,27 +31,36 @@ const useAdminStore = create((set, get) => ({
   isAdmin: false,
 
   // Actions
-  setStats: (newStats) => set((state) => ({ 
-    stats: { ...state.stats, ...newStats } 
-  })),
+  setStats: (newStats) =>
+    set((state) => ({
+      stats: { ...state.stats, ...newStats },
+    })),
 
-  setLoading: (section, isLoading) => set((state) => ({
-    loading: { ...state.loading, [section]: isLoading }
-  })),
+  setChartData: (chartType, data) =>
+    set((state) => ({
+      chartData: { ...state.chartData, [chartType]: data },
+    })),
 
-  setUserRole: (role) => set({ 
-    userRole: role,
-    isAdmin: role === 'admin'
-  }),
+  setLoading: (section, isLoading) =>
+    set((state) => ({
+      loading: { ...state.loading, [section]: isLoading },
+    })),
+
+  setUserRole: (role) =>
+    set({
+      userRole: role,
+      isAdmin: role === "admin",
+    }),
 }));
 
 // Named exports for convenience
 export const useAdminStats = () => useAdminStore((state) => state.stats);
 export const useAdminLoading = () => useAdminStore((state) => state.loading);
-export const useAdminActions = () => useAdminStore((state) => ({
-  setStats: state.setStats,
-  setLoading: state.setLoading,
-  setUserRole: state.setUserRole,
-}));
+export const useAdminActions = () =>
+  useAdminStore((state) => ({
+    setStats: state.setStats,
+    setLoading: state.setLoading,
+    setUserRole: state.setUserRole,
+  }));
 
 export default useAdminStore;

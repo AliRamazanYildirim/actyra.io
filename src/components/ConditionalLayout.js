@@ -6,12 +6,13 @@ import Footer from "@/components/Footer";
 
 export default function ConditionalLayout({ children }) {
   const pathname = usePathname();
-  
-  // Routenüberprüfung
-  const isAdminRoute = pathname?.startsWith('/admin');
-  const isAuthRoute = pathname?.startsWith('/sign-in') || pathname?.startsWith('/sign-up');
 
- // Rendern Sie in Admin-Routen nur die Children (hat eigenes Layout)
+  // Routenüberprüfung
+  const isAdminRoute = pathname?.startsWith("/admin");
+  const isAuthRoute =
+    pathname?.startsWith("/sign-in") || pathname?.startsWith("/sign-up");
+
+  // Rendern Sie in Admin-Routen nur die Children (hat eigenes Layout)
   if (isAdminRoute) {
     return <>{children}</>;
   }

@@ -1,20 +1,23 @@
-import { NextResponse } from 'next/server';
-import { getAuth } from '@clerk/nextjs/server';
-import dbConnect from '@/lib/db';
-import User from '@/models/User';
-import Event from '@/models/Event';
-import Ticket from '@/models/Ticket';
+import { NextResponse } from "next/server";
+import { getAuth } from "@clerk/nextjs/server";
+import dbConnect from "@/lib/db";
+import User from "@/models/User";
+import Event from "@/models/Event";
+import Ticket from "@/models/Ticket";
 
 export async function GET(request) {
   try {
     const { userId } = getAuth(request);
-    
+
     if (!userId) {
-      return NextResponse.json({ error: 'Nicht authentifiziert' }, { status: 401 });
+      return NextResponse.json(
+        { error: "Nicht authentifiziert" },
+        { status: 401 }
+      );
     }
 
     await dbConnect();
-    
+
     // GEÇICI: Tüm giriş yapmış kullanıcıları admin olarak kabul et
     // Check if user is admin or veranstalter
     // const user = await User.findOne({ clerkId: userId });
@@ -28,15 +31,15 @@ export async function GET(request) {
       Event.countDocuments(),
       Ticket.countDocuments(),
       Ticket.aggregate([
-        { $group: { _id: null, total: { $sum: "$totalPrice" } } }
+        { $group: { _id: null, total: { $sum: "$totalPrice" } } },
       ]),
-      Event.countDocuments({ 
-        date: { $gte: new Date().toISOString().split('T')[0] } 
+      Event.countDocuments({
+        date: { $gte: new Date().toISOString().split("T")[0] },
       }),
-      Event.countDocuments({ 
-        date: { $lt: new Date().toISOString().split('T')[0] } 
+      Event.countDocuments({
+        date: { $lt: new Date().toISOString().split("T")[0] },
       }),
-      Ticket.countDocuments({ paymentStatus: 'failed' }),
+      Ticket.countDocuments({ paymentStatus: "failed" }),
     ]);
 
     const dashboardStats = {
@@ -62,9 +65,9 @@ export async function GET(request) {
       charts: chartData,
     });
   } catch (error) {
-    console.error('Fehler beim Laden der Dashboard-Daten:', error);
+    console.error("Fehler beim Laden der Dashboard-Daten:", error);
     return NextResponse.json(
-      { error: 'Interner Serverfehler' },
+      { error: "Interner Serverfehler" },
       { status: 500 }
     );
   }
@@ -78,18 +81,18 @@ async function generateWeeklyRevenueData() {
     {
       $match: {
         purchaseDate: { $gte: sevenDaysAgo },
-        paymentStatus: 'completed'
-      }
+        paymentStatus: "completed",
+      },
     },
     {
       $group: {
         _id: {
-          $dateToString: { format: "%Y-%m-%d", date: "$purchaseDate" }
+          $dateToString: { format: "%Y-%m-%d", date: "$purchaseDate" },
         },
-        revenue: { $sum: "$totalPrice" }
-      }
+        revenue: { $sum: "$totalPrice" },
+      },
     },
-    { $sort: { "_id": 1 } }
+    { $sort: { _id: 1 } },
   ]);
 
   // Fill missing days with 0
@@ -97,12 +100,12 @@ async function generateWeeklyRevenueData() {
   for (let i = 6; i >= 0; i--) {
     const date = new Date();
     date.setDate(date.getDate() - i);
-    const dateStr = date.toISOString().split('T')[0];
-    const dayData = weeklyData.find(d => d._id === dateStr);
-    
+    const dateStr = date.toISOString().split("T")[0];
+    const dayData = weeklyData.find((d) => d._id === dateStr);
+
     result.push({
-      label: date.toLocaleDateString('de-DE', { weekday: 'short' }),
-      value: dayData?.revenue || 0
+      label: date.toLocaleDateString("de-DE", { weekday: "short" }),
+      value: dayData?.revenue || 0,
     });
   }
 
@@ -114,14 +117,14 @@ async function generateEventsByCategoryData() {
     {
       $group: {
         _id: "$category",
-        count: { $sum: 1 }
-      }
-    }
+        count: { $sum: 1 },
+      },
+    },
   ]);
 
-  return categoryData.map(item => ({
+  return categoryData.map((item) => ({
     label: item._id,
-    value: item.count
+    value: item.count,
   }));
 }
 
@@ -132,22 +135,25 @@ async function generateUserGrowthData() {
   const userData = await User.aggregate([
     {
       $match: {
-        createdAt: { $gte: thirtyDaysAgo }
-      }
+        createdAt: { $gte: thirtyDaysAgo },
+      },
     },
     {
       $group: {
         _id: {
-          $dateToString: { format: "%Y-%m-%d", date: "$createdAt" }
+          $dateToString: { format: "%Y-%m-%d", date: "$createdAt" },
         },
-        users: { $sum: 1 }
-      }
+        users: { $sum: 1 },
+      },
     },
-    { $sort: { "_id": 1 } }
+    { $sort: { _id: 1 } },
   ]);
 
-  return userData.map(item => ({
-    label: new Date(item._id).toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit' }),
-    value: item.users
+  return userData.map((item) => ({
+    label: new Date(item._id).toLocaleDateString("de-DE", {
+      day: "2-digit",
+      month: "2-digit",
+    }),
+    value: item.users,
   }));
 }

@@ -12,7 +12,7 @@ export default function AdminLayout({ children }) {
   const { user, isLoaded } = useUser();
   const router = useRouter();
   const [loading, setLoading] = useState(true);
-  
+
   // Zustand store
   const userRole = useAdminStore((state) => state.userRole);
   const setUserRole = useAdminStore((state) => state.setUserRole);
@@ -22,56 +22,65 @@ export default function AdminLayout({ children }) {
       if (isLoaded && user) {
         try {
           // Gerçek kullanıcı rolünü veritabanından çek
-          const response = await fetch('/api/user/profile');
-          
+          const response = await fetch("/api/user/profile");
+
           if (response.ok) {
             const userData = await response.json();
             setUserRole(userData.role);
-            
+
             // Admin değilse ana sayfaya yönlendir
-            if (userData.role !== 'admin') {
-              console.log('Kullanıcı admin değil, ana sayfaya yönlendiriliyor...');
-              router.push('/');
+            if (userData.role !== "admin") {
+              console.log(
+                "Kullanıcı admin değil, ana sayfaya yönlendiriliyor..."
+              );
+              router.push("/");
               return;
             }
           } else if (response.status === 404) {
             // Kullanıcı DB'de yok - GEÇİCİ ÇÖZÜM: İlk kullanıcıya admin yetkisi ver
-            console.log('Kullanıcı DB\'de bulunamadı, ilk kullanıcı olarak admin yetkisi veriliyor...');
-            
+            console.log(
+              "Kullanıcı DB'de bulunamadı, ilk kullanıcı olarak admin yetkisi veriliyor..."
+            );
+
             try {
-              const createResponse = await fetch('/api/user/create', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+              const createResponse = await fetch("/api/user/create", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                   clerkId: user.id,
                   email: user.emailAddresses[0]?.emailAddress,
-                  fullName: user.fullName || (user.firstName + ' ' + user.lastName),
-                  role: 'admin' // GEÇİCİ: İlk kullanıcıya admin yetkisi
-                })
+                  fullName:
+                    user.fullName || user.firstName + " " + user.lastName,
+                  role: "admin", // GEÇİCİ: İlk kullanıcıya admin yetkisi
+                }),
               });
-              
+
               if (createResponse.ok) {
                 const newUserData = await createResponse.json();
-                setUserRole('admin');
-                console.log('✅ Yeni kullanıcı admin olarak oluşturuldu');
+                setUserRole("admin");
+                console.log("✅ Yeni kullanıcı admin olarak oluşturuldu");
               } else {
-                console.error('Kullanıcı oluşturulamadı');
-                router.push('/');
+                console.error("Kullanıcı oluşturulamadı");
+                router.push("/");
                 return;
               }
             } catch (createError) {
-              console.error('Kullanıcı oluşturma hatası:', createError);
-              router.push('/');
+              console.error("Kullanıcı oluşturma hatası:", createError);
+              router.push("/");
               return;
             }
           } else {
-            console.error('API yanıt hatası:', response.status, response.statusText);
-            router.push('/');
+            console.error(
+              "API yanıt hatası:",
+              response.status,
+              response.statusText
+            );
+            router.push("/");
             return;
           }
         } catch (error) {
-          console.error('API çağrısı hatası:', error);
-          router.push('/');
+          console.error("API çağrısı hatası:", error);
+          router.push("/");
           return;
         }
         setLoading(false);

@@ -24,50 +24,84 @@ import useAdminStore from "@/store/adminStore";
 export default function AdminDashboard() {
   // Zustand store
   const stats = useAdminStore((state) => state.stats);
+  const chartData = useAdminStore((state) => state.chartData);
   const loading = useAdminStore((state) => state.loading);
   const isAdmin = useAdminStore((state) => state.isAdmin);
   const setStats = useAdminStore((state) => state.setStats);
+  const setChartData = useAdminStore((state) => state.setChartData);
   const setLoading = useAdminStore((state) => state.setLoading);
 
-  // Admin yetkisi kontrolü
-  if (!isAdmin) {
-    return (
-      <div className="min-h-screen bg-[#0D0E25] flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-white mb-4">Zugriff verweigert</h1>
-          <p className="text-gray-400">Sie haben keine Admin-Berechtigung.</p>
-        </div>
-      </div>
-    );
-  }
-
   useEffect(() => {
+    // Debug: Admin-Status protokollieren
+    console.log("🔍 Admin check:", { isAdmin });
+
+    // Nur wenn Admin, Daten abrufen
+    if (!isAdmin) {
+      console.log("❌Kein Admin, Daten werden nicht abgerufen.");
+      return;
+    }
+
+    console.log("✅ Admin bestätigt, Daten werden abgerufen...");
+
     const fetchDashboardData = async () => {
       try {
         setLoading("dashboard", true);
-        
-        // Demo veriler
-        const demoStats = {
-          totalUsers: 1250,
-          totalEvents: 45,
-          totalTickets: 890,
-          totalRevenue: 15750,
-          pendingEvents: 8,
-          activeEvents: 12,
-          completedEvents: 25,
-          failedPayments: 3
-        };
-        
-        setStats(demoStats);
+
+        console.log("📡API-Anfragen werden gestartet...");
+
+        // Echte Daten von APIs abrufen - ES6+ Promise.all
+        const [statsResponse, chartsResponse] = await Promise.all([
+          fetch("/api/admin/stats"),
+          fetch("/api/admin/charts"),
+        ]);
+
+        console.log("📊 API-Antworten:", {
+          stats: statsResponse.status,
+          charts: chartsResponse.status,
+        });
+
+        if (statsResponse.ok && chartsResponse.ok) {
+          const statsData = await statsResponse.json();
+          const chartData = await chartsResponse.json();
+
+          console.log("✅ Real data loaded:", { statsData, chartData });
+
+          // Im Zustand-Store speichern
+          setStats(statsData);
+          setChartData("userGrowth", chartData.userGrowth);
+          setChartData("eventStats", chartData.eventStats);
+          setChartData("revenueFlow", chartData.revenueFlow);
+        } else {
+          console.error("❌ API hatası:", {
+            stats: statsResponse.status,
+            charts: chartsResponse.status,
+          });
+          // Fallback-Daten bei einem API-Fehler verwenden
+          console.log("🔄 Esatzdaten werden verwendet...");
+        }
       } catch (error) {
-        console.error("Fehler beim Laden der Dashboard-Daten:", error);
+        console.error("❌ Dashboard-Datenladefehler:", error);
       } finally {
         setLoading("dashboard", false);
       }
     };
 
     fetchDashboardData();
-  }, [setStats, setLoading]);
+  }, [isAdmin, setStats, setChartData, setLoading]);
+
+  // Admin yetkisi kontrolü
+  if (!isAdmin) {
+    return (
+      <div className="min-h-screen bg-[#0D0E25] flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-white mb-4">
+            Zugriff verweigert
+          </h1>
+          <p className="text-gray-400">Sie haben keine Admin-Berechtigung.</p>
+        </div>
+      </div>
+    );
+  }
 
   if (loading.dashboard) {
     return (
@@ -166,16 +200,23 @@ export default function AdminDashboard() {
         />
       </div>
 
-      {/* Charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-[#0f172a] border border-gray-800 rounded-lg p-6">
-          <h3 className="text-lg font-semibold text-white mb-4">Wöchentlicher Umsatz</h3>
-          <p className="text-gray-400">Chart wird geladen...</p>
-        </div>
-        <div className="bg-[#0f172a] border border-gray-800 rounded-lg p-6">
-          <h3 className="text-lg font-semibold text-white mb-4">Events nach Kategorien</h3>
-          <p className="text-gray-400">Chart wird geladen...</p>
-        </div>
+      {/* Charts - ES6+ modern ChartCard components */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+        <ChartCard
+          title="Benutzerwachstum"
+          data={chartData.userGrowth}
+          type="line"
+        />
+        <ChartCard
+          title="Events nach Kategorien"
+          data={chartData.eventStats}
+          type="doughnut"
+        />
+        <ChartCard
+          title="Umsatzentwicklung"
+          data={chartData.revenueFlow}
+          type="bar"
+        />
       </div>
 
       {/* Recent Activity */}

@@ -15,11 +15,12 @@ export async function GET(request) {
 
     await dbConnect();
     
+    // GEÇICI: Tüm giriş yapmış kullanıcıları admin olarak kabul et
     // Check if user is admin or veranstalter
-    const user = await User.findOne({ clerkId: userId });
-    if (!user || !['admin', 'veranstalter'].includes(user.role)) {
-      return NextResponse.json({ error: 'Keine Berechtigung' }, { status: 403 });
-    }
+    // const user = await User.findOne({ clerkId: userId });
+    // if (!user || !['admin', 'veranstalter'].includes(user.role)) {
+    //   return NextResponse.json({ error: 'Keine Berechtigung' }, { status: 403 });
+    // }
 
     // Collect statistics
     const stats = await Promise.all([

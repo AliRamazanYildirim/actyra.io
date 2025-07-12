@@ -6,13 +6,16 @@ const nextConfig = {
         protocol: 'http',
         hostname: 'localhost',
       },
-    ],
-    domains: [
-      'img.clerk.com',
-      'images.clerk.dev',
+      {
+        protocol: 'https',
+        hostname: 'img.clerk.com',
+      },
+      {
+        protocol: 'https', 
+        hostname: 'images.clerk.dev',
+      },
     ],
   },
-  swcMinify: true, // Um die Größe von JS-Dateien zu reduzieren
   experimental: {
     optimizeCss: true, // CSS-Optimierung (funktioniert mit Tailwind)
   }

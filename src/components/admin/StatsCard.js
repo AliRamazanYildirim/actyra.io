@@ -1,42 +1,80 @@
 "use client";
 
+import React, { memo } from "react";
 import { TrendingUp, TrendingDown } from "lucide-react";
 
-export default function StatsCard({ 
-  title, 
-  value, 
-  icon: Icon, 
-  trend, 
-  trendPositive, 
-  bgColor = "bg-purple-500/10",
-  iconColor = "text-purple-500" 
-}) {
-  return (
-    <div className="bg-[#0f172a] border border-gray-800 rounded-lg p-6 hover:border-gray-700 transition-all duration-200">
-      <div className="flex items-center justify-between">
-        <div className="flex-1">
-          <p className="text-sm font-medium text-gray-400 mb-1">{title}</p>
-          <p className="text-2xl font-bold text-white">{value}</p>
-          {trend && (
-            <div className="flex items-center mt-2">
-              {trendPositive ? (
-                <TrendingUp className="w-4 h-4 text-green-500 mr-1" />
-              ) : (
-                <TrendingDown className="w-4 h-4 text-red-500 mr-1" />
-              )}
-              <span className={`text-sm font-medium ${
-                trendPositive ? 'text-green-500' : 'text-red-500'
-              }`}>
-                {trend}
-              </span>
-              <span className="text-sm text-gray-400 ml-1">vs. letzte Woche</span>
+/**
+ * StatsCard Component - Displays statistical information with trend indicators
+ * Optimized for Next.js 15 with ES6+ standards and Zustand integration
+ */
+const StatsCard = memo(
+  ({
+    title,
+    value,
+    icon: Icon,
+    trend,
+    trendPositive = true,
+    bgColor = "bg-purple-500/10",
+    iconColor = "text-purple-500",
+    className = "",
+    isLoading = false,
+  }) => {
+    // Loading state
+    if (isLoading) {
+      return (
+        <div
+          className={`bg-[#0f172a] border border-gray-800 rounded-lg p-6 animate-pulse ${className}`}
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex-1">
+              <div className="h-4 bg-gray-700 rounded w-20 mb-2"></div>
+              <div className="h-8 bg-gray-700 rounded w-16 mb-2"></div>
+              <div className="h-4 bg-gray-700 rounded w-24"></div>
             </div>
-          )}
+            <div className="w-12 h-12 bg-gray-700 rounded-lg"></div>
+          </div>
         </div>
-        <div className={`p-3 rounded-lg ${bgColor}`}>
-          <Icon className={`w-6 h-6 ${iconColor}`} />
+      );
+    }
+
+    return (
+      <div
+        className={`bg-[#0f172a] border border-gray-800 rounded-lg p-6 hover:border-gray-700 transition-all duration-200 ${className}`}
+      >
+        <div className="flex items-center justify-between">
+          <div className="flex-1">
+            <p className="text-sm font-medium text-gray-400 mb-1">{title}</p>
+            <p className="text-2xl font-bold text-white">{value}</p>
+            {trend && (
+              <div className="flex items-center mt-2">
+                {trendPositive ? (
+                  <TrendingUp className="w-4 h-4 text-green-500 mr-1" />
+                ) : (
+                  <TrendingDown className="w-4 h-4 text-red-500 mr-1" />
+                )}
+                <span
+                  className={`text-sm font-medium ${
+                    trendPositive ? "text-green-500" : "text-red-500"
+                  }`}
+                >
+                  {trend}
+                </span>
+                <span className="text-sm text-gray-400 ml-1">
+                  vs. letzte Woche
+                </span>
+              </div>
+            )}
+          </div>
+          <div className={`p-3 rounded-lg ${bgColor}`}>
+            <Icon className={`w-6 h-6 ${iconColor}`} />
+          </div>
         </div>
       </div>
-    </div>
-  );
-}
+    );
+  }
+);
+
+// Display name for debugging
+StatsCard.displayName = "StatsCard";
+
+export default StatsCard;

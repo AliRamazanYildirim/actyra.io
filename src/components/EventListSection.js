@@ -1,53 +1,62 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo, useCallback, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { MapPin, Calendar, Tag, Euro } from "lucide-react";
-import fallbackEvents from "@/data/eventSeedData"; // Fallback-Daten werden aus events.js importiert
+import fallbackEvents from "@/data/eventSeedData";
 
+/**
+ * Date formatting utility using ES6+ arrow function
+ */
 const formatDate = (dateStr) => {
   const options = { day: "2-digit", month: "short" };
   return new Date(dateStr).toLocaleDateString("de-DE", options);
 };
 
-export default function EventListSection() {
-  // State-Definitionen
+/**
+ * EventListSection Component - ES6+ and Next.js 15 optimized
+ * Modern component with React.memo, useCallback, and ES6+ patterns
+ */
+const EventListSection = memo(() => {
+  // ES6+ State definitions with destructuring
   const [events, setEvents] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Daten von der API abrufen
-  useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        setIsLoading(true);
-        const response = await fetch("/api/events");
+  // ES6+ API fetch function with useCallback
+  const fetchEvents = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      const response = await fetch("/api/events");
 
-        if (!response.ok) {
-          throw new Error("Fehler beim Laden der Daten");
-        }
-
-        const data = await response.json();
-
-        if (data.events && Array.isArray(data.events)) {
-          setEvents(data.events);
-        } else {
-          // Fallback-Daten verwenden, wenn keine gültigen Daten von der API kommen
-          setEvents(fallbackEvents);
-        }
-      } catch (error) {
-        console.error("API-Fehler:", error);
-        setError("Fehler beim Laden der Events");
-        // Fallback-Daten im Fehlerfall verwenden
-        setEvents(fallbackEvents);
-      } finally {
-        setIsLoading(false);
+      if (!response.ok) {
+        throw new Error("Fehler beim Laden der Daten");
       }
-    };
 
-    fetchEvents();
+      const data = await response.json();
+
+      // ES6+ Optional chaining and array validation
+      if (data?.events && Array.isArray(data.events)) {
+        setEvents(data.events);
+      } else {
+        // Fallback data when no valid data from API
+        setEvents(fallbackEvents);
+      }
+    } catch (error) {
+      console.error("API-Fehler:", error);
+      setError("Fehler beim Laden der Events");
+      // Fallback data on error
+      setEvents(fallbackEvents);
+    } finally {
+      setIsLoading(false);
+    }
   }, []);
+
+  // ES6+ useEffect with dependency array
+  useEffect(() => {
+    fetchEvents();
+  }, [fetchEvents]);
 
   return (
     <section id="events" className="">
@@ -152,7 +161,7 @@ export default function EventListSection() {
           </div>
         )}
 
-        {/* "Alle Events anzeigen"-Button - Nur anzeigen, wenn Daten geladen sind und kein Fehler vorliegt */}
+        {/* "Alle Events anzeigen"-Button - Only show when data is loaded and no error */}
         {!isLoading && !error && events.length > 0 && (
           <div className="mt-10 text-center">
             <Link href="/events" passHref>
@@ -165,4 +174,9 @@ export default function EventListSection() {
       </div>
     </section>
   );
-}
+});
+
+// ES6+ Display name for debugging  
+EventListSection.displayName = "EventListSection";
+
+export default EventListSection;

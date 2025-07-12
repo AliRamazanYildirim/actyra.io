@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, memo, useCallback, useMemo } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import { ShoppingCart, Menu, X } from "lucide-react";
@@ -17,76 +17,86 @@ import { RiSearchEyeLine } from "react-icons/ri";
 import ThemeToggle from "./ThemeToggle";
 import useTicketStore from "@/store/ticketStore";
 
-export default function NavBar() {
+/**
+ * NavBar Component - ES6+ and Next.js 15 optimized
+ * Modern navigation with React.memo, useCallback, and ES6+ patterns
+ */
+const NavBar = memo(() => {
   const [isVisible, setIsVisible] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("home");
   const [clientTicketCount, setClientTicketCount] = useState(0);
+
+  // ES6+ Zustand store selectors with memoization
   const cartTickets = useTicketStore(state => state.cartTickets || []);
-  const totalTicketCount = Array.isArray(cartTickets) 
-  ? cartTickets.reduce((sum, ticket) => sum + (ticket?.quantity || 0), 0) 
-  : 0;
+  
+  // ES6+ useMemo for computed values
+  const totalTicketCount = useMemo(() => 
+    Array.isArray(cartTickets) 
+      ? cartTickets.reduce((sum, ticket) => sum + (ticket?.quantity || 0), 0) 
+      : 0, 
+    [cartTickets]
+  );
+
   const pathname = usePathname();
   const router = useRouter();
   const { isSignedIn } = useUser();
 
+  // ES6+ Initialization effect with arrow function
   useEffect(() => {
     document.documentElement.style.scrollBehavior = "smooth";
     const timeout = setTimeout(() => setIsVisible(true), 100);
     return () => clearTimeout(timeout);
   }, []);
 
+  // ES6+ Client-side ticket count synchronization
   useEffect(() => {
-  // Erst nach dem Client-Rendering den echten Wert setzen und nur wenn tickets ein Array ist
-  if (Array.isArray(cartTickets)) {
-    setClientTicketCount(totalTicketCount);
-  }
-}, [totalTicketCount, cartTickets]);
-
-  useEffect(() => {
-    if (pathname === "/") {
-      const observer = new IntersectionObserver(
-        (entries) => {
-          for (const entry of entries) {
-            if (entry.isIntersecting) {
-              setActiveSection(entry.target.id);
-            }
-          }
-        },
-        { threshold: 0.6 }
-      );
-
-      const sections = ["home", "events", "kategorien"];
-      sections.forEach((id) => {
-        const el = document.getElementById(id);
-        if (el) observer.observe(el);
-      });
-
-      return () => observer.disconnect();
+    // Set real value after client rendering only when tickets is an array
+    if (Array.isArray(cartTickets)) {
+      setClientTicketCount(totalTicketCount);
     }
+  }, [totalTicketCount, cartTickets]);
+
+  // ES6+ Intersection Observer for section tracking
+  useEffect(() => {
+    if (pathname !== "/") return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        // ES6+ for...of loop with early return
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            setActiveSection(entry.target.id);
+          }
+        }
+      },
+      { threshold: 0.6 }
+    );
+
+    // ES6+ Array methods and optional chaining
+    const sections = ["home", "events", "kategorien"];
+    sections.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+
+    return () => observer.disconnect();
   }, [pathname]);
 
+  // ES6+ Mobile menu resize handler
   useEffect(() => {
-  // Erst nach dem Client-Rendering den echten Wert setzen
-  setClientTicketCount(totalTicketCount);
-}, [totalTicketCount]);
+    const closeMenuOnResize = () => {
+      if (window.innerWidth >= 768) {
+        setIsMobileMenuOpen(false);
+      }
+    };
 
-// Close mobile menu on resize
+    window.addEventListener("resize", closeMenuOnResize);
+    return () => window.removeEventListener("resize", closeMenuOnResize);
+  }, []);
 
-useEffect(() => {
-  const closeMenuOnResize = () => {
-    if (window.innerWidth >= 768) {
-      setIsMobileMenuOpen(false);
-    }
-  };
-
-  window.addEventListener("resize", closeMenuOnResize);
-  return () => window.removeEventListener("resize", closeMenuOnResize);
-}, []);
-
-  
-
-  const handleScrollTo = (id) => {
+  // ES6+ Event handlers with useCallback
+  const handleScrollTo = useCallback((id) => {
     setIsMobileMenuOpen(false);
     if (pathname !== "/") {
       router.push(`/#${id}`);
@@ -94,17 +104,20 @@ useEffect(() => {
       const section = document.getElementById(id);
       section?.scrollIntoView({ behavior: "smooth" });
     }
-  };
+  }, [pathname, router]);
 
-  const linkStyle = (targetPath) =>
+  // ES6+ Link styling function with template literals
+  const linkStyle = useCallback((targetPath) =>
     `hover:text-pink-400 transition cursor-pointer ${
       pathname === targetPath ? "text-pink-400 font-semibold" : ""
-    }`;
+    }`, [pathname]);
 
-  const isActive = (sectionId) =>
+  // ES6+ Section active state checker
+  const isActive = useCallback((sectionId) =>
     pathname === "/" && activeSection === sectionId
       ? "text-pink-400 font-semibold"
-      : "hover:text-pink-400 transition cursor-pointer";
+      : "hover:text-pink-400 transition cursor-pointer", 
+    [pathname, activeSection]);
 
   return (
     <nav
@@ -361,4 +374,9 @@ useEffect(() => {
       )}
     </nav>
   );
-}
+});
+
+// ES6+ Display name for debugging
+NavBar.displayName = "NavBar";
+
+export default NavBar;

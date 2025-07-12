@@ -5,7 +5,16 @@ export default clerkMiddleware({
     '/',
     '/api/webhooks/stripe',
     '/api/webhooks/clerk',
+    '/events(.*)',
+    '/kategorien(.*)',
+    '/footer(.*)',
     // weitere öffentliche Routen hier hinzufügen
+  ],
+  // Admin-Routen erfordern Authentifizierung
+  protectedRoutes: [
+    '/admin(.*)',
+    '/api/admin(.*)',
+    '/api/user(.*)',
   ]
 });
 

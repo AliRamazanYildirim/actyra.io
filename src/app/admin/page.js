@@ -25,8 +25,21 @@ export default function AdminDashboard() {
   // Zustand store
   const stats = useAdminStore((state) => state.stats);
   const loading = useAdminStore((state) => state.loading);
+  const isAdmin = useAdminStore((state) => state.isAdmin);
   const setStats = useAdminStore((state) => state.setStats);
   const setLoading = useAdminStore((state) => state.setLoading);
+
+  // Admin yetkisi kontrolü
+  if (!isAdmin) {
+    return (
+      <div className="min-h-screen bg-[#0D0E25] flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-white mb-4">Zugriff verweigert</h1>
+          <p className="text-gray-400">Sie haben keine Admin-Berechtigung.</p>
+        </div>
+      </div>
+    );
+  }
 
   useEffect(() => {
     const fetchDashboardData = async () => {

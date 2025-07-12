@@ -21,6 +21,7 @@ const useAdminStore = create((set, get) => ({
 
   // User role
   userRole: null,
+  isAdmin: false,
 
   // Actions
   setStats: (newStats) => set((state) => ({ 
@@ -31,7 +32,10 @@ const useAdminStore = create((set, get) => ({
     loading: { ...state.loading, [section]: isLoading }
   })),
 
-  setUserRole: (role) => set({ userRole: role }),
+  setUserRole: (role) => set({ 
+    userRole: role,
+    isAdmin: role === 'admin'
+  }),
 }));
 
 // Named exports for convenience

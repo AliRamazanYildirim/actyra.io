@@ -16,7 +16,7 @@ import {
   Tags,
   Receipt,
   Menu,
-  X
+  X,
 } from "lucide-react";
 
 const sidebarItems = [
@@ -100,7 +100,8 @@ export default function AdminSidebar({ userRole }) {
     if (href === "/admin") {
       return pathname === "/admin";
     }
-    return pathname.startsWith(href);
+    // Exact match için - sadece tam eşleşmelerde aktif olsun
+    return pathname === href;
   };
 
   const renderMenuItem = (item) => {
@@ -128,7 +129,7 @@ export default function AdminSidebar({ userRole }) {
               <ChevronRight className="w-4 h-4" />
             )}
           </button>
-          
+
           {isExpanded && (
             <div className="ml-8 mt-1 space-y-1">
               {item.children.map((child) => (
@@ -173,7 +174,11 @@ export default function AdminSidebar({ userRole }) {
         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
         className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-[#0f172a] border border-gray-800 rounded-lg text-white"
       >
-        {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+        {isMobileMenuOpen ? (
+          <X className="w-6 h-6" />
+        ) : (
+          <Menu className="w-6 h-6" />
+        )}
       </button>
 
       {/* Mobile Overlay */}
@@ -185,12 +190,18 @@ export default function AdminSidebar({ userRole }) {
       )}
 
       {/* Sidebar */}
-      <div className={`
+      <div
+        className={`
         w-64 bg-[#0f172a] border-r border-gray-800 flex flex-col
         lg:relative lg:translate-x-0
         fixed left-0 top-0 h-full z-40 transform transition-transform duration-300 ease-in-out
-        ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
-      `}>
+        ${
+          isMobileMenuOpen
+            ? "translate-x-0"
+            : "-translate-x-full lg:translate-x-0"
+        }
+      `}
+      >
         {/* Logo */}
         <div className="p-6 border-b border-gray-800">
           <h1 className="text-2xl font-bold text-white">
@@ -205,20 +216,20 @@ export default function AdminSidebar({ userRole }) {
 
         {/* Navigation */}
         <nav className="flex-1 p-4 overflow-y-auto">
-          <div className="space-y-1">
-            {sidebarItems.map(renderMenuItem)}
-          </div>
+          <div className="space-y-1">{sidebarItems.map(renderMenuItem)}</div>
         </nav>
 
         {/* User Role Badge */}
         <div className="p-4 border-t border-gray-800">
           <div className="flex items-center justify-center">
-            <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-              userRole === 'admin' 
-                ? 'bg-red-500/20 text-red-400 border border-red-500/30' 
-                : 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
-            }`}>
-              {userRole === 'admin' ? 'Administrator' : 'Veranstalter'}
+            <span
+              className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                userRole === "admin"
+                  ? "bg-red-500/20 text-red-400 border border-red-500/30"
+                  : "bg-blue-500/20 text-blue-400 border border-blue-500/30"
+              }`}
+            >
+              {userRole === "admin" ? "Administrator" : "Veranstalter"}
             </span>
           </div>
         </div>

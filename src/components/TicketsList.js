@@ -11,19 +11,6 @@ export default function TicketsList() {
   const error = useTicketStore((state) => state.error);
   const fetchTickets = useTicketStore((state) => state.fetchTickets);
 
-  // Image URL validation fonksiyonu
-  const validateImageUrl = (imageUrl) => {
-    if (!imageUrl || imageUrl.trim() === "") return false;
-
-    // Geçersiz veya var olmayan dosya adlarını kontrol et
-    const invalidPatterns = [
-      /^\d+-event-default\.webp$/, // 1748269339185-event-default.webp gibi pattern'ler
-      /^\/images\/\d+-event-default\.webp$/,
-    ];
-
-    return !invalidPatterns.some((pattern) => pattern.test(imageUrl));
-  };
-
   // Tickets in das Event-Format umwandeln
   const ticketsAsEvents = Array.isArray(tickets)
     ? tickets.map((ticket) => {
@@ -31,21 +18,16 @@ export default function TicketsList() {
         const matchingEvent =
           eventSeedData.find((event) => event.slug === ticket.slug) || {};
 
-        // Image URL validasyonu
-        const isValidTicketImage = validateImageUrl(ticket.imageUrl);
-        const isValidMatchingImage = validateImageUrl(matchingEvent.imageUrl);
-
         return {
           id: ticket._id || ticket.slug, // MongoDB-ID verwenden (falls vorhanden)
           slug: ticket.slug,
           title: ticket.eventTitle,
           location: ticket.location,
           date: ticket.date,
-          imageUrl: isValidTicketImage
-            ? ticket.imageUrl
-            : isValidMatchingImage
-            ? matchingEvent.imageUrl
-            : "/images/event-default.webp",
+          imageUrl:
+            ticket.imageUrl ||
+            matchingEvent.imageUrl ||
+            "/images/event-default.webp",
           price: ticket.totalPrice,
           pricePerTicket: ticket.price,
           tags: [

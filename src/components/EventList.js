@@ -2,7 +2,7 @@
 
 "use client";
 
-import Image from "next/image";
+import SafeImage from "./SafeImage";
 import { Calendar, MapPin, Tag } from "lucide-react";
 
 export default function EventList({ events }) {
@@ -14,15 +14,11 @@ export default function EventList({ events }) {
           className="group border border-gray-200 rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 bg-white"
         >
           <div className="relative w-full h-56">
-            <Image
+            <SafeImage
               src={event.imageUrl}
               alt={event.title}
               fill
               className="object-cover group-hover:scale-105 transition-transform duration-300"
-              onError={(e) => {
-                console.error("Image load error for:", event.imageUrl);
-                e.target.src = "/images/event-default.webp";
-              }}
             />
           </div>
           <div className="p-4 space-y-3">

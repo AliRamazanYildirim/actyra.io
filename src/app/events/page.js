@@ -1,6 +1,6 @@
 import NavBar from "@/components/NavBar";
 import Link from "next/link";
-import Image from "next/image";
+import SafeImage from "@/components/SafeImage";
 import { MapPin, Calendar, Euro } from "lucide-react";
 import dbConnect from "@/lib/db";
 import Event from "@/models/Event";
@@ -59,7 +59,7 @@ export default async function EventsPage() {
         </p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
-          {events.map((event) => (
+          {events.map((event, index) => (
             <div
               key={event._id || event.slug}
               className="relative bg-[#0f172a] text-white rounded-2xl overflow-hidden shadow-lg transition-all duration-500 hover:scale-[1.02] hover:bg-gradient-to-br hover:from-purple-600 hover:to-pink-600"
@@ -70,19 +70,14 @@ export default async function EventsPage() {
               </div>
 
               {/* Event Bild */}
-              {event.imageUrl ? (
-                <Image
-                  src={event.imageUrl}
-                  alt={event.title}
-                  width={600}
-                  height={400}
-                  className="w-full h-48 object-cover"
-                />
-              ) : (
-                <div className="w-full h-48 bg-gradient-to-r from-purple-600 to-pink-600 flex items-center justify-center">
-                  <span className="text-white font-bold">{event.title}</span>
-                </div>
-              )}
+              <SafeImage
+                src={event.imageUrl}
+                alt={event.title}
+                width={600}
+                height={400}
+                className="w-full h-48 object-cover"
+                priority={index < 3} // İlk 3 resim için priority
+              />
 
               {/* Event Inhalt */}
               <div className="p-5 space-y-2">

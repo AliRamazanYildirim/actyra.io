@@ -4,14 +4,12 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 
 export default function SafeImage({ src, alt, priority = false, ...props }) {
-  // Yanlış URL pattern'lerini kontrol et
+  // Überprüfe nur wirklich falsche URL-Muster.
   const isInvalidUrl =
     src &&
     (src.includes("undefined") ||
       src.match(/^\d+-event-default\.webp$/) ||
-      src.match(/^\/images\/\d+-event-default\.webp$/) ||
-      src.match(/^\/images\/\d+-.+\.(png|jpg|jpeg)$/) || // /images/ ile başlayan timestamped dosyalar
-      src.match(/^\d+-.+\.(png|jpg|jpeg)$/)); // images/ olmayan timestamped dosyalar
+      src.match(/^\/images\/\d+-event-default\.webp$/)); // Nur die event-default-Dateien sind ungültig.
 
   const defaultImage = "/images/event-default.webp";
   const [imgSrc, setImgSrc] = useState(
@@ -19,12 +17,7 @@ export default function SafeImage({ src, alt, priority = false, ...props }) {
   );
   const [hasError, setHasError] = useState(false);
 
-  // Debug log
-  if (isInvalidUrl) {
-    console.log(`🚫 Invalid URL detected and blocked: ${src}`);
-  }
-
-  // Src değiştiğinde state'i güncelle
+  // Aktualisiere den Zustand, wenn Src sich ändert
   useEffect(() => {
     if (src !== imgSrc && !isInvalidUrl && !hasError) {
       setImgSrc(src || defaultImage);
@@ -33,7 +26,7 @@ export default function SafeImage({ src, alt, priority = false, ...props }) {
   }, [src, imgSrc, isInvalidUrl, hasError, defaultImage]);
 
   const handleError = () => {
-    console.log(`Image load failed for: ${imgSrc}, falling back to default`);
+    console.log(`Image load failed, using fallback: ${imgSrc} -> ${defaultImage}`);
     if (imgSrc !== defaultImage) {
       setImgSrc(defaultImage);
       setHasError(true);
@@ -47,6 +40,7 @@ export default function SafeImage({ src, alt, priority = false, ...props }) {
       alt={alt || "Event Image"}
       priority={priority}
       onError={handleError}
+      unoptimized={true}  // Next.js Bildoptimierung deaktivieren - erforderlich für lokale Dateien
     />
   );
 }

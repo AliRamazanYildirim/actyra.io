@@ -5,6 +5,7 @@ const nextConfig = {
       {
         protocol: "http",
         hostname: "localhost",
+        port: "3000",
       },
       {
         protocol: "https",
@@ -15,6 +16,8 @@ const nextConfig = {
         hostname: "images.clerk.dev",
       },
     ],
+    // Lokal dosyalar için unoptimized: true seçeneği
+    unoptimized: false,
   },
   experimental: {
     optimizeCss: true, // CSS-Optimierung (funktioniert mit Tailwind)

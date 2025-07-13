@@ -117,10 +117,10 @@ export default function AdminEventsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold text-white">Event-Verwaltung</h1>
-        <Link href="/event-erstellen">
+        <Link href="/admin/events/create">
           <button className="bg-gradient-to-r from-purple-600 to-pink-500 text-white px-4 py-2 rounded-lg hover:from-pink-500 hover:to-purple-600 transition-all duration-200 flex items-center">
             <Plus className="w-4 h-4 mr-2" />
-            Event erstellen
+            Neues Event
           </button>
         </Link>
       </div>

@@ -2,16 +2,16 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { 
-  Calendar, 
-  MapPin, 
-  Euro, 
-  Tag, 
-  FileText, 
+import {
+  Calendar,
+  MapPin,
+  Euro,
+  Tag,
+  FileText,
   Image as ImageIcon,
   Save,
   ArrowLeft,
-  Upload
+  Upload,
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -51,34 +51,34 @@ const INITIAL_FORM_DATA = {
 // Validation functions
 const validateForm = (formData) => {
   const errors = {};
-  
+
   if (!formData.title.trim()) errors.title = "Titel ist erforderlich";
   if (!formData.location.trim()) errors.location = "Ort ist erforderlich";
   if (!formData.date) errors.date = "Datum ist erforderlich";
   if (!formData.category) errors.category = "Kategorie ist erforderlich";
   if (formData.price < 0) errors.price = "Preis kann nicht negativ sein";
-  
+
   return errors;
 };
 
 // Form data preparation
 const prepareFormData = (formData) => {
   const submitData = new FormData();
-  
+
   Object.entries(formData).forEach(([key, value]) => {
     if (key === "image" && value) {
       submitData.append("image", value);
     } else if (key === "tags") {
       const tagsArray = value
         .split(",")
-        .map(tag => tag.trim())
+        .map((tag) => tag.trim())
         .filter(Boolean);
       submitData.append("tags", JSON.stringify(tagsArray));
     } else if (key !== "image") {
       submitData.append(key, value);
     }
   });
-  
+
   return submitData;
 };
 
@@ -86,9 +86,9 @@ const prepareFormData = (formData) => {
 const FormHeader = () => (
   <div className="flex items-center justify-between mb-8">
     <div className="flex items-center gap-4">
-      <Link 
+      <Link
         href="/admin/events"
-        className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors"
+        className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors cursor-pointer"
       >
         <ArrowLeft className="w-5 h-5" />
         Zurück
@@ -104,7 +104,7 @@ const BasicDataSection = ({ formData, errors, onChange }) => (
       <FileText className="w-5 h-5" />
       Grunddaten
     </h2>
-    
+
     <div className="space-y-4">
       <div>
         <label className="block text-sm font-medium text-gray-300 mb-2">
@@ -115,12 +115,14 @@ const BasicDataSection = ({ formData, errors, onChange }) => (
           name="title"
           value={formData.title}
           onChange={onChange}
-          className={`w-full px-4 py-3 bg-gray-700 border rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 ${
+          className={`w-full px-4 py-3 bg-gray-700 border rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-200 cursor-text ${
             errors.title ? "border-red-500" : "border-gray-600"
           }`}
           placeholder="Event-Titel eingeben..."
         />
-        {errors.title && <p className="text-red-400 text-sm mt-1">{errors.title}</p>}
+        {errors.title && (
+          <p className="text-red-400 text-sm mt-1">{errors.title}</p>
+        )}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -134,12 +136,14 @@ const BasicDataSection = ({ formData, errors, onChange }) => (
             name="location"
             value={formData.location}
             onChange={onChange}
-            className={`w-full px-4 py-3 bg-gray-700 border rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 ${
+            className={`w-full px-4 py-3 bg-gray-700 border rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-200 cursor-text ${
               errors.location ? "border-red-500" : "border-gray-600"
             }`}
             placeholder="Berlin, Hamburg..."
           />
-          {errors.location && <p className="text-red-400 text-sm mt-1">{errors.location}</p>}
+          {errors.location && (
+            <p className="text-red-400 text-sm mt-1">{errors.location}</p>
+          )}
         </div>
 
         <div>
@@ -152,11 +156,13 @@ const BasicDataSection = ({ formData, errors, onChange }) => (
             name="date"
             value={formData.date}
             onChange={onChange}
-            className={`w-full px-4 py-3 bg-gray-700 border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500 ${
+            className={`w-full px-4 py-3 bg-gray-700 border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-200 cursor-pointer ${
               errors.date ? "border-red-500" : "border-gray-600"
             }`}
           />
-          {errors.date && <p className="text-red-400 text-sm mt-1">{errors.date}</p>}
+          {errors.date && (
+            <p className="text-red-400 text-sm mt-1">{errors.date}</p>
+          )}
         </div>
       </div>
 
@@ -173,12 +179,14 @@ const BasicDataSection = ({ formData, errors, onChange }) => (
             onChange={onChange}
             min="0"
             step="0.01"
-            className={`w-full px-4 py-3 bg-gray-700 border rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 ${
+            className={`w-full px-4 py-3 bg-gray-700 border rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-200 cursor-text ${
               errors.price ? "border-red-500" : "border-gray-600"
             }`}
             placeholder="0.00"
           />
-          {errors.price && <p className="text-red-400 text-sm mt-1">{errors.price}</p>}
+          {errors.price && (
+            <p className="text-red-400 text-sm mt-1">{errors.price}</p>
+          )}
         </div>
 
         <div>
@@ -189,9 +197,9 @@ const BasicDataSection = ({ formData, errors, onChange }) => (
             name="status"
             value={formData.status}
             onChange={onChange}
-            className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+            className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-200 cursor-pointer"
           >
-            {STATUS_OPTIONS.map(option => (
+            {STATUS_OPTIONS.map((option) => (
               <option key={option.value} value={option.value}>
                 {option.label}
               </option>
@@ -209,7 +217,7 @@ const CategorySection = ({ formData, errors, onChange }) => (
       <Tag className="w-5 h-5" />
       Kategorisierung
     </h2>
-    
+
     <div className="space-y-4">
       <div>
         <label className="block text-sm font-medium text-gray-300 mb-2">
@@ -219,18 +227,20 @@ const CategorySection = ({ formData, errors, onChange }) => (
           name="category"
           value={formData.category}
           onChange={onChange}
-          className={`w-full px-4 py-3 bg-gray-700 border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500 ${
+          className={`w-full px-4 py-3 bg-gray-700 border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-200 cursor-pointer ${
             errors.category ? "border-red-500" : "border-gray-600"
           }`}
         >
           <option value="">Kategorie wählen...</option>
-          {CATEGORIES.map(cat => (
+          {CATEGORIES.map((cat) => (
             <option key={cat.value} value={cat.value}>
               {cat.label}
             </option>
           ))}
         </select>
-        {errors.category && <p className="text-red-400 text-sm mt-1">{errors.category}</p>}
+        {errors.category && (
+          <p className="text-red-400 text-sm mt-1">{errors.category}</p>
+        )}
       </div>
 
       <div>
@@ -242,7 +252,7 @@ const CategorySection = ({ formData, errors, onChange }) => (
           name="tags"
           value={formData.tags}
           onChange={onChange}
-          className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+          className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-200 cursor-text"
           placeholder="Party, Berlin, Networking..."
         />
       </div>
@@ -252,10 +262,8 @@ const CategorySection = ({ formData, errors, onChange }) => (
 
 const DescriptionSection = ({ formData, onChange }) => (
   <div className="bg-gray-800 rounded-lg p-6">
-    <h2 className="text-xl font-semibold text-white mb-4">
-      Beschreibungen
-    </h2>
-    
+    <h2 className="text-xl font-semibold text-white mb-4">Beschreibungen</h2>
+
     <div className="space-y-4">
       <div>
         <label className="block text-sm font-medium text-gray-300 mb-2">
@@ -266,7 +274,7 @@ const DescriptionSection = ({ formData, onChange }) => (
           value={formData.shortDescription}
           onChange={onChange}
           rows={3}
-          className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none"
+          className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none transition-all duration-200 cursor-text"
           placeholder="Kurze Beschreibung des Events..."
         />
       </div>
@@ -280,7 +288,7 @@ const DescriptionSection = ({ formData, onChange }) => (
           value={formData.longDescription}
           onChange={onChange}
           rows={6}
-          className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none"
+          className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none transition-all duration-200 cursor-text"
           placeholder="Detaillierte Beschreibung des Events..."
         />
       </div>
@@ -294,7 +302,7 @@ const ImageUploadSection = ({ imagePreview, onImageChange }) => (
       <ImageIcon className="w-5 h-5" />
       Event-Bild
     </h2>
-    
+
     <div className="space-y-4">
       <div className="aspect-video bg-gray-700 rounded-lg overflow-hidden relative">
         {imagePreview ? (
@@ -324,7 +332,7 @@ const ImageUploadSection = ({ imagePreview, onImageChange }) => (
         />
         <label
           htmlFor="image-upload"
-          className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg cursor-pointer transition-colors"
+          className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg cursor-pointer transition-all duration-200 hover:shadow-lg"
         >
           <Upload className="w-4 h-4" />
           Bild hochladen
@@ -343,7 +351,7 @@ const ActionButtons = ({ isSubmitting, errors }) => (
       <button
         type="submit"
         disabled={isSubmitting}
-        className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-green-600 hover:bg-green-700 disabled:bg-gray-600 text-white rounded-lg font-semibold transition-colors"
+        className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-green-600 hover:bg-green-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white rounded-lg font-semibold transition-all duration-200 hover:shadow-lg cursor-pointer"
       >
         {isSubmitting ? (
           <>
@@ -360,7 +368,7 @@ const ActionButtons = ({ isSubmitting, errors }) => (
 
       <Link
         href="/admin/events"
-        className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-gray-600 hover:bg-gray-700 text-white rounded-lg font-semibold transition-colors"
+        className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-gray-600 hover:bg-gray-700 text-white rounded-lg font-semibold transition-all duration-200 hover:shadow-lg cursor-pointer"
       >
         Abbrechen
       </Link>
@@ -385,12 +393,12 @@ export default function CreateEventPage() {
   const handleInputChange = (e) => {
     const { name, value, type } = e.target;
     const newValue = type === "number" ? Number(value) : value;
-    
-    setFormData(prev => ({ ...prev, [name]: newValue }));
-    
+
+    setFormData((prev) => ({ ...prev, [name]: newValue }));
+
     // Clear error when user starts typing
     if (errors[name]) {
-      setErrors(prev => ({ ...prev, [name]: "" }));
+      setErrors((prev) => ({ ...prev, [name]: "" }));
     }
   };
 
@@ -398,8 +406,8 @@ export default function CreateEventPage() {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    setFormData(prev => ({ ...prev, image: file }));
-    
+    setFormData((prev) => ({ ...prev, image: file }));
+
     // Create preview
     const reader = new FileReader();
     reader.onload = (event) => setImagePreview(event.target.result);
@@ -408,30 +416,32 @@ export default function CreateEventPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     const validationErrors = validateForm(formData);
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       return;
     }
-    
+
     setIsSubmitting(true);
     setErrors({});
-    
+
     try {
       const submitData = prepareFormData(formData);
-      
+
       const response = await fetch("/api/admin/events", {
         method: "POST",
         body: submitData,
       });
-      
+
       const result = await response.json();
-      
+
       if (response.ok) {
         router.push("/admin/events");
       } else {
-        setErrors({ submit: result.error || "Event konnte nicht erstellt werden" });
+        setErrors({
+          submit: result.error || "Event konnte nicht erstellt werden",
+        });
       }
     } catch (error) {
       setErrors({ submit: "Ein Fehler ist aufgetreten" });
@@ -441,44 +451,40 @@ export default function CreateEventPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 p-6">
+    <div className="min-h-screen bg-[#0D0E25] rounded-xl p-6 pt-20 lg:pt-6">
       <div className="max-w-4xl mx-auto">
         <FormHeader />
 
         <form onSubmit={handleSubmit} className="space-y-8">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            
             {/* Linke Spalte - Hauptdaten */}
             <div className="lg:col-span-2 space-y-6">
-              <BasicDataSection 
-                formData={formData} 
-                errors={errors} 
-                onChange={handleInputChange} 
+              <BasicDataSection
+                formData={formData}
+                errors={errors}
+                onChange={handleInputChange}
               />
-              
-              <CategorySection 
-                formData={formData} 
-                errors={errors} 
-                onChange={handleInputChange} 
+
+              <CategorySection
+                formData={formData}
+                errors={errors}
+                onChange={handleInputChange}
               />
-              
-              <DescriptionSection 
-                formData={formData} 
-                onChange={handleInputChange} 
+
+              <DescriptionSection
+                formData={formData}
+                onChange={handleInputChange}
               />
             </div>
 
             {/* Rechte Spalte - Bild & Actions */}
             <div className="space-y-6">
-              <ImageUploadSection 
-                imagePreview={imagePreview} 
-                onImageChange={handleImageChange} 
+              <ImageUploadSection
+                imagePreview={imagePreview}
+                onImageChange={handleImageChange}
               />
-              
-              <ActionButtons 
-                isSubmitting={isSubmitting} 
-                errors={errors} 
-              />
+
+              <ActionButtons isSubmitting={isSubmitting} errors={errors} />
             </div>
           </div>
         </form>

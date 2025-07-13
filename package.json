@@ -33,6 +33,7 @@
     "react-parallax-tilt": "^1.7.289",
     "react-qr-code": "^2.0.15",
     "react-typed": "^2.0.12",
+    "recharts": "^3.1.0",
     "stripe": "^18.1.0",
     "svix": "^1.65.0",
     "tailwind-merge": "^3.2.0",

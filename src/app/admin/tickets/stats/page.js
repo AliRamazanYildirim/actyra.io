@@ -53,7 +53,7 @@ const StatCard = ({
   };
 
   return (
-    <div className="bg-[#0f172a] border border-gray-800 rounded-xl p-6 hover:shadow-xl transition-all duration-300 cursor-pointer group">
+    <div className="bg-[#0f172a] border border-gray-800 rounded-xl p-6 hover:shadow-xl transition-all duration-300 group">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
           <div
@@ -95,7 +95,7 @@ export default function AdminTicketStatsPage() {
     averageOrderValue: 0,
     conversionRate: 0,
     refundRate: 0,
-    // Trend veriler için
+    // Trenddaten für
     previousStats: {
       totalTickets: 0,
       completedTickets: 0,
@@ -152,7 +152,7 @@ export default function AdminTicketStatsPage() {
   }, [fetchTicketStats]);
 
   const calculateStats = () => {
-    // Gerçek veritabanı verilerini kullan, fallback olarak 0
+    // Verwende echte Datenbankdaten, fallback auf 0
     return {
       totalTickets: stats.totalTickets || 0,
       completedTickets: stats.completedTickets || 0,
@@ -167,7 +167,7 @@ export default function AdminTicketStatsPage() {
 
   const calculatedStats = calculateStats();
 
-  // Gerçek veritabanı verilerini kullan
+  // Verwende echte Datenbankdaten
   const dailySalesData = chartData.dailySales || [];
   const statusDistributionData = chartData.statusDistribution || [];
   const paymentMethodsData = chartData.paymentMethods || [];
@@ -196,7 +196,7 @@ export default function AdminTicketStatsPage() {
     );
   }
 
-  // Veri yoksa özel mesaj göster
+  // Wenn keine Daten vorhanden sind, zeige eine private Nachricht.
   const hasAnyData =
     calculatedStats.totalTickets > 0 ||
     dailySalesData.length > 0 ||

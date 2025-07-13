@@ -34,33 +34,122 @@ export async function GET(request) {
       {
         $match: {
           purchaseDate: { $gte: startDate },
-          paymentStatus: "completed"
-        }
+          paymentStatus: "completed",
+        },
       },
       {
         $group: {
           _id: "$eventTitle",
           tickets: { $sum: "$quantity" },
-          revenue: { $sum: "$totalPrice" }
-        }
+          revenue: { $sum: "$totalPrice" },
+        },
       },
       { $sort: { tickets: -1 } },
-      { $limit: 10 }
+      { $limit: 10 },
     ]);
 
-    // Andere Diagrammdaten werden leer zurückgegeben, nur für topEvents
+    // Tägliche Ticket-Verkäufe
+    const dailySales = await Ticket.aggregate([
+      {
+        $match: {
+          purchaseDate: { $gte: startDate },
+          paymentStatus: "completed",
+        },
+      },
+      {
+        $group: {
+          _id: { $dateToString: { format: "%Y-%m-%d", date: "$purchaseDate" } },
+          tickets: { $sum: "$quantity" },
+          revenue: { $sum: "$totalPrice" },
+        },
+      },
+      { $sort: { _id: 1 } },
+    ]);
+
+    // Status Verteilung
+    const statusDistribution = await Ticket.aggregate([
+      {
+        $match: {
+          purchaseDate: { $gte: startDate },
+          paymentStatus: { $exists: true, $ne: "" },
+        },
+      },
+      {
+        $group: {
+          _id: "$paymentStatus",
+          count: { $sum: 1 },
+        },
+      },
+    ]);
+
+    // Umsatz Trend
+    const revenueTrend = dailySales.map((day) => ({
+      date: day._id,
+      revenue: day.revenue || 0,
+    }));
+
+    // Zahlungsmethoden
+    const paymentMethods = await Ticket.aggregate([
+      {
+        $match: {
+          purchaseDate: { $gte: startDate },
+          paymentStatus: "completed",
+        },
+      },
+      {
+        $group: {
+          _id: "$paymentMethod",
+          count: { $sum: 1 },
+          revenue: { $sum: "$totalPrice" },
+        },
+      },
+    ]);
+
     return NextResponse.json({
-      dailySales: [],
-      statusDistribution: [],
-      paymentMethods: [],
-      topEvents: topEvents.map(item => ({
+      dailySales: dailySales.map((day) => ({
+        date: day._id,
+        tickets: day.tickets || 0,
+        revenue: day.revenue || 0,
+      })),
+      statusDistribution: statusDistribution.map((item) => {
+        // Renk ve isim eşleştirmesi
+        let color = "#64748b";
+        let name = "Unbekannt";
+        if (item._id === "completed") {
+          color = "#22c55e";
+          name = "Abgeschlossen";
+        } else if (item._id === "pending") {
+          color = "#eab308";
+          name = "Ausstehend";
+        } else if (item._id === "failed") {
+          color = "#ef4444";
+          name = "Fehlgeschlagen";
+        } else if (item._id) {
+          name = item._id;
+        }
+        return {
+          name,
+          value: item.count || 0,
+          color,
+        };
+      }),
+      revenueTrend,
+      paymentMethods: paymentMethods.map((item) => ({
+        method: item._id || "Unbekannt",
+        count: item.count || 0,
+        revenue: item.revenue || 0,
+      })),
+      topEvents: topEvents.map((item) => ({
         event: item._id || "Unbekanntes Event",
         tickets: item.tickets || 0,
-        revenue: item.revenue || 0
+        revenue: item.revenue || 0,
       })),
-      hourlyDistribution: []
+      hourlyDistribution: [],
     });
   } catch (error) {
-    return NextResponse.json({ error: "Interner Serverfehler" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Interner Serverfehler" },
+      { status: 500 }
+    );
   }
 }

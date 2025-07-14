@@ -15,8 +15,8 @@ import {
   Ticket,
   Tags,
   Receipt,
-  Menu,
-  X,
+  // Menu, // Buradan kaldırıldı
+  // X, // Buradan kaldırıldı
 } from "lucide-react";
 
 const sidebarItems = [
@@ -84,9 +84,10 @@ const sidebarItems = [
   },
 ];
 
-export default function AdminSidebar({ userRole }) {
+// isMobileMenuOpen ve setIsMobileMenuOpen proplarını alacak şekilde güncellendi
+export default function AdminSidebar({ userRole, isMobileMenuOpen, setIsMobileMenuOpen }) {
   const [expandedItems, setExpandedItems] = useState({});
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  // const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // Bu satır kaldırıldı
   const pathname = usePathname();
 
   const toggleExpanded = (title) => {
@@ -169,41 +170,24 @@ export default function AdminSidebar({ userRole }) {
 
   return (
     <>
-      {/* Mobile Menu Button */}
-      <button
-        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-        className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-[#0f172a] border border-gray-800 rounded-lg text-white"
-      >
-        {isMobileMenuOpen ? (
-          <X className="w-6 h-6" />
-        ) : (
-          <Menu className="w-6 h-6" />
-        )}
-      </button>
-
-      {/* Mobile Overlay */}
-      {isMobileMenuOpen && (
-        <div
-          className="lg:hidden fixed inset-0 bg-black/50 z-30"
-          onClick={() => setIsMobileMenuOpen(false)}
-        />
-      )}
+      {/* Mobile Menu Button ve Overlay buraya taşındığı için bu kısımlar kaldırıldı */}
+      {/* <button ... /> */}
+      {/* {isMobileMenuOpen && <div ... />} */}
 
       {/* Sidebar */}
       <div
         className={`
-        w-64 bg-[#0f172a] border-r border-gray-800 flex flex-col
-        lg:relative lg:translate-x-0
-        fixed left-0 top-0 h-full z-40 transform transition-transform duration-300 ease-in-out
-        ${
-          isMobileMenuOpen
-            ? "translate-x-0"
-            : "-translate-x-full lg:translate-x-0"
-        }
-      `}
+          w-64 bg-[#0f172a] border-r border-gray-800 flex flex-col
+          fixed left-0 top-0 h-full z-40
+          ${
+            isMobileMenuOpen
+              ? "translate-x-0" // Mobil menü açıkken tamamen görünür (soldan içeri kaydırılır)
+              : "-translate-x-full lg:translate-x-0" // Mobil menü kapalıyken soldan gizlenir, ancak büyük ekranlarda (lg) yine de görünür (sabit)
+          }
+        `}
       >
         {/* Logo */}
-        <div className="p-6 border-b border-gray-800">
+        <div className="p-6">
           <h1 className="text-2xl font-bold text-white">
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">
               Actyra

@@ -89,7 +89,7 @@ export default function AdminDashboard() {
     fetchDashboardData();
   }, [isAdmin, setStats, setChartData, setLoading]);
 
-  // Admin yetkisi kontrolü
+  // Administrator-Berechtigungsprüfung
   if (!isAdmin) {
     return (
       <div className="min-h-screen bg-[#0D0E25] flex items-center justify-center">

@@ -2,8 +2,8 @@
 
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { Loader2 } from "lucide-react";
+import { useEffect, useState } from "react"; // useState buraya eklendi
+import { Loader2, Menu, X } from "lucide-react"; // Menu ve X buraya eklendi
 import AdminSidebar from "@/components/admin/AdminSidebar";
 import AdminTopBar from "@/components/admin/AdminTopBar";
 import useAdminStore from "@/store/adminStore";
@@ -12,8 +12,9 @@ export default function AdminLayout({ children }) {
   const { user, isLoaded } = useUser();
   const router = useRouter();
   const [loading, setLoading] = useState(true);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // isMobileMenuOpen state'i buraya taşındı
 
-  // Zustand store
+  // Zustand Store
   const userRole = useAdminStore((state) => state.userRole);
   const setUserRole = useAdminStore((state) => state.setUserRole);
 
@@ -21,25 +22,25 @@ export default function AdminLayout({ children }) {
     const checkUserRole = async () => {
       if (isLoaded && user) {
         try {
-          // Gerçek kullanıcı rolünü veritabanından çek
+          // Echte Benutzerrolle aus der Datenbank abrufen
           const response = await fetch("/api/user/profile");
 
           if (response.ok) {
             const userData = await response.json();
             setUserRole(userData.role);
 
-            // Admin değilse ana sayfaya yönlendir
-            if (userData.role !== "admin") {
+            // Wenn nicht Admin, zur Startseite weiterleiten
+            if (userData.role !== "admin" && userData.role !== "veranstalter") { // Both admin and veranstalter can access admin panel based on sidebar config
               console.log(
-                "Kullanıcı admin değil, ana sayfaya yönlendiriliyor..."
+                "Benutzer ist kein Admin/Veranstalter, wird zur Startseite weitergeleitet..."
               );
               router.push("/");
               return;
             }
           } else if (response.status === 404) {
-            // Kullanıcı DB'de yok - GEÇİCİ ÇÖZÜM: İlk kullanıcıya admin yetkisi ver
+            // Benutzer nicht in DB - VORÜBERGEHENDE LÖSUNG: Erstem Benutzer Adminrechte geben
             console.log(
-              "Kullanıcı DB'de bulunamadı, ilk kullanıcı olarak admin yetkisi veriliyor..."
+              "Benutzer nicht in der Datenbank gefunden, erster Benutzer erhält Adminrechte..."
             );
 
             try {
@@ -51,27 +52,27 @@ export default function AdminLayout({ children }) {
                   email: user.emailAddresses[0]?.emailAddress,
                   fullName:
                     user.fullName || user.firstName + " " + user.lastName,
-                  role: "admin", // GEÇİCİ: İlk kullanıcıya admin yetkisi
+                  role: "admin", // VORÜBERGEHEND: Erster Benutzer erhält Adminrechte
                 }),
               });
 
               if (createResponse.ok) {
                 const newUserData = await createResponse.json();
                 setUserRole("admin");
-                console.log("✅ Yeni kullanıcı admin olarak oluşturuldu");
+                console.log("✅ Neuer Benutzer wurde als Admin erstellt");
               } else {
-                console.error("Kullanıcı oluşturulamadı");
+                console.error("Benutzer konnte nicht erstellt werden");
                 router.push("/");
                 return;
               }
             } catch (createError) {
-              console.error("Kullanıcı oluşturma hatası:", createError);
+              console.error("Fehler beim Erstellen des Benutzers:", createError);
               router.push("/");
               return;
             }
           } else {
             console.error(
-              "API yanıt hatası:",
+              "API Antwortfehler:",
               response.status,
               response.statusText
             );
@@ -79,7 +80,7 @@ export default function AdminLayout({ children }) {
             return;
           }
         } catch (error) {
-          console.error("API çağrısı hatası:", error);
+          console.error("Fehler beim API-Aufruf:", error);
           router.push("/");
           return;
         }
@@ -92,7 +93,7 @@ export default function AdminLayout({ children }) {
     checkUserRole();
   }, [user, isLoaded, router, setUserRole]);
 
-  // Mount kontrolü - hydration güvenliği
+  // Mount-Kontrolle - Hydration-Sicherheit
   if (loading || !isLoaded) {
     return (
       <div className="min-h-screen bg-[#0D0E25] flex items-center justify-center">
@@ -112,11 +113,36 @@ export default function AdminLayout({ children }) {
 
   return (
     <div className="min-h-screen bg-[#0D0E25] flex" suppressHydrationWarning>
-      {/* Sidebar */}
-      <AdminSidebar userRole={userRole} />
+      {/* Mobile Menu Button - Layout seviyesinde yönetiliyor */}
+      <button
+        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+        className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-[#0f172a] border border-gray-800 rounded-lg text-white"
+      >
+        {isMobileMenuOpen ? (
+          <X className="w-6 h-6" />
+        ) : (
+          <Menu className="w-6 h-6" />
+        )}
+      </button>
 
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col">
+      {/* Mobile Overlay - Layout seviyesinde yönetiliyor */}
+      {isMobileMenuOpen && (
+        <div
+          className="lg:hidden fixed inset-0 bg-black/50 z-30"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
+
+      {/* Seitenleiste */}
+      <AdminSidebar
+        userRole={userRole}
+        isMobileMenuOpen={isMobileMenuOpen}
+        setIsMobileMenuOpen={setIsMobileMenuOpen}
+      />
+
+      {/* Hauptinhalt */}
+      {/* lg:ml-64 sadece büyük ekranlarda uygulanır, mobil menü açıkken (isMobileMenuOpen) boşluk olmaz */}
+      <div className={`flex-1 flex flex-col ${isMobileMenuOpen ? '' : 'lg:ml-64'}`}>
         <AdminTopBar user={user} userRole={userRole} />
         <main className="flex-1 p-4 lg:p-6 overflow-y-auto">{children}</main>
       </div>

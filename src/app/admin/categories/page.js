@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { format } from "date-fns";
 import { de } from "date-fns/locale";
 import Link from "next/link";
-import { categorySeedData } from "@/data/categorySeedData";
+import categoriesStatic from "@/data/categories";
 import { Plus, Edit, Trash2, Eye, ToggleLeft, ToggleRight } from "lucide-react";
 
 export default function CategoryAdminPage() {
@@ -21,12 +21,18 @@ export default function CategoryAdminPage() {
         const res = await fetch("/api/admin/categories");
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || "Fehler beim Laden.");
-        // Wenn die Datenbank leer ist, zeige Seed-Daten
-        if (Array.isArray(data) && data.length === 0) {
-          setCategories(categorySeedData);
-        } else {
-          setCategories(data);
-        }
+        // Statische Kategorien und Datenbank-Kategorien zusammenführen
+        const staticCats = categoriesStatic.map((cat) => ({
+          name: cat.replace(/-/g, " ").replace(/\b\w/g, l => l.toUpperCase()),
+          icon: "",
+          isActive: true,
+          createdAt: "",
+          id: cat,
+          isStatic: true,
+        }));
+        // Datenbankkategorien
+        const dbCats = Array.isArray(data) ? data.map((cat) => ({ ...cat, isStatic: false })) : [];
+        setCategories([...staticCats, ...dbCats]);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -77,7 +83,7 @@ export default function CategoryAdminPage() {
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold text-white">Kategorien verwalten</h1>
         <Link href="/admin/categories/create">
-          <button className="bg-gradient-to-r from-purple-600 to-pink-500 text-white px-4 py-2 rounded-lg hover:from-pink-500 hover:to-purple-600 transition-all duration-200 flex items-center">
+          <button className="bg-gradient-to-r from-purple-600 to-pink-500 text-white px-4 py-2 rounded-lg hover:from-pink-500 hover:to-purple-600 transition-all duration-200 flex items-center cursor-pointer">
             <Plus className="w-4 h-4 mr-2" />
             Kategorie hinzufügen
           </button>
@@ -146,9 +152,9 @@ export default function CategoryAdminPage() {
                     </button>
                   </td>
                   <td className="px-6 py-4 text-gray-300">
-                    {format(new Date(cat.createdAt), "dd.MM.yyyy", {
-                      locale: de,
-                    })}
+                    {cat.createdAt && cat.createdAt !== "" && !cat.isStatic
+                      ? format(new Date(cat.createdAt), "dd.MM.yyyy", { locale: de })
+                      : "—"}
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center space-x-2">
@@ -166,7 +172,7 @@ export default function CategoryAdminPage() {
                           title="Bearbeiten"
                         >
                           <Edit className="w-4 h-4" />
-                          <span className="hidden sm:inline">Bearbeiten</span>
+                          <span className="hidden sm:inline text-gray-300">Bearbeiten</span>
                         </button>
                       </Link>
                       <button

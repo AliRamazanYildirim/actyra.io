@@ -15,9 +15,8 @@ import {
   Ticket,
   Tags,
   Receipt,
-  // Menu, // Buradan kaldırıldı
-  // X, // Buradan kaldırıldı
 } from "lucide-react";
+import Image from "next/image";
 
 const sidebarItems = [
   {
@@ -55,12 +54,6 @@ const sidebarItems = [
     ],
   },
   {
-    title: "Benutzer",
-    icon: Users,
-    href: "/admin/users",
-    roles: ["admin"],
-  },
-  {
     title: "Finanzen",
     icon: Receipt,
     roles: ["admin", "veranstalter"],
@@ -76,6 +69,12 @@ const sidebarItems = [
     href: "/admin/analytics",
     roles: ["admin", "veranstalter"],
   },
+   {
+    title: "Benutzer",
+    icon: Users,
+    href: "/admin/users",
+    roles: ["admin"],
+  },
   {
     title: "Einstellungen",
     icon: Settings,
@@ -84,8 +83,12 @@ const sidebarItems = [
   },
 ];
 
-// isMobileMenuOpen ve setIsMobileMenuOpen proplarını alacak şekilde güncellendi
-export default function AdminSidebar({ userRole, isMobileMenuOpen, setIsMobileMenuOpen }) {
+// wurde aktualisiert, um die Props isMobileMenuOpen und setIsMobileMenuOpen zu übernehmen
+export default function AdminSidebar({
+  userRole,
+  isMobileMenuOpen,
+  setIsMobileMenuOpen,
+}) {
   const [expandedItems, setExpandedItems] = useState({});
   // const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // Bu satır kaldırıldı
   const pathname = usePathname();
@@ -101,7 +104,7 @@ export default function AdminSidebar({ userRole, isMobileMenuOpen, setIsMobileMe
     if (href === "/admin") {
       return pathname === "/admin";
     }
-    // Exact match için - sadece tam eşleşmelerde aktif olsun
+    // Genaues Match - nur bei exakten Übereinstimmungen aktiv sein
     return pathname === href;
   };
 
@@ -170,10 +173,6 @@ export default function AdminSidebar({ userRole, isMobileMenuOpen, setIsMobileMe
 
   return (
     <>
-      {/* Mobile Menu Button ve Overlay buraya taşındığı için bu kısımlar kaldırıldı */}
-      {/* <button ... /> */}
-      {/* {isMobileMenuOpen && <div ... />} */}
-
       {/* Sidebar */}
       <div
         className={`
@@ -181,21 +180,34 @@ export default function AdminSidebar({ userRole, isMobileMenuOpen, setIsMobileMe
           fixed left-0 top-0 h-full z-40
           ${
             isMobileMenuOpen
-              ? "translate-x-0" // Mobil menü açıkken tamamen görünür (soldan içeri kaydırılır)
-              : "-translate-x-full lg:translate-x-0" // Mobil menü kapalıyken soldan gizlenir, ancak büyük ekranlarda (lg) yine de görünür (sabit)
+              ? "translate-x-0" // Das mobile Menü ist vollständig sichtbar, wenn es geöffnet ist (von links hereingeschoben).
+              : "-translate-x-full lg:translate-x-0" // Das mobile Menü wird ausgeblendet, wenn es geschlossen ist, aber auf großen Bildschirmen (lg) bleibt es dennoch sichtbar (fest).
           }
         `}
       >
         {/* Logo */}
-        <div className="p-6">
-          <h1 className="text-2xl font-bold text-white">
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">
-              Actyra
-            </span>
-            <span className="text-sm font-normal text-gray-400 block mt-1">
-              Admin Panel
-            </span>
-          </h1>
+        <div className="p-6 flex flex-col items-center">
+          <Link
+            href="/"
+            className="flex items-center gap-3 justify-center w-full"
+          >
+            <Image
+              src="/logo-actyra.png"
+              alt="Actyra Logo"
+              width={40}
+              height={40}
+              className="rounded-full shadow-md hover:scale-105 transition"
+              style={{ objectFit: "cover" }}
+            />
+            <div className="flex flex-col items-center">
+              <span className="text-2xl font-bold text-white text-center">
+                Actyra
+              </span>
+              <span className="text-sm font-normal text-gray-400 mt-1 text-center">
+                Admin Panel
+              </span>
+            </div>
+          </Link>
         </div>
 
         {/* Navigation */}

@@ -121,7 +121,7 @@ export default function AdminSidebar({
         <div key={item.title} className="mb-1">
           <button
             onClick={() => toggleExpanded(item.title)}
-            className="w-full flex items-center justify-between px-4 py-3 text-gray-300 hover:text-white hover:bg-[#1e293b] rounded-lg transition-all duration-200 group"
+            className="w-full flex items-center justify-between px-4 py-3 text-gray-300 hover:bg-purple-600 hover:text-white rounded-lg transition-all duration-200 group"
           >
             <div className="flex items-center">
               <item.icon className="w-5 h-5 mr-3" />
@@ -162,7 +162,7 @@ export default function AdminSidebar({
         className={`flex items-center px-4 py-3 rounded-lg transition-all duration-200 mb-1 ${
           isActive(item.href)
             ? "bg-gradient-to-r from-purple-600 to-pink-500 text-white"
-            : "text-gray-300 hover:text-white hover:bg-[#1e293b]"
+            : "text-gray-300 hover:text-white hover:bg-purple-600"
         }`}
       >
         <item.icon className="w-5 h-5 mr-3" />

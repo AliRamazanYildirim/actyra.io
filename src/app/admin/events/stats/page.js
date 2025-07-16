@@ -10,19 +10,12 @@ import {
   PieChart,
   Activity,
   Target,
-  Globe,
-  Clock,
-  MapPin,
   Star,
-  Eye,
   Download,
 } from "lucide-react";
 import {
   format,
-  parseISO,
   subDays,
-  startOfMonth,
-  endOfMonth,
   eachDayOfInterval,
 } from "date-fns";
 import { de } from "date-fns/locale";
@@ -95,7 +88,7 @@ export default function EventStatsPage() {
     try {
       setLoading(true);
 
-      // Events ve tickets verilerini paralel olarak çek
+     // Ereignis- und Ticketdaten parallel abrufen
       const [eventsResponse, ticketsResponse] = await Promise.all([
         fetch("/api/admin/events"),
         fetch("/api/admin/tickets"),
@@ -112,7 +105,7 @@ export default function EventStatsPage() {
         setStats(calculatedStats);
       }
     } catch (error) {
-      console.error("İstatistikler yüklenirken hata:", error);
+      console.error("Error while loading statistics:", error);
     } finally {
       setLoading(false);
     }
@@ -123,7 +116,7 @@ export default function EventStatsPage() {
     const thirtyDaysAgo = subDays(now, 30);
     const sixtyDaysAgo = subDays(now, 60);
 
-    // Temel overview istatistikleri
+    // Grundlegende Übersicht Statistiken
     const totalEvents = events.length;
     const activeEvents = events.filter((e) => e.status === "active").length;
     const completedEvents = events.filter(
@@ -144,7 +137,7 @@ export default function EventStatsPage() {
     const completionRate =
       totalEvents > 0 ? (completedEvents / totalEvents) * 100 : 0;
 
-    // Kategori dağılımı
+    // Kategorieverteilung
     const categoryCount = {};
     events.forEach((event) => {
       categoryCount[event.category] = (categoryCount[event.category] || 0) + 1;
@@ -158,7 +151,7 @@ export default function EventStatsPage() {
     const avgAttendeesPerEvent =
       totalEvents > 0 ? totalTicketsSold / totalEvents : 0;
 
-    // Zaman serisi verileri için günlük gruplandırma
+    // Tägliche Gruppierung für Zeitreihendaten
     const last30Days = eachDayOfInterval({ start: thirtyDaysAgo, end: now });
 
     const eventsOverTime = last30Days.map((day) => {
@@ -175,7 +168,7 @@ export default function EventStatsPage() {
       };
     });
 
-    // Kategori dağılımı grafik verisi
+    // Kategorienverteilung Diagrammdaten
     const categoryDistribution = Object.entries(categoryCount).map(
       ([category, count]) => ({
         name: formatCategoryName(category),
@@ -184,7 +177,7 @@ export default function EventStatsPage() {
       })
     );
 
-    // Gelir zaman serisi
+    // Einnahmen-Zeitreihe
     const revenueOverTime = last30Days.map((day) => {
       const dayStr = format(day, "yyyy-MM-dd");
       const dayRevenue = tickets
@@ -204,7 +197,7 @@ export default function EventStatsPage() {
       };
     });
 
-    // Bilet satış trendi
+    // Ticket-Verkaufstrend
     const ticketSalesOverTime = last30Days.map((day) => {
       const dayStr = format(day, "yyyy-MM-dd");
       const dayTickets = tickets
@@ -221,7 +214,7 @@ export default function EventStatsPage() {
       };
     });
 
-    // Status dağılımı
+    // Statusverteilung
     const statusCount = {};
     events.forEach((event) => {
       statusCount[event.status] = (statusCount[event.status] || 0) + 1;
@@ -235,7 +228,7 @@ export default function EventStatsPage() {
       })
     );
 
-    // Fiyat aralıkları analizi
+    // Analyse der Preisspannen
     const priceRanges = [
       { range: "0-25€", min: 0, max: 25 },
       { range: "26-50€", min: 26, max: 50 },

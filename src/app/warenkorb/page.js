@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import useTicketStore from "@/store/ticketStore";
 import NavBar from "@/components/NavBar";
-import { Trash2, ShoppingBag, ChevronLeft, Plus, Minus } from "lucide-react"; // Plus und Minus Icons hinzugefügt
+import { Trash2, ShoppingBag, ChevronLeft, Plus, Minus } from "lucide-react"; 
 import Link from "next/link";
 
 export default function WarenkorbPage() {

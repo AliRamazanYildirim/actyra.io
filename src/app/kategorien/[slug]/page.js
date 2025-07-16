@@ -2,7 +2,6 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import dbConnect from "@/lib/db";
-import Event from "@/models/Event";
 
 // Kategorie-Icons importieren
 import KategorieKulturMusik from "@/icons/KategorieKulturMusik";

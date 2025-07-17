@@ -3,19 +3,20 @@ import User from "../src/models/User.js";
 
 async function setupAdmin() {
   try {
-    // MongoDB bağlantısı
-    await mongoose.connect("mongodb://localhost:27017/actyra-io");
-    console.log("MongoDB bağlantısı başarılı");
+    // MongoDB Verbindung aus .env
+    const mongoUri = process.env.MONGODB_URI;
+    await mongoose.connect(mongoUri);
+    console.log("MongoDB-Verbindung erfolgreich");
 
-    // Mevcut kullanıcıları listele
+    //Vorhandene Benutzer auflisten
     const users = await User.find({});
-    console.log("\n=== Mevcut Kullanıcılar ===");
+    console.log("\n=== Vorhandene Benutzer ===");
 
     if (users.length === 0) {
-      console.log("Hiç kullanıcı bulunamadı.");
+      console.log("Kein Benutzer gefunden.");
     } else {
       users.forEach((user, index) => {
-        console.log(`${index + 1}. Kullanıcı:`);
+        console.log(`${index + 1}. Benutzer:`);
         console.log(`   Clerk ID: ${user.clerkId}`);
         console.log(`   Email: ${user.email}`);
         console.log(`   Role: ${user.role}`);
@@ -24,18 +25,18 @@ async function setupAdmin() {
       });
     }
 
-    // İlk kullanıcıyı admin yap (eğer varsa)
+    // Mach den ersten Benutzer zum Admin (falls vorhanden)
     if (users.length > 0) {
       const firstUser = users[0];
       if (firstUser.role !== "admin") {
         await User.findByIdAndUpdate(firstUser._id, { role: "admin" });
-        console.log(`\n✅ ${firstUser.email} kullanıcısı admin yapıldı!`);
+        console.log(`\n✅ ${firstUser.email} wurde zum Administrator gemacht!`);
       } else {
-        console.log(`\n✅ ${firstUser.email} zaten admin!`);
+        console.log(`\n✅ ${firstUser.email} bereits Administrator!`);
       }
     } else {
-      // Test kullanıcısı oluştur
-      console.log("\nTest admin kullanıcısı oluşturuluyor...");
+      // Testbenutzer erstellen
+      console.log("\nTest-Admin-Benutzer wird erstellt...");
       const testUser = new User({
         clerkId: "test-admin-123",
         email: "admin@test.com",
@@ -43,13 +44,13 @@ async function setupAdmin() {
         role: "admin",
       });
       await testUser.save();
-      console.log("✅ Test admin kullanıcısı oluşturuldu!");
+      console.log("✅ Test-Admin-Benutzer wurde erstellt!");
     }
 
     await mongoose.disconnect();
-    console.log("\nMongoDB bağlantısı kapatıldı.");
+    console.log("\nMongoDB-Verbindung geschlossen.");
   } catch (error) {
-    console.error("Hata:", error);
+    console.error("Fehler:", error);
     process.exit(1);
   }
 }

@@ -1,15 +1,15 @@
-// MongoDB'de kullanıcı rolünü admin yapmak için bu scripti kullanabilirsiniz
+// Man kann dieses Skript verwenden, um die Benutzerrolle in MongoDB auf Admin zu setzen
 
-// 1. MongoDB Compass veya mongosh ile bağlanın
-// 2. Kullanıcınızın clerkId'sini bulun (Clerk Dashboard'dan)
-// 3. Bu komutu çalıştırın:
+// 1. Verbinde dich mit MongoDB Compass oder mongosh
+// 2. Finde die clerkId deines Benutzers (im Clerk-Dashboard)
+// 3. Führe diesen Befehl aus:
 
 db.users.updateOne(
   { clerkId: "user_2xdV7sSClYwdlG6TVDsAl92cQd1" },
   { $set: { role: "admin" } }
 );
 
-// Örnek:
+// Beispiel:
 // db.users.updateOne(
 //   { clerkId: "user_2abc123def456" },
 //   { $set: { role: "admin" } }

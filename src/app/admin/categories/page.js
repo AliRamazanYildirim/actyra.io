@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { format } from "date-fns";
 import { de } from "date-fns/locale";
 import Link from "next/link";
-import categoriesStatic from "@/data/categories";
 import { Plus, Edit, Trash2, Eye, ToggleLeft, ToggleRight } from "lucide-react";
 
 export default function CategoryAdminPage() {
@@ -21,22 +20,9 @@ export default function CategoryAdminPage() {
         const res = await fetch("/api/admin/categories");
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || "Fehler beim Laden.");
-        // Statische Kategorien und Datenbank-Kategorien zusammenführen
-        const staticCats = categoriesStatic.map((cat) => ({
-          name: cat.name
-            .replace(/-/g, " ")
-            .replace(/\b\w/g, (l) => l.toUpperCase()),
-          icon: "",
-          isActive: true,
-          createdAt: "",
-          id: cat.name,
-          isStatic: true,
-        }));
-        // Datenbankkategorien
-        const dbCats = Array.isArray(data)
-          ? data.map((cat) => ({ ...cat, isStatic: false }))
-          : [];
-        setCategories([...staticCats, ...dbCats]);
+        // Nur Datenbankkategorien anzeigen
+        const dbCats = Array.isArray(data) ? data : [];
+        setCategories(dbCats);
       } catch (err) {
         setError(err.message);
       } finally {

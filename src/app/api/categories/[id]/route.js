@@ -7,7 +7,7 @@ let extraCategories = [];
 export async function GET(request, { params }) {
   const { id } = params;
   // In den festen Kategorien suchen
-  let category = categories.find((cat) => cat === id);
+  let category = categories.find((cat) => cat.name === id);
   // In den zusätzlichen Kategorien suchen
   if (!category) {
     category = extraCategories.find((cat) => cat.id === id);

@@ -23,15 +23,19 @@ export default function CategoryAdminPage() {
         if (!res.ok) throw new Error(data.error || "Fehler beim Laden.");
         // Statische Kategorien und Datenbank-Kategorien zusammenführen
         const staticCats = categoriesStatic.map((cat) => ({
-          name: cat.replace(/-/g, " ").replace(/\b\w/g, l => l.toUpperCase()),
+          name: cat.name
+            .replace(/-/g, " ")
+            .replace(/\b\w/g, (l) => l.toUpperCase()),
           icon: "",
           isActive: true,
           createdAt: "",
-          id: cat,
+          id: cat.name,
           isStatic: true,
         }));
         // Datenbankkategorien
-        const dbCats = Array.isArray(data) ? data.map((cat) => ({ ...cat, isStatic: false })) : [];
+        const dbCats = Array.isArray(data)
+          ? data.map((cat) => ({ ...cat, isStatic: false }))
+          : [];
         setCategories([...staticCats, ...dbCats]);
       } catch (err) {
         setError(err.message);
@@ -153,7 +157,9 @@ export default function CategoryAdminPage() {
                   </td>
                   <td className="px-6 py-4 text-gray-300">
                     {cat.createdAt && cat.createdAt !== "" && !cat.isStatic
-                      ? format(new Date(cat.createdAt), "dd.MM.yyyy", { locale: de })
+                      ? format(new Date(cat.createdAt), "dd.MM.yyyy", {
+                          locale: de,
+                        })
                       : "—"}
                   </td>
                   <td className="px-6 py-4">
@@ -172,7 +178,9 @@ export default function CategoryAdminPage() {
                           title="Bearbeiten"
                         >
                           <Edit className="w-4 h-4" />
-                          <span className="hidden sm:inline text-gray-300">Bearbeiten</span>
+                          <span className="hidden sm:inline text-gray-300">
+                            Bearbeiten
+                          </span>
                         </button>
                       </Link>
                       <button

@@ -204,8 +204,8 @@ const EventErstellenForm = () => {
                   Bitte wählen
                 </option>
                 {categories.map((cat) => (
-                  <option key={cat} value={cat}>
-                    {cat}
+                  <option key={cat.name} value={cat.name}>
+                    {cat.name}
                   </option>
                 ))}
               </select>

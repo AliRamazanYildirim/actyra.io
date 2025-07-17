@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { categories } from "@/data/categories";
+import categories from "@/data/categories";
 
 // Dummy-Datenbank (im Speicher, nur Demo)
 let extraCategories = [];

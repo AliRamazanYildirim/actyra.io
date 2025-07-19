@@ -410,9 +410,11 @@ export default function AdminTicketsPage() {
           {filteredTickets.length === 0 && (
             <div className="text-center py-12">
               <Ticket className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-              <p className="text-gray-400 text-lg">Keine Tickets gefunden.</p>
-              <p className="text-gray-500 text-sm mt-2">
-                Versuchen Sie, Ihre Suchkriterien zu ändern.
+              <h1 className="text-2xl font-bold text-white mb-4">
+                Zugriff verweigert
+              </h1>
+              <p className="text-gray-400">
+                Sie haben keine Admin-Berechtigung.
               </p>
             </div>
           )}

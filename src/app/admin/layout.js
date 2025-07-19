@@ -2,8 +2,8 @@
 
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react"; // useState buraya eklendi
-import { Loader2, Menu, X } from "lucide-react"; // Menu ve X buraya eklendi
+import { useEffect, useState } from "react"; 
+import { Loader2, Menu, X } from "lucide-react"; 
 import AdminSidebar from "@/components/admin/AdminSidebar";
 import AdminTopBar from "@/components/admin/AdminTopBar";
 import useAdminStore from "@/store/adminStore";
@@ -12,7 +12,7 @@ export default function AdminLayout({ children }) {
   const { user, isLoaded } = useUser();
   const router = useRouter();
   const [loading, setLoading] = useState(true);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // isMobileMenuOpen state'i buraya taşındı
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // Zustand Store
   const userRole = useAdminStore((state) => state.userRole);
@@ -22,67 +22,15 @@ export default function AdminLayout({ children }) {
     const checkUserRole = async () => {
       if (isLoaded && user) {
         try {
-          // Echte Benutzerrolle aus der Datenbank abrufen
-          const response = await fetch("/api/user/profile");
-
-          if (response.ok) {
-            const userData = await response.json();
-            setUserRole(userData.role);
-
-            // Wenn nicht Admin, zur Startseite weiterleiten
-            if (userData.role !== "admin" && userData.role !== "veranstalter") { // Both admin and veranstalter can access admin panel based on sidebar config
-              console.log(
-                "Benutzer ist kein Admin/Veranstalter, wird zur Startseite weitergeleitet..."
-              );
-              router.push("/");
-              return;
-            }
-          } else if (response.status === 404) {
-            // Benutzer nicht in DB - VORÜBERGEHENDE LÖSUNG: Erstem Benutzer Adminrechte geben
-            console.log(
-              "Benutzer nicht in der Datenbank gefunden, erster Benutzer erhält Adminrechte..."
-            );
-
-            try {
-              const createResponse = await fetch("/api/user/create", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                  clerkId: user.id,
-                  email: user.emailAddresses[0]?.emailAddress,
-                  fullName:
-                    user.fullName || user.firstName + " " + user.lastName,
-                  role: "admin", // VORÜBERGEHEND: Erster Benutzer erhält Adminrechte
-                }),
-              });
-
-              if (createResponse.ok) {
-                const newUserData = await createResponse.json();
-                setUserRole("admin");
-                console.log("✅ Neuer Benutzer wurde als Admin erstellt");
-              } else {
-                console.error("Benutzer konnte nicht erstellt werden");
-                router.push("/");
-                return;
-              }
-            } catch (createError) {
-              console.error("Fehler beim Erstellen des Benutzers:", createError);
-              router.push("/");
-              return;
-            }
+          const res = await fetch("/api/user/profile");
+          if (res.ok) {
+            const data = await res.json();
+            setUserRole(data.role);
           } else {
-            console.error(
-              "API Antwortfehler:",
-              response.status,
-              response.statusText
-            );
-            router.push("/");
-            return;
+            setUserRole(undefined);
           }
-        } catch (error) {
-          console.error("Fehler beim API-Aufruf:", error);
-          router.push("/");
-          return;
+        } catch (err) {
+          setUserRole(undefined);
         }
         setLoading(false);
       } else if (isLoaded && !user) {
@@ -113,7 +61,7 @@ export default function AdminLayout({ children }) {
 
   return (
     <div className="min-h-screen bg-[#0D0E25] flex" suppressHydrationWarning>
-      {/* Mobile Menu Button - Layout seviyesinde yönetiliyor */}
+      {/* Mobile Menu Button - Layout-Ebene verwaltet. */}
       <button
         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
         className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-[#0f172a] border border-gray-800 rounded-lg text-white"
@@ -125,7 +73,7 @@ export default function AdminLayout({ children }) {
         )}
       </button>
 
-      {/* Mobile Overlay - Layout seviyesinde yönetiliyor */}
+      {/* Mobile Overlay - Layout-Ebene verwaltet. */}
       {isMobileMenuOpen && (
         <div
           className="lg:hidden fixed inset-0 bg-black/50 z-30"
@@ -141,8 +89,10 @@ export default function AdminLayout({ children }) {
       />
 
       {/* Hauptinhalt */}
-      {/* lg:ml-64 sadece büyük ekranlarda uygulanır, mobil menü açıkken (isMobileMenuOpen) boşluk olmaz */}
-      <div className={`flex-1 flex flex-col ${isMobileMenuOpen ? '' : 'lg:ml-64'}`}>
+      {/* lg:ml-64 wird nur auf großen Bildschirmen angewendet, bei geöffnetem mobilen Menü (isMobileMenuOpen) gibt es keinen Abstand. */}
+      <div
+        className={`flex-1 flex flex-col ${isMobileMenuOpen ? "" : "lg:ml-64"}`}
+      >
         <AdminTopBar user={user} userRole={userRole} />
         <main className="flex-1 p-4 lg:p-6 overflow-y-auto">{children}</main>
       </div>

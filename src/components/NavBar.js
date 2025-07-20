@@ -16,6 +16,7 @@ import {
 import { RiSearchEyeLine } from "react-icons/ri";
 import ThemeToggle from "./ThemeToggle";
 import useTicketStore from "@/store/ticketStore";
+import { ChevronDownIcon } from "@heroicons/react/24/solid";
 
 /**
  * NavBar Component - ES6+ and Next.js 15 optimized
@@ -26,21 +27,42 @@ const NavBar = memo(() => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("home");
   const [clientTicketCount, setClientTicketCount] = useState(0);
+  const [userRole, setUserRole] = useState(null);
+  const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
 
   // ES6+ Zustand store selectors with memoization
-  const cartTickets = useTicketStore(state => state.cartTickets || []);
-  
+  const cartTickets = useTicketStore((state) => state.cartTickets || []);
+
   // ES6+ useMemo for computed values
-  const totalTicketCount = useMemo(() => 
-    Array.isArray(cartTickets) 
-      ? cartTickets.reduce((sum, ticket) => sum + (ticket?.quantity || 0), 0) 
-      : 0, 
+  const totalTicketCount = useMemo(
+    () =>
+      Array.isArray(cartTickets)
+        ? cartTickets.reduce((sum, ticket) => sum + (ticket?.quantity || 0), 0)
+        : 0,
     [cartTickets]
   );
 
   const pathname = usePathname();
   const router = useRouter();
-  const { isSignedIn } = useUser();
+  const { isSignedIn, user } = useUser();
+  // Rolle des Benutzers laden, wenn eingeloggt
+  useEffect(() => {
+    const fetchRole = async () => {
+      try {
+        const res = await fetch("/api/user/profile");
+        if (res.ok) {
+          const data = await res.json();
+          setUserRole(data.role);
+        } else {
+          setUserRole(null);
+        }
+      } catch {
+        setUserRole(null);
+      }
+    };
+    if (isSignedIn) fetchRole();
+    else setUserRole(null);
+  }, [isSignedIn]);
 
   // ES6+ Initialization effect with arrow function
   useEffect(() => {
@@ -96,28 +118,36 @@ const NavBar = memo(() => {
   }, []);
 
   // ES6+ Event handlers with useCallback
-  const handleScrollTo = useCallback((id) => {
-    setIsMobileMenuOpen(false);
-    if (pathname !== "/") {
-      router.push(`/#${id}`);
-    } else {
-      const section = document.getElementById(id);
-      section?.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [pathname, router]);
+  const handleScrollTo = useCallback(
+    (id) => {
+      setIsMobileMenuOpen(false);
+      if (pathname !== "/") {
+        router.push(`/#${id}`);
+      } else {
+        const section = document.getElementById(id);
+        section?.scrollIntoView({ behavior: "smooth" });
+      }
+    },
+    [pathname, router]
+  );
 
   // ES6+ Link styling function with template literals
-  const linkStyle = useCallback((targetPath) =>
-    `hover:text-pink-400 transition cursor-pointer ${
-      pathname === targetPath ? "text-pink-400 font-semibold" : ""
-    }`, [pathname]);
+  const linkStyle = useCallback(
+    (targetPath) =>
+      `hover:text-pink-400 transition cursor-pointer ${
+        pathname === targetPath ? "text-pink-400 font-semibold" : ""
+      }`,
+    [pathname]
+  );
 
   // ES6+ Section active state checker
-  const isActive = useCallback((sectionId) =>
-    pathname === "/" && activeSection === sectionId
-      ? "text-pink-400 font-semibold"
-      : "hover:text-pink-400 transition cursor-pointer", 
-    [pathname, activeSection]);
+  const isActive = useCallback(
+    (sectionId) =>
+      pathname === "/" && activeSection === sectionId
+        ? "text-pink-400 font-semibold"
+        : "hover:text-pink-400 transition cursor-pointer",
+    [pathname, activeSection]
+  );
 
   return (
     <nav
@@ -219,14 +249,46 @@ const NavBar = memo(() => {
           </SignedOut>
           {/* Profil-Schaltfläche - nur für eingeloggte Benutzer sichtbar */}
           <SignedIn>
-            <li>
-              <Link
-                href="/profil"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="nav-link text-white"
+            <li
+              className="relative"
+              onMouseEnter={() => setProfileDropdownOpen(true)}
+              onMouseLeave={() => setProfileDropdownOpen(false)}
+            >
+              <button
+                className="text-white flex items-center gap-1 focus:outline-none cursor-pointer"
+                aria-haspopup="true"
+                aria-expanded={profileDropdownOpen}
               >
                 Mein Profil
-              </Link>
+              </button>
+              {/* Dropdown für Profil und ggf. Admin Dashboard */}
+              {profileDropdownOpen && (
+                <div
+                  className="absolute right-0 mt-4 w-56 bg-gradient-to-b from-[#23244a] to-[#181a2b] border border-pink-600/30 rounded-2xl shadow-2xl z-50 flex flex-col items-center pt-4 pb-3 animate-fadeIn"
+                  style={{ right: "-85px" }}
+                >
+                  {/* ChevronDownIcon tam ortada ve üstte */}
+                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-b from-[#23244a] to-[#181a2b] rounded-full p-1 border border-pink-600/30 shadow-lg flex items-center justify-center">
+                    <ChevronDownIcon className="w-7 h-7 text-pink-400 drop-shadow" />
+                  </div>
+                  <Link
+                    href="/profil"
+                    className="w-5/6 text-center px-4 py-2 text-base text-white rounded-lg hover:bg-pink-500/20 transition mb-1"
+                    onClick={() => setProfileDropdownOpen(false)}
+                  >
+                    Mein Profil
+                  </Link>
+                  {userRole === "admin" && (
+                    <Link
+                      href="/admin"
+                      className="w-5/6 text-center px-4 py-2 text-base text-white rounded-lg hover:bg-pink-500/20 transition"
+                      onClick={() => setProfileDropdownOpen(false)}
+                    >
+                      Admin Dashboard
+                    </Link>
+                  )}
+                </div>
+              )}
             </li>
             <li>
               <Link href="/warenkorb" className="relative group">

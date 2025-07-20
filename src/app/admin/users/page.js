@@ -204,7 +204,7 @@ export default function AdminUsersPage() {
                       onChange={(e) =>
                         handleRoleChange(user._id, e.target.value)
                       }
-                      className={`px-3 py-1 rounded-full text-xs font-semibold border ${
+                      className={`px-3 py-1 rounded-lg text-xs font-semibold border focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors duration-150 ${
                         user.role === "admin"
                           ? "bg-red-500/20 text-red-400 border-red-500/30"
                           : user.role === "veranstalter"
@@ -212,9 +212,24 @@ export default function AdminUsersPage() {
                           : "bg-gray-500/20 text-gray-400 border-gray-500/30"
                       }`}
                     >
-                      <option value="user">Benutzer</option>
-                      <option value="veranstalter">Veranstalter</option>
-                      <option value="admin">Administrator</option>
+                      <option
+                        value="user"
+                        className="bg-[#1e293b] text-gray-300 hover:bg-purple-600/30 hover:text-gray-100 focus:bg-purple-600/30 focus:text-gray-100"
+                      >
+                        ● Benutzer
+                      </option>
+                      <option
+                        value="veranstalter"
+                        className="bg-[#1e293b] text-blue-300 hover:bg-blue-600/30 hover:text-blue-100 focus:bg-blue-600/30 focus:text-blue-100"
+                      >
+                        ● Veranstalter
+                      </option>
+                      <option
+                        value="admin"
+                        className="bg-[#1e293b] text-red-300 hover:bg-red-600/30 hover:text-red-100 focus:bg-red-600/30 focus:text-red-100"
+                      >
+                        ● Administrator
+                      </option>
                     </select>
                   </td>
                   <td className="px-6 py-4 text-sm text-gray-300">
@@ -237,7 +252,7 @@ export default function AdminUsersPage() {
                       </Link>
                       <button
                         onClick={() => handleDeleteUser(user._id)}
-                        className="p-2 text-gray-400 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
+                        className="p-2 text-gray-400 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors cursor-pointer"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>

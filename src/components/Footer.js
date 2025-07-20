@@ -125,6 +125,7 @@ export default function Footer() {
             </h3>
             <form onSubmit={handleNewsletter}>
               <input
+              suppressHydrationWarning
                 type="email"
                 placeholder="Deine E-Mail-Adresse"
                 required

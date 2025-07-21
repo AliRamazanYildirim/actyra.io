@@ -35,6 +35,7 @@ const NavBar = memo(() => {
 
   // Ereignisstatus für die Suche
   const [searchTerm, setSearchTerm] = useState("");
+  const [searchLocation, setSearchLocation] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [allEvents, setAllEvents] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
@@ -65,19 +66,27 @@ const NavBar = memo(() => {
   // Filtere, während sich die Sucheingabe ändert (flexibler und mit Debugging).
   useEffect(() => {
     const q = searchTerm.trim().toLowerCase();
-    if (!q) {
+    const loc = searchLocation.trim().toLowerCase();
+    if (!q && !loc) {
       setSearchResults([]);
       setShowDropdown(false);
       return;
     }
-    const filtered = allEvents.filter(
-      (e) =>
-        (e.title || "").toLowerCase().includes(q) ||
-        (e.slug || "").toLowerCase().includes(q)
-    );
+    const isPLZ = loc && /^\d{5}$/.test(loc);
+    const filtered = allEvents.filter(e => {
+      const title = (e.title || "").toLowerCase();
+      const slug = (e.slug || "").toLowerCase();
+      const location = (e.location || "").toLowerCase();
+      // PLZ: location içinde 5-stellige Zahl arar
+      const plzMatch = isPLZ ? location.includes(loc) : false;
+      const locMatch = loc && !isPLZ ? location.includes(loc) : false;
+      const titleMatch = q ? (title.includes(q) || slug.includes(q)) : false;
+      // Mindestens einer der Filter muss passen
+      return (titleMatch || locMatch || plzMatch);
+    });
     setSearchResults(filtered.slice(0, 8));
     setShowDropdown(true);
-  }, [searchTerm, allEvents]);
+  }, [searchTerm, searchLocation, allEvents]);
 
   // ES6+ useMemo for computed values
   const totalTicketCount = useMemo(
@@ -234,8 +243,8 @@ const NavBar = memo(() => {
                 placeholder="Nach Events suchen"
                 className="py-2 px-4 bg-transparent text-black placeholder-gray-600 outline-none flex-1 text-sm"
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                onFocus={() => searchTerm && setShowDropdown(true)}
+                onChange={e => setSearchTerm(e.target.value)}
+                onFocus={() => (searchTerm || searchLocation) && setShowDropdown(true)}
                 onBlur={() => setTimeout(() => setShowDropdown(false), 150)}
                 autoComplete="off"
               />
@@ -244,15 +253,18 @@ const NavBar = memo(() => {
                 type="text"
                 placeholder="Stadt oder PLZ"
                 className="py-2 px-4 bg-transparent text-black placeholder-gray-600 outline-none flex-1 text-sm"
+                value={searchLocation}
+                onChange={e => setSearchLocation(e.target.value)}
+                onFocus={() => (searchTerm || searchLocation) && setShowDropdown(true)}
+                onBlur={() => setTimeout(() => setShowDropdown(false), 150)}
+                autoComplete="off"
               />
               <button
                 className="bg-pink-600 hover:bg-pink-700 transition p-3 rounded-r-md cursor-pointer"
                 aria-label="Suchen"
                 onClick={() => {
                   if (searchResults.length > 0) {
-                    router.push(
-                      `/events/${searchResults[0].slug || searchResults[0].id}`
-                    );
+                    router.push(`/events/${searchResults[0].slug || searchResults[0].id}`);
                     setShowDropdown(false);
                   }
                 }}
@@ -290,9 +302,16 @@ const NavBar = memo(() => {
                         height={32}
                         className="w-8 h-8 object-cover rounded-md border border-gray-200"
                       />
-                      <span className="font-medium text-sm line-clamp-1">
-                        {event.title}
-                      </span>
+                      <div className="flex flex-col min-w-0">
+                        <span className="font-medium text-sm line-clamp-1">
+                          {event.title}
+                        </span>
+                        {event.location && (
+                          <span className="text-xs text-gray-500 line-clamp-1">
+                            {event.location}
+                          </span>
+                        )}
+                      </div>
                     </div>
                   );
                 })}

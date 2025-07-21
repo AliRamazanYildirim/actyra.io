@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState, memo, useCallback, useMemo } from "react";
+import { useEffect, useState, memo, useCallback, useMemo, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import { ShoppingCart, Menu, X } from "lucide-react";
@@ -30,8 +30,54 @@ const NavBar = memo(() => {
   const [userRole, setUserRole] = useState(null);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
 
-  // ES6+ Zustand store selectors with memoization
+  // ES6+ Zustand-Store-Selektoren mit Memoisierung
   const cartTickets = useTicketStore((state) => state.cartTickets || []);
+
+  // Ereignisstatus für die Suche
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [allEvents, setAllEvents] = useState([]);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const searchInputRef = useRef(null);
+
+  // Hole dich die Events vom Backend (einmal beim ersten Laden), mit fallbackEvents.
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await fetch("/api/events");
+        const data = res.ok ? await res.json() : null;
+        const events = Array.isArray(data?.events)
+          ? data.events
+          : Array.isArray(data)
+          ? data
+          : [];
+        setAllEvents(
+          events.length
+            ? events
+            : (await import("@/data/eventSeedData")).default
+        );
+      } catch {
+        setAllEvents((await import("@/data/eventSeedData")).default);
+      }
+    })();
+  }, []);
+
+  // Filtere, während sich die Sucheingabe ändert (flexibler und mit Debugging).
+  useEffect(() => {
+    const q = searchTerm.trim().toLowerCase();
+    if (!q) {
+      setSearchResults([]);
+      setShowDropdown(false);
+      return;
+    }
+    const filtered = allEvents.filter(
+      (e) =>
+        (e.title || "").toLowerCase().includes(q) ||
+        (e.slug || "").toLowerCase().includes(q)
+    );
+    setSearchResults(filtered.slice(0, 8));
+    setShowDropdown(true);
+  }, [searchTerm, allEvents]);
 
   // ES6+ useMemo for computed values
   const totalTicketCount = useMemo(
@@ -176,26 +222,88 @@ const NavBar = memo(() => {
         </Link>
 
         {/* 🔍 Suchleiste - nur auf Desktop sichtbar */}
-        <div className="hidden md:flex items-center flex-1 max-w-xl mx-6">
-          <span className="bg-white bg-opacity-10 rounded-md flex items-center w-full backdrop-blur-sm">
-            <input
-              type="text"
-              placeholder="Nach Events suchen"
-              className="py-2 px-4 bg-transparent text-black placeholder-gray-600 outline-none flex-1 text-sm"
-            />
-            <div className="h-6 w-[1px] bg-gray-400 mx-1"></div>
-            <input
-              type="text"
-              placeholder="Stadt oder PLZ"
-              className="py-2 px-4 bg-transparent text-black placeholder-gray-600 outline-none flex-1 text-sm"
-            />
-            <button
-              className="bg-pink-600 hover:bg-pink-700 transition p-3 rounded-r-md cursor-pointer"
-              aria-label="Suchen"
-            >
-              <RiSearchEyeLine />
-            </button>
-          </span>
+        <div
+          className="hidden md:flex items-center flex-1 max-w-xl mx-6 relative"
+          style={{ zIndex: 60 }}
+        >
+          <div className="w-full relative">
+            <span className="bg-white bg-opacity-10 rounded-md flex items-center w-full backdrop-blur-sm">
+              <input
+                ref={searchInputRef}
+                type="text"
+                placeholder="Nach Events suchen"
+                className="py-2 px-4 bg-transparent text-black placeholder-gray-600 outline-none flex-1 text-sm"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                onFocus={() => searchTerm && setShowDropdown(true)}
+                onBlur={() => setTimeout(() => setShowDropdown(false), 150)}
+                autoComplete="off"
+              />
+              <div className="h-6 w-[1px] bg-gray-400 mx-1"></div>
+              <input
+                type="text"
+                placeholder="Stadt oder PLZ"
+                className="py-2 px-4 bg-transparent text-black placeholder-gray-600 outline-none flex-1 text-sm"
+              />
+              <button
+                className="bg-pink-600 hover:bg-pink-700 transition p-3 rounded-r-md cursor-pointer"
+                aria-label="Suchen"
+                onClick={() => {
+                  if (searchResults.length > 0) {
+                    router.push(
+                      `/events/${searchResults[0].slug || searchResults[0].id}`
+                    );
+                    setShowDropdown(false);
+                  }
+                }}
+              >
+                <RiSearchEyeLine />
+              </button>
+            </span>
+            {/* Dropdown-Ereignis-Suchergebnisse */}
+            {showDropdown && searchResults.length > 0 && (
+              <div className="absolute left-0 top-12 w-full bg-white rounded-b-lg shadow-xl z-[999] border border-pink-400/30 max-h-80 overflow-y-auto animate-fadeIn">
+                {searchResults.map((event, index) => {
+                  // Bildquelle flexibel wählen
+                  const imgSrc =
+                    event.image || event.imageUrl || "/event-default.webp";
+                  // Key möglichst eindeutig
+                  const key = event.id || event._id || event.slug || index;
+                  return (
+                    <div
+                      key={key}
+                      className="flex items-center gap-3 px-4 py-2 hover:bg-pink-100 cursor-pointer text-black border-b last:border-b-0 border-gray-100"
+                      onMouseDown={() => {
+                        router.push(
+                          `/events/${
+                            event.slug || event.id || event._id || index
+                          }`
+                        );
+                        setShowDropdown(false);
+                        setSearchTerm("");
+                      }}
+                    >
+                      <Image
+                        src={imgSrc}
+                        alt={event.title}
+                        width={32}
+                        height={32}
+                        className="w-8 h-8 object-cover rounded-md border border-gray-200"
+                      />
+                      <span className="font-medium text-sm line-clamp-1">
+                        {event.title}
+                      </span>
+                    </div>
+                  );
+                })}
+                {searchResults.length === 8 && (
+                  <div className="px-4 py-2 text-xs text-gray-400">
+                    Begrenze die Suche für weitere Ergebnisse...
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Desktop-Navigation - nur auf Desktop sichtbar */}

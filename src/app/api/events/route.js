@@ -4,164 +4,48 @@ import Event from "@/models/Event";
 import { writeFile, mkdir } from "fs/promises";
 import path from "path";
 
-// GET: Gibt alle Events zurück (mit optionalem Kategoriefilter)
+// GET: Alle Events (optional nach Kategorie)
 export async function GET(request) {
   try {
     await dbConnect();
-
-    // URL-Parameter abrufen (für eventuelle Filter)
     const { searchParams } = new URL(request.url);
     const category = searchParams.get("category");
-
-    // Abfrageoptionen erstellen
-    const query = {};
-
-    // Nach Kategorie filtern, wenn angegeben
-    if (category) {
-      if (category === "sonstige-events") {
-        // Für "sonstige-events" spezielle Abfrage erstellen
-        const validCategories = [
-          "kultur-musik",
-          "sport-freizeit",
-          "bildung-workshop",
-          "business-networking",
-          "gesundheit",
-          "technologie-innovation",
-          "messen-ausstellungen",
-        ];
-
-        query.$or = [
-          { category: { $nin: validCategories } },
-          { category: { $exists: false } },
-          { category: null },
-          { category: "" },
-        ];
-      } else {
-        // Für normale Kategorien
-        query.category = category;
-      }
-    }
-
-    // Events aus der Datenbank abrufen und nach Datum sortieren
+    let query = {};
+    if (category) query.category = category;
     const events = await Event.find(query).sort({ date: 1 }).lean();
-
-    // ObjectIds in Strings umwandeln für bessere JSON-Serialisierung
-    const serializedEvents = events.map((event) => ({
-      ...event,
-      _id: event._id.toString(),
-    }));
-
-    // Debug-Informationen
-    console.log(
-      `${serializedEvents.length} Events gefunden${
-        category ? ` für Kategorie "${category}"` : ""
-      }`
-    );
-
-    return NextResponse.json(serializedEvents);
-  } catch (error) {
-    console.error("Fehler beim Abrufen der Events:", error);
-    return NextResponse.json(
-      { error: "Beim Abrufen der Events ist ein Fehler aufgetreten." },
-      { status: 500 }
-    );
+    const result = events.map(e => ({ ...e, _id: e._id.toString() }));
+    return NextResponse.json({ events: result });
+  } catch (e) {
+    return NextResponse.json({ error: "Fehler beim Laden der Events." }, { status: 500 });
   }
 }
 
-// POST: Erstellt ein neues Event mit Bild-Upload
+// POST: Neues Event (mit optionalem Bild)
 export async function POST(request) {
   try {
     const formData = await request.formData();
-
-    // Debug: Form-Felder im Log ausgeben
-    console.log("Erhaltene Form-Felder:", [...formData.keys()]);
-
-    // Werte aus FormData extrahieren
     const title = formData.get("title");
     const location = formData.get("location");
     const date = formData.get("date");
+    if (!title || !location || !date) return NextResponse.json({ error: "Titel, Ort und Datum sind erforderlich" }, { status: 400 });
     const price = Number(formData.get("price") || 0);
-    const description = formData.get("description");
-    const category = formData.get("category");
+    const category = formData.get("category") || "";
+    const description = formData.get("description") || "";
     const tickets = Number(formData.get("tickets") || 0);
-    const donation = Number(formData.get("donation") || 0);
-
-    // Pflichtfelder überprüfen
-    if (!title || !location || !date) {
-      return NextResponse.json(
-        {
-          error: "Titel, Ort und Datum sind erforderlich",
-        },
-        { status: 400 }
-      );
-    }
-
-    // Debug: Überprüfen, ob ein Bild vorhanden ist
+    const slug = title.toLowerCase().replace(/\s+/g, "-").replace(/[^\w-]+/g, "");
+    let imageUrl = "/images/event-default.webp";
     const image = formData.get("image");
-    console.log("Bild erhalten:", image ? "Ja" : "Nein");
-    if (image) {
-      console.log("Bildtyp:", image.type);
-      console.log("Bildgröße:", image.size);
-    }
-
-    // Slug erstellen
-    const slug = title
-      .toLowerCase()
-      .replace(/\s+/g, "-")
-      .replace(/[^\w-]+/g, "");
-
-    // Weitere Felder
-    const tags = category ? [category] : [];
-    const shortDescription = description || "";
-    const longDescription = description || "";
-
-    // Bildverarbeitung
-    let imageUrl = "";
-
     if (image && image.size > 0 && image.name !== "undefined") {
-      // Upload-Ordner erstellen (falls nicht vorhanden)
       const uploadDir = path.join(process.cwd(), "public", "images");
-      console.log("Upload-Verzeichnis:", uploadDir);
-
-      try {
-        await mkdir(uploadDir, { recursive: true });
-        console.log("Ordner erstellt oder bereits vorhanden");
-      } catch (error) {
-        console.error("Fehler beim Erstellen des Ordners:", error);
-      }
-
-      // Bild speichern
-      const bytes = await image.arrayBuffer();
-      const buffer = Buffer.from(bytes);
-
+      await mkdir(uploadDir, { recursive: true });
+      const buffer = Buffer.from(await image.arrayBuffer());
       const uniqueFilename = `${Date.now()}-${image.name.replace(/\s+/g, "-")}`;
-      const filePath = path.join(uploadDir, uniqueFilename);
-      console.log("Datei wird gespeichert:", filePath);
-
-      await writeFile(filePath, buffer);
+      await writeFile(path.join(uploadDir, uniqueFilename), buffer);
       imageUrl = `/images/${uniqueFilename}`;
-      console.log("Bild-URL:", imageUrl);
-    } else {
-      // Fallback auf Standard-Bild, wenn kein gültiges Bild hochgeladen wurde
-      imageUrl = "/images/event-default.webp";
-      console.log(
-        "Kein gültiges Bild hochgeladen, verwende Standard-Bild:",
-        imageUrl
-      );
     }
-
     await dbConnect();
-
-    // Slug-Überprüfung
-    const existingEvent = await Event.findOne({ slug });
-    if (existingEvent) {
-      return NextResponse.json(
-        { error: "Ein Event mit diesem Namen existiert bereits." },
-        { status: 400 }
-      );
-    }
-
-    // Event erstellen
+    const exists = await Event.findOne({ slug });
+    if (exists) return NextResponse.json({ error: "Event existiert bereits." }, { status: 400 });
     const newEvent = await Event.create({
       title,
       location,
@@ -169,28 +53,14 @@ export async function POST(request) {
       price,
       imageUrl,
       slug,
-      tags,
-      category, // Kategoriebereich
-      shortDescription,
-      longDescription,
+      tags: category ? [category] : [],
+      category,
+      shortDescription: description,
+      longDescription: description,
       tickets,
     });
-
-    console.log("Erstelltes Event:", newEvent);
-
-    return NextResponse.json(
-      { event: newEvent, success: true },
-      { status: 201 }
-    );
-  } catch (error) {
-    console.error("Fehler beim Erstellen des Events:", error);
-    console.error("Fehler-Details:", error.message);
-    return NextResponse.json(
-      {
-        error: "Beim Erstellen des Events ist ein Fehler aufgetreten.",
-        details: error.message,
-      },
-      { status: 500 }
-    );
+    return NextResponse.json({ event: newEvent, success: true }, { status: 201 });
+  } catch (e) {
+    return NextResponse.json({ error: "Fehler beim Erstellen des Events." }, { status: 500 });
   }
 }

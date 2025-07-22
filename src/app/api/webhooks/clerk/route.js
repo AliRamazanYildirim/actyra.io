@@ -43,13 +43,20 @@ export async function POST(req) {
   const { evt, error } = await verifyWebhook(req);
   if (error) return error;
   const { type, data } = evt;
+  console.log("Clerk Webhook Payload:", data);
   if (type !== "user.created") {
     return new Response(`Unhandled event type: ${type}`, { status: 200 });
   }
   const { id, email_addresses, first_name, last_name } = data;
-  const email = email_addresses?.[0]?.email_address;
-  if (!id || !email) {
-    return new Response("Fehlende Felder", { status: 400 });
+  let email = "";
+  if (Array.isArray(email_addresses) && email_addresses.length > 0) {
+    email = email_addresses[0]?.email_address;
+  }
+  if (!id) {
+    return new Response("Fehlende Benutzer-ID", { status: 400 });
+  }
+  if (!email) {
+    return new Response("Fehlende E-Mail-Adresse", { status: 400 });
   }
   const existingUser = await User.findOne({ clerkId: id });
   if (existingUser) {

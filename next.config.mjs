@@ -15,8 +15,12 @@ const nextConfig = {
         protocol: "https",
         hostname: "images.clerk.dev",
       },
+      {
+        protocol: "https",
+        hostname: "res.cloudinary.com",
+      },
     ],
-    // Lokal dosyalar için unoptimized: true seçeneği
+    // Unoptimiert: true Option für lokale Dateien
     unoptimized: false,
   },
   experimental: {

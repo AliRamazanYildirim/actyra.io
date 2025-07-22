@@ -13,10 +13,13 @@ export async function GET(request) {
     let query = {};
     if (category) query.category = category;
     const events = await Event.find(query).sort({ date: 1 }).lean();
-    const result = events.map(e => ({ ...e, _id: e._id.toString() }));
+    const result = events.map((e) => ({ ...e, _id: e._id.toString() }));
     return NextResponse.json({ events: result });
   } catch (e) {
-    return NextResponse.json({ error: "Fehler beim Laden der Events." }, { status: 500 });
+    return NextResponse.json(
+      { error: "Fehler beim Laden der Events." },
+      { status: 500 }
+    );
   }
 }
 
@@ -27,25 +30,48 @@ export async function POST(request) {
     const title = formData.get("title");
     const location = formData.get("location");
     const date = formData.get("date");
-    if (!title || !location || !date) return NextResponse.json({ error: "Titel, Ort und Datum sind erforderlich" }, { status: 400 });
+    if (!title || !location || !date)
+      return NextResponse.json(
+        { error: "Titel, Ort und Datum sind erforderlich" },
+        { status: 400 }
+      );
     const price = Number(formData.get("price") || 0);
     const category = formData.get("category") || "";
     const description = formData.get("description") || "";
     const tickets = Number(formData.get("tickets") || 0);
-    const slug = title.toLowerCase().replace(/\s+/g, "-").replace(/[^\w-]+/g, "");
+    const slug = title
+      .toLowerCase()
+      .replace(/\s+/g, "-")
+      .replace(/[^\w-]+/g, "");
     let imageUrl = "/images/event-default.webp";
     const image = formData.get("image");
     if (image && image.size > 0 && image.name !== "undefined") {
-      const uploadDir = path.join(process.cwd(), "public", "images");
-      await mkdir(uploadDir, { recursive: true });
-      const buffer = Buffer.from(await image.arrayBuffer());
-      const uniqueFilename = `${Date.now()}-${image.name.replace(/\s+/g, "-")}`;
-      await writeFile(path.join(uploadDir, uniqueFilename), buffer);
-      imageUrl = `/images/${uniqueFilename}`;
+      try {
+        // Cloudinary upload
+        const bytes = await image.arrayBuffer();
+        const buffer = Buffer.from(bytes);
+        const base64 = buffer.toString("base64");
+        const dataUri = `data:${image.type};base64,${base64}`;
+
+        const cloudinary = (await import("@/lib/cloudinary")).default;
+        const uploadResult = await cloudinary.uploader.upload(dataUri, {
+          folder: "events",
+          public_id: `${Date.now()}-${image.name.replace(/\s+/g, "-")}`,
+        });
+        imageUrl = uploadResult.secure_url;
+        console.log(`Bild zu Cloudinary hochgeladen: ${imageUrl}`);
+      } catch (error) {
+        console.error("Fehler beim Cloudinary Upload:", error);
+        // Fallback auf default image, aber Event trotzdem erstellen
+      }
     }
     await dbConnect();
     const exists = await Event.findOne({ slug });
-    if (exists) return NextResponse.json({ error: "Event existiert bereits." }, { status: 400 });
+    if (exists)
+      return NextResponse.json(
+        { error: "Event existiert bereits." },
+        { status: 400 }
+      );
     const newEvent = await Event.create({
       title,
       location,
@@ -59,8 +85,14 @@ export async function POST(request) {
       longDescription: description,
       tickets,
     });
-    return NextResponse.json({ event: newEvent, success: true }, { status: 201 });
+    return NextResponse.json(
+      { event: newEvent, success: true },
+      { status: 201 }
+    );
   } catch (e) {
-    return NextResponse.json({ error: "Fehler beim Erstellen des Events." }, { status: 500 });
+    return NextResponse.json(
+      { error: "Fehler beim Erstellen des Events." },
+      { status: 500 }
+    );
   }
 }

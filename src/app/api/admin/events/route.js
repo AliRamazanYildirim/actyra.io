@@ -159,28 +159,21 @@ export async function POST(request) {
 
     if (image && image.size > 0 && image.name !== "undefined") {
       try {
-        const uploadDir = path.join(process.cwd(), "public", "images");
-        await mkdir(uploadDir, { recursive: true });
-
+        // Cloudinary upload
         const bytes = await image.arrayBuffer();
         const buffer = Buffer.from(bytes);
+        const base64 = buffer.toString("base64");
+        const dataUri = `data:${image.type};base64,${base64}`;
 
-        // Sicherer Dateiname
-        const fileExtension = path.extname(image.name);
-        const safeName = image.name
-          .replace(fileExtension, "")
-          .replace(/[^a-zA-Z0-9-_]/g, "-")
-          .substring(0, 30);
-
-        const uniqueFilename = `${Date.now()}-${safeName}${fileExtension}`;
-        const filePath = path.join(uploadDir, uniqueFilename);
-
-        await writeFile(filePath, buffer);
-        imageUrl = `/images/${uniqueFilename}`;
-
-        console.log(`Bild gespeichert: ${imageUrl}`);
+        const cloudinary = (await import("@/lib/cloudinary")).default;
+        const uploadResult = await cloudinary.uploader.upload(dataUri, {
+          folder: "events",
+          public_id: `${Date.now()}-${image.name.replace(/\s+/g, "-")}`,
+        });
+        imageUrl = uploadResult.secure_url;
+        console.log(`Bild zu Cloudinary hochgeladen: ${imageUrl}`);
       } catch (error) {
-        console.error("Fehler beim Speichern des Bildes:", error);
+        console.error("Fehler beim Cloudinary Upload:", error);
         // Fallback auf default image, aber Event trotzdem erstellen
       }
     }

@@ -13,11 +13,7 @@ import {
   Star,
   Download,
 } from "lucide-react";
-import {
-  format,
-  subDays,
-  eachDayOfInterval,
-} from "date-fns";
+import { format, subDays, eachDayOfInterval } from "date-fns";
 import { de } from "date-fns/locale";
 import { calculateTotalRevenue } from "@/lib/calculateTotalRevenue";
 import {
@@ -89,7 +85,7 @@ export default function EventStatsPage() {
     try {
       setLoading(true);
 
-     // Ereignis- und Ticketdaten parallel abrufen
+      // Ereignis- und Ticketdaten parallel abrufen
       const [eventsResponse, ticketsResponse] = await Promise.all([
         fetch("/api/admin/events"),
         fetch("/api/admin/tickets"),
@@ -120,8 +116,13 @@ export default function EventStatsPage() {
     // Grundlegende Übersicht Statistiken
     const totalEvents = events.length;
     const activeEvents = events.filter((e) => e.status === "active").length;
-    const completedEvents = events.filter((e) => e.status === "completed").length;
-    const totalTicketsSold = tickets.reduce((sum, ticket) => sum + (ticket.quantity || 1), 0);
+    const completedEvents = events.filter(
+      (e) => e.status === "completed"
+    ).length;
+    const totalTicketsSold = tickets.reduce(
+      (sum, ticket) => sum + (ticket.quantity || 1),
+      0
+    );
     const totalRevenue = calculateTotalRevenue(tickets);
     const averageEventPrice =
       events.length > 0

@@ -57,7 +57,9 @@ export async function GET(request) {
     const totalPages = Math.ceil(totalEvents / limit);
 
     // Anzahl der abgeschlossenen Ereignisse (DRY: mit der util-Funktion)
-    const { getCompletedEventsCountFromDb } = await import("@/lib/getCompletedEventsCount");
+    const { getCompletedEventsCountFromDb } = await import(
+      "@/lib/getCompletedEventsCount"
+    );
     const completedEvents = await getCompletedEventsCountFromDb(filter);
 
     return NextResponse.json({

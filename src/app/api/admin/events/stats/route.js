@@ -40,7 +40,9 @@ export async function GET(request) {
   // Event Stats (DRY: mit der util-Funktion)
   const totalEvents = events.length;
   const activeEvents = events.filter((e) => e.status === "active").length;
-  const { getCompletedEventsCount } = await import("@/lib/getCompletedEventsCount");
+  const { getCompletedEventsCount } = await import(
+    "@/lib/getCompletedEventsCount"
+  );
   const completedEvents = getCompletedEventsCount(events);
   const totalTicketsSold = tickets.reduce(
     (sum, t) => sum + (t.quantity || 1),

@@ -9,8 +9,9 @@ const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
 export async function POST(request) {
   try {
-    const body = await request.text();
-    const signature = headers().get("stripe-signature");
+    const bodyBuffer = Buffer.from(await request.arrayBuffer());
+    const signature = request.headers.get("stripe-signature");
+
 
     if (!signature || !webhookSecret) {
       return NextResponse.json(
@@ -22,7 +23,7 @@ export async function POST(request) {
     let event;
     try {
       // Verifiziere die Webhook-Signatur
-      event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
+      event = stripe.webhooks.constructEvent(bodyBuffer, signature, webhookSecret);
     } catch (err) {
       console.error(`Webhook Signatur-Fehler: ${err.message}`);
       return NextResponse.json(

@@ -27,6 +27,7 @@ export async function GET(request) {
     }
 
     // Echte Datenbankstatistiken - ES6+ async/await
+    const todayISO = new Date().toISOString().split("T")[0];
     const [
       totalUsers,
       totalEvents,
@@ -38,7 +39,7 @@ export async function GET(request) {
       User.countDocuments(),
       Event.countDocuments(),
       Ticket.countDocuments(),
-      Event.countDocuments({ status: "pending" }),
+      Event.countDocuments({ date: { $gt: todayISO } }), // zukünftige Events
       Event.countDocuments({ status: "active" }),
       Event.countDocuments({ status: "completed" }),
     ]);

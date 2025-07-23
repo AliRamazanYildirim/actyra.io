@@ -1,4 +1,5 @@
 import dbConnect from "@/lib/db";
+import { calculateTotalRevenue } from "@/lib/calculateTotalRevenue";
 import Ticket from "@/models/Ticket";
 import Event from "@/models/Event";
 import Category from "@/models/Category";
@@ -44,9 +45,9 @@ export async function GET(request) {
   const failedTickets = tickets.filter(
     (t) => t.paymentStatus === "failed"
   ).length;
-  const totalRevenue = tickets
-    .filter((t) => t.paymentStatus === "completed")
-    .reduce((sum, t) => sum + (t.totalPrice || 0), 0);
+  const totalRevenue = calculateTotalRevenue(
+    tickets.filter((t) => t.paymentStatus === "completed")
+  );
   const averageOrderValue =
     completedTickets > 0 ? totalRevenue / completedTickets : 0;
   const conversionRate =

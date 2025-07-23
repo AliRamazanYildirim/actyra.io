@@ -46,7 +46,7 @@ export async function GET(request) {
    // Gesamteinnahmen berechnen (aus verkauften Tickets)
     const totalRevenue = await Ticket.aggregate([
       { $match: { paymentStatus: "completed" } },
-      { $group: { _id: null, total: { $sum: "$price" } } },
+      { $group: { _id: null, total: { $sum: "$totalPrice" } } },
     ]);
 
     // Anzahl fehlgeschlagener Zahlungen

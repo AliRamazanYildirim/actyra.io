@@ -14,6 +14,7 @@ import {
   Ticket,
 } from "lucide-react";
 import StatsCard from "@/components/admin/StatsCard";
+import { calculateTotalRevenue } from "@/lib/calculateTotalRevenue";
 
 export default function AdminAnalyticsPage() {
   const [analyticsData, setAnalyticsData] = useState({

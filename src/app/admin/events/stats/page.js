@@ -19,6 +19,7 @@ import {
   eachDayOfInterval,
 } from "date-fns";
 import { de } from "date-fns/locale";
+import { calculateTotalRevenue } from "@/lib/calculateTotalRevenue";
 import {
   LineChart,
   Line,
@@ -126,10 +127,7 @@ export default function EventStatsPage() {
       (sum, ticket) => sum + (ticket.quantity || 1),
       0
     );
-    const totalRevenue = tickets.reduce(
-      (sum, ticket) => sum + ticket.price * (ticket.quantity || 1),
-      0
-    );
+    const totalRevenue = calculateTotalRevenue(tickets);
     const averageEventPrice =
       events.length > 0
         ? events.reduce((sum, e) => sum + e.price, 0) / events.length

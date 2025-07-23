@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { calculateTotalRevenue } from "@/lib/calculateTotalRevenue";
 import dbConnect from "@/lib/db";
 import Event from "@/models/Event";
 import Ticket from "@/models/Ticket";
@@ -44,9 +45,9 @@ export async function GET(request) {
     (sum, t) => sum + (t.quantity || 1),
     0
   );
-  const totalRevenue = tickets
-    .filter((t) => t.paymentStatus === "completed")
-    .reduce((sum, t) => sum + (t.totalPrice || 0), 0);
+  const totalRevenue = calculateTotalRevenue(
+    tickets.filter((t) => t.paymentStatus === "completed")
+  );
   const averageEventPrice =
     totalEvents > 0
       ? events.reduce((sum, e) => sum + (e.price || 0), 0) / totalEvents

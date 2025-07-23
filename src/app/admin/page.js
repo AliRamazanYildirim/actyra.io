@@ -72,7 +72,7 @@ export default function AdminDashboard() {
           setChartData("eventStats", chartData.eventStats);
           setChartData("revenueFlow", chartData.revenueFlow);
         } else {
-          console.error("❌ API hatası:", {
+          console.error("❌ API-Fehler:", {
             stats: statsResponse.status,
             charts: chartsResponse.status,
           });

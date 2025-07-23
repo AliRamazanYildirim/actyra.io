@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { calculateTotalRevenue } from "@/lib/calculateTotalRevenue";
 import { format } from "date-fns";
 import { de } from "date-fns/locale";
 import {
@@ -27,6 +28,11 @@ export default function AdminTicketsPage() {
     failed: 0,
     totalRevenue: 0,
   });
+
+  // Falls Tickets geladen und stats.totalRevenue 0 ist, Umsatz lokal berechnen
+  const totalRevenueCalculated = stats.totalRevenue > 0
+    ? stats.totalRevenue
+    : calculateTotalRevenue(tickets);
 
   useEffect(() => {
     fetchTickets();
@@ -198,7 +204,7 @@ export default function AdminTicketsPage() {
                   Gesamtumsatz
                 </p>
                 <p className="text-2xl font-bold text-white">
-                  €{stats.totalRevenue.toLocaleString("de-DE")}
+                  €{totalRevenueCalculated.toLocaleString("de-DE")}
                 </p>
               </div>
               <DollarSign className="w-8 h-8 text-purple-500" />

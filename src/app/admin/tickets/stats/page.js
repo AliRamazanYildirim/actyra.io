@@ -34,6 +34,7 @@ import {
   Filter,
   RefreshCcw,
 } from "lucide-react";
+import { calculateTotalRevenue } from "@/lib/calculateTotalRevenue";
 
 const StatCard = ({
   title,

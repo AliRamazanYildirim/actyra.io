@@ -61,10 +61,22 @@ export async function GET(request) {
       paymentStatus: "failed",
     });
 
+    // Nur abgeschlossene Tickets zählen
+    const completedTicketsCount = await Ticket.aggregate([
+      { $match: { paymentStatus: "completed" } },
+      {
+        $group: {
+          _id: null,
+          total: { $sum: { $ifNull: ["$quantity", 1] } },
+        },
+      },
+    ]);
+
     const stats = {
       totalUsers,
       totalEvents,
       totalTickets,
+      totalTicketsSold: completedTicketsCount[0]?.total || 0,
       totalRevenue: totalRevenueAgg[0]?.total || 0,
       pendingEvents,
       activeEvents,

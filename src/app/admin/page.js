@@ -148,7 +148,7 @@ export default function AdminDashboard() {
         />
         <StatsCard
           title="Verkaufte Tickets"
-          value={stats.totalTickets}
+          value={stats.totalTicketsSold ?? stats.totalTickets}
           icon={Ticket}
           trend="+23%"
           trendPositive={true}

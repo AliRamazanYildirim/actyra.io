@@ -43,10 +43,17 @@ export async function GET(request) {
       Event.countDocuments({ status: "completed" }),
     ]);
 
-   // Gesamteinnahmen berechnen (aus verkauften Tickets)
-    const totalRevenue = await Ticket.aggregate([
+    // Gesamteinnahmen berechnen: paymentStatus: 'completed' ve price * quantity
+    const totalRevenueAgg = await Ticket.aggregate([
       { $match: { paymentStatus: "completed" } },
-      { $group: { _id: null, total: { $sum: "$totalPrice" } } },
+      {
+        $group: {
+          _id: null,
+          total: {
+            $sum: { $multiply: ["$price", { $ifNull: ["$quantity", 1] }] },
+          },
+        },
+      },
     ]);
 
     // Anzahl fehlgeschlagener Zahlungen
@@ -58,7 +65,7 @@ export async function GET(request) {
       totalUsers,
       totalEvents,
       totalTickets,
-      totalRevenue: totalRevenue[0]?.total || 0,
+      totalRevenue: totalRevenueAgg[0]?.total || 0,
       pendingEvents,
       activeEvents,
       completedEvents,

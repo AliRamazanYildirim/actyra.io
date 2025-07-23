@@ -96,7 +96,10 @@ export default function EventStatsPage() {
         const ticketsData = await ticketsResponse.json();
 
         const events = eventsData.events || [];
-        const tickets = ticketsData.tickets || [];
+        // Nur Tickets mit paymentStatus: 'completed' einbeziehen
+        const tickets = (ticketsData.tickets || []).filter(
+          (t) => t.paymentStatus === "completed"
+        );
 
         const calculatedStats = calculateStats(events, tickets);
         setStats(calculatedStats);

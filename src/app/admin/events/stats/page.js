@@ -120,13 +120,8 @@ export default function EventStatsPage() {
     // Grundlegende Übersicht Statistiken
     const totalEvents = events.length;
     const activeEvents = events.filter((e) => e.status === "active").length;
-    const completedEvents = events.filter(
-      (e) => e.status === "completed"
-    ).length;
-    const totalTicketsSold = tickets.reduce(
-      (sum, ticket) => sum + (ticket.quantity || 1),
-      0
-    );
+    const completedEvents = events.filter((e) => e.status === "completed").length;
+    const totalTicketsSold = tickets.reduce((sum, ticket) => sum + (ticket.quantity || 1), 0);
     const totalRevenue = calculateTotalRevenue(tickets);
     const averageEventPrice =
       events.length > 0
@@ -279,6 +274,7 @@ export default function EventStatsPage() {
       overview: {
         totalEvents,
         activeEvents,
+        completedEvents, // Hinzugefügt
         totalTicketsSold,
         totalRevenue,
         averageEventPrice,
@@ -464,11 +460,11 @@ export default function EventStatsPage() {
             color="orange"
           />
           <StatCard
-            title="Completion Rate"
-            value={`${stats.overview.completionRate.toFixed(1)}%`}
-            subtitle="Abgeschlossene Events"
+            title="Abgeschlossene Events"
+            value={formatNumber(stats.overview.completedEvents)}
+            subtitle="Beendete Veranstaltungen"
             icon={BarChart3}
-            color="indigo"
+            color="green"
           />
           <StatCard
             title="Ø Teilnehmer"

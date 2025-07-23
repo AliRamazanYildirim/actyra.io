@@ -3,8 +3,6 @@ import { getAuth } from "@clerk/nextjs/server";
 import dbConnect from "@/lib/db";
 import User from "@/models/User";
 import Event from "@/models/Event";
-import { writeFile, mkdir } from "fs/promises";
-import path from "path";
 
 export async function GET(request) {
   try {
@@ -58,12 +56,17 @@ export async function GET(request) {
     const totalEvents = await Event.countDocuments(filter);
     const totalPages = Math.ceil(totalEvents / limit);
 
+    // Anzahl der abgeschlossenen Ereignisse (DRY: mit der util-Funktion)
+    const { getCompletedEventsCountFromDb } = await import("@/lib/getCompletedEventsCount");
+    const completedEvents = await getCompletedEventsCountFromDb(filter);
+
     return NextResponse.json({
       events,
       pagination: {
         currentPage: page,
         totalPages,
         totalEvents,
+        completedEvents,
         hasNext: page < totalPages,
         hasPrev: page > 1,
       },

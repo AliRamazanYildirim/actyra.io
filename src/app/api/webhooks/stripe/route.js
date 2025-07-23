@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { headers } from "next/headers";
 import Stripe from "stripe";
 import dbConnect from "@/lib/db";
 import Ticket from "@/models/Ticket";

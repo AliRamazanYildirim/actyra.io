@@ -2,8 +2,6 @@
 
 import { useState, useEffect, useCallback } from "react";
 import {
-  BarChart,
-  Bar,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -22,7 +20,6 @@ import {
   TrendingUp,
   TrendingDown,
   DollarSign,
-  Users,
   Calendar,
   CheckCircle,
   XCircle,
@@ -34,7 +31,6 @@ import {
   Filter,
   RefreshCcw,
 } from "lucide-react";
-import { calculateTotalRevenue } from "@/lib/calculateTotalRevenue";
 
 const StatCard = ({
   title,

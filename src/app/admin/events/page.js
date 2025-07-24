@@ -66,17 +66,27 @@ export default function AdminEventsPage() {
     const now = new Date();
     const date = new Date(eventDate);
 
-    if (date > now) {
+    // Datum ohne Uhrzeit vergleichen
+    const nowDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const eventDateOnly = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+
+    if (eventDateOnly.getTime() === nowDate.getTime()) {
+      return {
+        status: "active",
+        label: "Aktiv",
+        color: "bg-yellow-500/70 text-yellow-100",
+      };
+    } else if (eventDateOnly > nowDate) {
       return {
         status: "upcoming",
         label: "Bevorstehend",
-        color: "bg-blue-500/20 text-blue-400",
+        color: "bg-blue-500/70 text-blue-100",
       };
     } else {
       return {
         status: "completed",
         label: "Abgeschlossen",
-        color: "bg-green-500/20 text-green-400",
+        color: "bg-green-500/50 text-green-200",
       };
     }
   };
@@ -164,6 +174,7 @@ export default function AdminEventsPage() {
           >
             <option value="all">Alle Status</option>
             <option value="upcoming">Bevorstehend</option>
+            <option value="active">Aktiv</option>
             <option value="completed">Abgeschlossen</option>
           </select>
 

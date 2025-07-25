@@ -14,9 +14,12 @@ import {
   Ticket,
 } from "lucide-react";
 import StatsCard from "@/components/admin/StatsCard";
+import useAdminStore from "@/store/adminStore";
 import { calculateTotalRevenue } from "@/lib/calculateTotalRevenue";
 
 export default function AdminAnalyticsPage() {
+  // Hole registrierte Benutzer aus dem Admin-Dashboard Store
+  const totalUsers = useAdminStore((state) => state.stats?.totalUsers);
   const [analyticsData, setAnalyticsData] = useState({
     overview: {},
     charts: {},
@@ -98,16 +101,21 @@ export default function AdminAnalyticsPage() {
 
   // Kompakte Übersicht aus Tickets und Events Stats
   const ticketSummary = [
-    { label: "Gesamt Tickets", value: overview?.totalTickets ?? 0 },
+    {
+      label: "Gesamt Tickets",
+      value: overview?.totalTickets ?? 0,
+      noCurrency: true,
+    },
     {
       label: "Abgeschlossene Verkäufe",
       value: overview?.completedTickets ?? 0,
+      noCurrency: true,
     },
     {
       label: "Gesamtumsatz",
       value:
         typeof overview?.totalRevenue === "number"
-          ? formatCurrency(overview.totalRevenue)
+          ? overview.totalRevenue
           : "—",
     },
     {
@@ -134,14 +142,26 @@ export default function AdminAnalyticsPage() {
   ];
 
   const eventSummary = [
-    { label: "Gesamt Events", value: overview?.totalEvents ?? 0 },
-    { label: "Aktive Events", value: overview?.activeEvents ?? 0 },
-    { label: "Verkaufte Tickets", value: overview?.totalTicketsSold ?? 0 },
+    {
+      label: "Gesamt Events",
+      value: overview?.totalEvents ?? 0,
+      noCurrency: true,
+    },
+    {
+      label: "Aktive Events",
+      value: overview?.activeEvents ?? 0,
+      noCurrency: true,
+    },
+    {
+      label: "Verkaufte Tickets",
+      value: overview?.totalTicketsSold ?? 0,
+      noCurrency: true,
+    },
     {
       label: "Gesamtumsatz",
       value:
         typeof overview?.totalRevenue === "number"
-          ? formatCurrency(overview.totalRevenue)
+          ? overview.totalRevenue
           : "—",
     },
     {
@@ -169,7 +189,9 @@ export default function AdminAnalyticsPage() {
                 <span className="font-medium text-white">{item.label}</span>
                 <span>
                   {typeof item.value === "number"
-                    ? formatCurrency(item.value)
+                    ? item.noCurrency
+                      ? item.value
+                      : formatCurrency(item.value)
                     : item.value}
                 </span>
               </li>
@@ -187,7 +209,9 @@ export default function AdminAnalyticsPage() {
                 <span className="font-medium text-white">{item.label}</span>
                 <span>
                   {typeof item.value === "number"
-                    ? formatCurrency(item.value)
+                    ? item.noCurrency
+                      ? item.value
+                      : formatCurrency(item.value)
                     : item.value}
                 </span>
               </li>
@@ -275,7 +299,12 @@ export default function AdminAnalyticsPage() {
         <StatsCard
           title="Registrierte Benutzer"
           value={
-            typeof overview.totalUsers === "number" ? overview.totalUsers : "—"
+            typeof totalUsers === "number" && totalUsers > 0
+              ? totalUsers
+              : typeof overview.totalUsers === "number" &&
+                overview.totalUsers > 0
+              ? overview.totalUsers
+              : "—"
           }
           icon={Users}
           trend={formatPercentage(

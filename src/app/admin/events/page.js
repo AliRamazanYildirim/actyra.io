@@ -68,7 +68,11 @@ export default function AdminEventsPage() {
 
     // Datum ohne Uhrzeit vergleichen
     const nowDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    const eventDateOnly = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    const eventDateOnly = new Date(
+      date.getFullYear(),
+      date.getMonth(),
+      date.getDate()
+    );
 
     if (eventDateOnly.getTime() === nowDate.getTime()) {
       return {

@@ -19,7 +19,7 @@ import { calculateTotalRevenue } from "@/lib/calculateTotalRevenue";
 
 export default function AdminAnalyticsPage() {
   // Hole registrierte Benutzer aus dem Admin-Dashboard Store
-    const [totalUsers, setTotalUsers] = useState(null);
+  const [totalUsers, setTotalUsers] = useState(null);
   const [analyticsData, setAnalyticsData] = useState({
     overview: {},
     charts: {},

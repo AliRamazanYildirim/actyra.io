@@ -19,8 +19,7 @@ import { calculateTotalRevenue } from "@/lib/calculateTotalRevenue";
 
 export default function AdminAnalyticsPage() {
   // Hole registrierte Benutzer aus dem Admin-Dashboard Store
-    const stats = useAdminStore((state) => state.stats);
-    const setStats = useAdminStore((state) => state.setStats);
+    const [totalUsers, setTotalUsers] = useState(null);
   const [analyticsData, setAnalyticsData] = useState({
     overview: {},
     charts: {},
@@ -36,26 +35,21 @@ export default function AdminAnalyticsPage() {
     const fetchAllStats = async () => {
       setLoading(true);
       try {
-        const [analyticsRes, ticketRes, eventRes, chartsRes, usersRes] =
+        const [analyticsRes, ticketRes, eventRes, chartsRes] =
           await Promise.all([
             fetch(`/api/admin/analytics?range=${dateRange}`),
             fetch(`/api/admin/tickets/stats?range=${dateRange}`),
             fetch(`/api/admin/events/stats?range=${dateRange}`),
             fetch(`/api/admin/tickets/charts?range=${dateRange}`),
-            fetch(`/api/admin/users?limit=1`),
           ]);
         const analyticsData = analyticsRes.ok ? await analyticsRes.json() : {};
         const ticketData = ticketRes.ok ? await ticketRes.json() : {};
         const eventData = eventRes.ok ? await eventRes.json() : {};
         const chartsData = chartsRes.ok ? await chartsRes.json() : {};
-        const usersData = usersRes.ok ? await usersRes.json() : {};
         setAnalyticsData(analyticsData);
         setTicketStats(ticketData.stats || null);
         setEventStats(eventData.stats?.overview || null);
         setTopEventsData(chartsData.topEvents || []);
-        if (typeof usersData.pagination?.totalUsers === "number") {
-          setStats({ totalUsers: usersData.pagination.totalUsers });
-        }
       } catch (err) {
         console.error("Fehler beim Laden der Statistiken:", err);
       } finally {
@@ -63,7 +57,13 @@ export default function AdminAnalyticsPage() {
       }
     };
     fetchAllStats();
-  }, [dateRange, setStats]);
+  }, [dateRange]);
+
+  useEffect(() => {
+    fetch("/api/admin/users?limit=1")
+      .then((res) => res.json())
+      .then((data) => setTotalUsers(data.pagination?.totalUsers ?? "—"));
+  }, []);
 
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat("de-DE", {
@@ -304,9 +304,9 @@ export default function AdminAnalyticsPage() {
         />
         <StatsCard
           title="Registrierte Benutzer"
-          value={typeof stats?.totalUsers === "number" ? stats.totalUsers : "—"}
+          value={typeof totalUsers === "number" ? totalUsers : "—"}
           icon={Users}
-          trend={typeof stats?.totalUsers === "number" ? "+12%" : ""}
+          trend={typeof totalUsers === "number" ? "+12%" : ""}
           trendPositive={true}
           bgColor="bg-purple-500/10"
           iconColor="text-purple-500"

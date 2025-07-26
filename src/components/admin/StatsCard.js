@@ -14,8 +14,8 @@ const StatsCard = memo(
     icon: Icon,
     trend,
     trendPositive = true,
-    bgColor = "bg-purple-500/10",
-    iconColor = "text-purple-500",
+    bgColor = "bg-white",
+    iconColor = "text-black",
     className = "",
     isLoading = false,
   }) => {
@@ -23,15 +23,15 @@ const StatsCard = memo(
     if (isLoading) {
       return (
         <div
-          className={`bg-[#0f172a] border border-gray-800 rounded-lg p-6 animate-pulse ${className}`}
+          className={`bg-white border border-gray-200 rounded-lg p-6 animate-pulse ${className}`}
         >
           <div className="flex items-center justify-between">
             <div className="flex-1">
-              <div className="h-4 bg-gray-700 rounded w-20 mb-2"></div>
-              <div className="h-8 bg-gray-700 rounded w-16 mb-2"></div>
-              <div className="h-4 bg-gray-700 rounded w-24"></div>
+              <div className="h-4 bg-gray-200 rounded w-20 mb-2"></div>
+              <div className="h-8 bg-gray-200 rounded w-16 mb-2"></div>
+              <div className="h-4 bg-gray-200 rounded w-24"></div>
             </div>
-            <div className="w-12 h-12 bg-gray-700 rounded-lg"></div>
+            <div className="w-12 h-12 bg-gray-200 rounded-lg"></div>
           </div>
         </div>
       );
@@ -39,12 +39,12 @@ const StatsCard = memo(
 
     return (
       <div
-        className={`bg-[#0f172a] border border-gray-800 rounded-lg p-6 hover:border-gray-700 transition-all duration-200 ${className}`}
+        className={`bg-white border border-gray-200 rounded-lg p-6 hover:border-gray-300 transition-all duration-200 ${className}`}
       >
         <div className="flex items-center justify-between">
           <div className="flex-1">
-            <p className="text-sm font-medium text-gray-400 mb-1">{title}</p>
-            <p className="text-2xl font-bold text-white">{value}</p>
+            <p className="text-sm font-medium text-black mb-1">{title}</p>
+            <p className="text-2xl font-bold text-black">{value}</p>
             {trend && (
               <div className="flex items-center mt-2">
                 {trendPositive ? (
@@ -59,7 +59,7 @@ const StatsCard = memo(
                 >
                   {trend}
                 </span>
-                <span className="text-sm text-gray-400 ml-1">
+                <span className="text-sm text-black ml-1">
                   vs. letzte Woche
                 </span>
               </div>

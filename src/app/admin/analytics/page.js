@@ -182,83 +182,85 @@ export default function AdminAnalyticsPage() {
 
   return (
     <div className="space-y-6">
-      {/* Kompakte Übersicht: Ticket & Event Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-[#0f172a] border border-gray-800 rounded-lg p-6">
-          <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
-            <Ticket className="w-5 h-5 mr-2 text-purple-500" />
-            Ticket Statistiken
-          </h3>
-          <ul className="space-y-2">
-            {ticketSummary.map((item, idx) => (
-              <li key={idx} className="flex justify-between text-gray-300">
-                <span className="font-medium text-white">{item.label}</span>
-                <span>
+            {/* Header */}
+              <div className="flex items-center justify-between shadow-lg shadow-blue-700/20 bg-gradient-to-r from-blue-700 via-blue-600 to-purple-700 rounded-xl p-6">
+                <div className="flex items-center space-x-3">
+                  <BarChart3 className="w-8 h-8 text-purple-500" />
+                  <div>
+                <h1 className="text-3xl font-bold text-white">
+                  Analytics Dashboard
+                </h1>
+                <p className="text-gray-100">
+                  Detaillierte Einblicke in Ihre Plattform-Performance
+                </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center space-x-3">
+                  <select
+                value={dateRange}
+                onChange={(e) => setDateRange(e.target.value)}
+                className="px-3 py-2 bg-white border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  >
+                <option value="7d">Letzte 7 Tage</option>
+                <option value="30d">Letzte 30 Tage</option>
+                <option value="90d">Letzte 90 Tage</option>
+                <option value="1y">Letztes Jahr</option>
+                  </select>
+
+                  <button className="bg-gradient-to-r from-purple-600 to-pink-500 text-white px-4 py-2 rounded-lg hover:from-pink-500 hover:to-purple-600 transition-all duration-200 flex items-center">
+                <Download className="w-4 h-4 mr-2" />
+                Export
+                  </button>
+                </div>
+              </div>
+              
+              {/* Kompakte Übersicht: Ticket & Event Stats */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="bg-white border border-gray-200 rounded-lg p-6">
+                  <h3 className="text-lg font-semibold text-black mb-4 flex items-center">
+                <Ticket className="w-5 h-5 mr-2 text-purple-500" />
+                Ticket Statistiken
+                  </h3>
+                  <ul className="space-y-2">
+                {ticketSummary.map((item, idx) => (
+                  <li key={idx} className="flex justify-between text-gray-700">
+                    <span className="font-medium text-black">{item.label}</span>
+                    <span>
                   {typeof item.value === "number"
                     ? item.noCurrency
                       ? item.value
                       : formatCurrency(item.value)
                     : item.value}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div className="bg-[#0f172a] border border-gray-800 rounded-lg p-6">
-          <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
-            <Calendar className="w-5 h-5 mr-2 text-blue-500" />
-            Event Statistiken
-          </h3>
-          <ul className="space-y-2">
-            {eventSummary.map((item, idx) => (
-              <li key={idx} className="flex justify-between text-gray-300">
-                <span className="font-medium text-white">{item.label}</span>
-                <span>
+                    </span>
+                  </li>
+                ))}
+                  </ul>
+                </div>
+                <div className="bg-white border border-gray-200 rounded-lg p-6">
+                  <h3 className="text-lg font-semibold text-black mb-4 flex items-center">
+                <Calendar className="w-5 h-5 mr-2 text-blue-500" />
+                Event Statistiken
+                  </h3>
+                  <ul className="space-y-2">
+                {eventSummary.map((item, idx) => (
+                  <li key={idx} className="flex justify-between text-gray-700">
+                    <span className="font-medium text-black">{item.label}</span>
+                    <span>
                   {typeof item.value === "number"
                     ? item.noCurrency
                       ? item.value
                       : formatCurrency(item.value)
                     : item.value}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-3">
-          <BarChart3 className="w-8 h-8 text-purple-500" />
-          <div>
-            <h1 className="text-3xl font-bold text-white">
-              Analytics Dashboard
-            </h1>
-            <p className="text-gray-400">
-              Detaillierte Einblicke in Ihre Plattform-Performance
-            </p>
-          </div>
-        </div>
+                    </span>
+                  </li>
+                ))}
+                  </ul>
+                </div>
+              </div>
 
-        <div className="flex items-center space-x-3">
-          <select
-            value={dateRange}
-            onChange={(e) => setDateRange(e.target.value)}
-            className="px-3 py-2 bg-[#1e293b] border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
-          >
-            <option value="7d">Letzte 7 Tage</option>
-            <option value="30d">Letzte 30 Tage</option>
-            <option value="90d">Letzte 90 Tage</option>
-            <option value="1y">Letztes Jahr</option>
-          </select>
 
-          <button className="bg-gradient-to-r from-purple-600 to-pink-500 text-white px-4 py-2 rounded-lg hover:from-pink-500 hover:to-purple-600 transition-all duration-200 flex items-center">
-            <Download className="w-4 h-4 mr-2" />
-            Export
-          </button>
-        </div>
-      </div>
-
-      {/* Key Metrics */}
+              {/* Key Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatsCard
           title="Gesamtumsatz"
@@ -337,9 +339,9 @@ export default function AdminAnalyticsPage() {
 
       {/* Secondary Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-[#0f172a] border border-gray-800 rounded-lg p-6">
+        <div className="bg-white border border-gray-800 rounded-lg p-6">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-white">
+            <h3 className="text-lg font-semibold text-black">
               Conversion Rate
             </h3>
             <div
@@ -359,28 +361,28 @@ export default function AdminAnalyticsPage() {
               </span>
             </div>
           </div>
-          <div className="text-3xl font-bold text-white mb-2">
+          <div className="text-3xl font-bold text-black mb-2">
             {overview?.conversionRate ?? 0}%
           </div>
-          <p className="text-gray-400 text-sm">von Besuchern zu Käufern</p>
+          <p className="text-gray-900 text-sm">von Besuchern zu Käufern</p>
         </div>
 
-        <div className="bg-[#0f172a] border border-gray-800 rounded-lg p-6">
-          <h3 className="text-lg font-semibold text-white mb-4">
+        <div className="bg-white border border-gray-800 rounded-lg p-6">
+          <h3 className="text-lg font-semibold text-black mb-4">
             Beliebteste Kategorie
           </h3>
-          <div className="text-2xl font-bold text-purple-400 mb-2">
+          <div className="text-2xl font-bold text-purple-600 mb-2">
             {overview?.popularCategory ?? "—"}
           </div>
-          <p className="text-gray-400 text-sm">führt in Event-Buchungen</p>
+          <p className="text-gray-900 text-sm">führt in Event-Buchungen</p>
         </div>
 
-        <div className="bg-[#0f172a] border border-gray-800 rounded-lg p-6">
-          <h3 className="text-lg font-semibold text-white mb-4">Top Event</h3>
+        <div className="bg-white border border-gray-800 rounded-lg p-6">
+          <h3 className="text-lg font-semibold text-black mb-4">Top Event</h3>
           <div className="text-2xl font-bold text-pink-400 mb-2">
             {overview?.topEvent ?? "—"}
           </div>
-          <p className="text-gray-400 text-sm">meistverkauftes Event</p>
+          <p className="text-gray-900 text-sm">meistverkauftes Event</p>
         </div>
       </div>
 
@@ -389,48 +391,49 @@ export default function AdminAnalyticsPage() {
       {/* Detailed Tables */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Top Events (Ticket-Statistikdaten) */}
-        <div className="bg-[#0f172a] border border-gray-800 rounded-lg p-6">
-          <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
-            <TrendingUp className="w-5 h-5 mr-2 text-purple-500" />
-            Top Events
-          </h3>
-          <div className="space-y-3">
-            {topEvents && topEvents.length > 0 ? (
-              topEvents.map((event, index) => (
-                <div
-                  key={index}
-                  className="flex items-center justify-between p-3 bg-[#1e293b] rounded-lg"
-                >
-                  <div className="flex items-center space-x-3">
-                    <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white text-sm font-bold">
-                      {index + 1}
-                    </div>
-                    <div>
-                      <p className="text-white font-medium">{event.event}</p>
-                      <p className="text-gray-400 text-sm">
-                        {event.tickets} Tickets verkauft
-                      </p>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-green-400 font-semibold">
-                      {formatCurrency(event.revenue)}
-                    </p>
-                  </div>
+          <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl shadow-lg p-8 text-white">
+            <h3 className="flex items-center justify-center text-white p-3 mb-2 text-lg">
+              <TrendingUp className="w-5 h-5 mr-2 text-purple-300" />
+              Top Events
+            </h3>
+            <div className="space-y-3">
+              {topEvents && topEvents.length > 0 ? (
+                topEvents.map((event, index) => (
+            <div
+              key={index}
+              className="flex items-center justify-between p-3 bg-[#edede942] rounded-lg"
+            >
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white text-sm font-bold">
+                  {index + 1}
                 </div>
-              ))
-            ) : (
-              <p className="text-gray-400 text-center">
-                Keine Event-Daten verfügbar
-              </p>
-            )}
+                <div>
+                  <p className="text-white font-medium">{event.event}</p>
+                  <p className="text-gray-100 text-sm">
+              {event.tickets} Tickets verkauft
+                  </p>
+                </div>
+              </div>
+              <div className="text-right">
+                <p className="text-white font-semibold">
+                  {formatCurrency(event.revenue)}
+                  {event.revenue === 0 && <span className="ml-1 text-xs text-white">(Free)</span>}
+                </p>
+              </div>
+            </div>
+                ))
+              ) : (
+                <p className="text-gray-100 text-center">
+            Keine Event-Daten verfügbar
+                </p>
+              )}
+            </div>
           </div>
-        </div>
 
-        {/* Top Kategorien */}
-        <div className="bg-[#0f172a] border border-gray-800 rounded-lg p-6">
-          <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
-            <BarChart3 className="w-5 h-5 mr-2 text-blue-500" />
+          {/* Top Kategorien */}
+        <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl shadow-lg p-8 text-white">
+          <h3 className="flex items-center justify-center text-white p-3 mb-2 text-lg">
+            <BarChart3 className="w-5 h-5 mr-2 text-blue-200" />
             Top Kategorien
           </h3>
           <div className="space-y-3">
@@ -438,7 +441,7 @@ export default function AdminAnalyticsPage() {
               topCategories.map((cat, idx) => (
                 <div
                   key={idx}
-                  className="flex items-center justify-between p-3 bg-[#1e293b] rounded-lg"
+                  className="flex items-center justify-between p-3 bg-[#edede942] rounded-lg"
                 >
                   <div className="flex items-center space-x-3">
                     <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white text-sm font-bold">
@@ -446,20 +449,20 @@ export default function AdminAnalyticsPage() {
                     </div>
                     <div>
                       <p className="text-white font-medium">{cat.name}</p>
-                      <p className="text-gray-400 text-sm">
+                      <p className="text-gray-100 text-sm">
                         {cat.events} Events
                       </p>
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-green-400 font-semibold">
+                    <p className="text-white font-semibold">
                       {formatCurrency(cat.revenue)}
                     </p>
                   </div>
                 </div>
               ))
             ) : (
-              <p className="text-gray-400 text-center">
+              <p className="text-gray-100 text-center">
                 Keine Kategorie-Daten verfügbar
               </p>
             )}
@@ -468,51 +471,51 @@ export default function AdminAnalyticsPage() {
       </div>
 
       {/* Performance Insights (dynamisch) */}
-      <div className="bg-[#0f172a] border border-gray-800 rounded-lg p-6">
+      <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl shadow-lg p-8 text-white">
         <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
           <Eye className="w-5 h-5 mr-2 text-yellow-500" />
           Performance Insights
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="bg-[#1e293b] rounded-lg p-4">
+          <div className="bg-white rounded-lg p-4">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-gray-400 text-sm">
+              <span className="text-gray-900 text-sm">
                 Durchschn. Event-Größe
               </span>
               <Users className="w-4 h-4 text-blue-500" />
             </div>
-            <p className="text-white font-semibold">
+            <p className="text-gray-900 font-semibold">
               {overview?.avgAttendeesPerEvent
                 ? overview.avgAttendeesPerEvent.toFixed(1)
                 : "—"}{" "}
               Teilnehmer
             </p>
-            <p className="text-gray-400 text-xs">Ø Teilnehmer pro Event</p>
+            <p className="text-gray-900 text-xs">Ø Teilnehmer pro Event</p>
           </div>
-          <div className="bg-[#1e293b] rounded-lg p-4">
+          <div className="bg-white rounded-lg p-4">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-gray-400 text-sm">Event-Auslastung</span>
+              <span className="text-gray-900 text-sm">Event-Auslastung</span>
               <Target className="w-4 h-4 text-purple-500" />
             </div>
-            <p className="text-white font-semibold">
+            <p className="text-gray-900 font-semibold">
               {overview?.completionRate
                 ? overview.completionRate.toFixed(1)
                 : "—"}
               %
             </p>
-            <p className="text-gray-400 text-xs">Abgeschlossene Events</p>
+            <p className="text-gray-900 text-xs">Abgeschlossene Events</p>
           </div>
-          <div className="bg-[#1e293b] rounded-lg p-4">
+          <div className="bg-white rounded-lg p-4">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-gray-400 text-sm">
+              <span className="text-gray-900 text-sm">
                 Beliebteste Kategorie
               </span>
               <BarChart3 className="w-4 h-4 text-blue-500" />
             </div>
-            <p className="text-white font-semibold">
+            <p className="text-gray-900 font-semibold">
               {overview?.popularCategory ?? "—"}
             </p>
-            <p className="text-gray-400 text-xs">
+            <p className="text-gray-900 text-xs">
               Kategorie mit meisten Events
             </p>
           </div>

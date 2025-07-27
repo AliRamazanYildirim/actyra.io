@@ -121,9 +121,9 @@ export default function AdminDashboard() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+      <div className="flex items-center justify-between shadow-lg shadow-blue-700/20 bg-gradient-to-r from-blue-700 via-blue-600 to-purple-700 rounded-xl p-6">
         <h1 className="text-2xl lg:text-3xl font-bold text-white">Dashboard</h1>
-        <div className="text-sm text-gray-400">
+        <div className="text-sm text-gray-100">
           Zuletzt aktualisiert: {new Date().toLocaleString("de-DE")}
         </div>
       </div>

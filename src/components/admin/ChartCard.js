@@ -291,11 +291,11 @@ const ChartCard = memo(
 
     return (
       <div
-        className={`bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-xl p-6 hover:border-purple-500/30 transition-all duration-300 ${className}`}
+        className={`bg-white backdrop-blur-xl border border-transparent rounded-2xl p-7 relative transition-all duration-300 shadow-[0_2px_24px_0_rgba(168,85,247,0.12)] before:content-[''] before:absolute before:inset-0 before:rounded-2xl before:pointer-events-none before:transition-all before:duration-300 before:shadow-[0_0_32px_8px_rgba(168,85,247,0.18)] hover:before:shadow-[0_0_48px_12px_rgba(168,85,247,0.32)] hover:shadow-[0_4px_32px_0_rgba(168,85,247,0.22)] ${className}`}
       >
         {/* Header with ES6+ template literals and destructuring */}
         <div className="flex items-center justify-between mb-6">
-          <h3 className="text-lg font-semibold text-white">{title}</h3>
+          <h3 className="text-lg font-semibold text-black">{title}</h3>
           <div className="flex items-center space-x-2">
             <select
               value={selectedPeriod}
@@ -327,7 +327,7 @@ const ChartCard = memo(
                     backgroundColor: chartColors[index % chartColors.length],
                   }}
                 />
-                <span className="text-sm text-gray-300">{item.label}</span>
+                <span className="text-sm text-black">{item.label}</span>
               </div>
             ))}
           </div>
@@ -337,10 +337,10 @@ const ChartCard = memo(
         {(type === "line" || type === "bar") && (
           <div className="flex justify-between items-center text-sm">
             <div className="text-gray-400">
-              Max: <span className="text-white">{maxValue}</span>
+              Max: <span className="text-black">{maxValue}</span>
             </div>
             <div className="text-gray-400">
-              Durchschnitt: <span className="text-white">{averageValue}</span>
+              Durchschnitt: <span className="text-black">{averageValue}</span>
             </div>
           </div>
         )}

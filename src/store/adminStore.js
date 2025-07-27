@@ -51,6 +51,10 @@ const useAdminStore = create((set, get) => ({
       userRole: role,
       isAdmin: role === "admin",
     }),
+
+  // Aktivitäten für RecentActivity
+  activities: [],
+  setActivities: (activities) => set({ activities }),
 }));
 
 // Named exports for convenience

@@ -30,6 +30,7 @@ export default function AdminDashboard() {
   const setStats = useAdminStore((state) => state.setStats);
   const setChartData = useAdminStore((state) => state.setChartData);
   const setLoading = useAdminStore((state) => state.setLoading);
+  const setActivities = useAdminStore((state) => state.setActivities);
 
   useEffect(() => {
     // Debug: Admin-Status protokollieren
@@ -50,31 +51,41 @@ export default function AdminDashboard() {
         console.log("📡API-Anfragen werden gestartet...");
 
         // Echte Daten von APIs abrufen - ES6+ Promise.all
-        const [statsResponse, chartsResponse] = await Promise.all([
-          fetch("/api/admin/stats"),
-          fetch("/api/admin/charts"),
-        ]);
+        const [statsResponse, chartsResponse, activityResponse] =
+          await Promise.all([
+            fetch("/api/admin/stats"),
+            fetch("/api/admin/charts"),
+            fetch("/api/admin/recent-activity"),
+          ]);
 
         console.log("📊 API-Antworten:", {
           stats: statsResponse.status,
           charts: chartsResponse.status,
+          activities: activityResponse.status,
         });
 
-        if (statsResponse.ok && chartsResponse.ok) {
+        if (statsResponse.ok && chartsResponse.ok && activityResponse.ok) {
           const statsData = await statsResponse.json();
           const chartData = await chartsResponse.json();
+          const activityData = await activityResponse.json();
 
-          console.log("✅ Real data loaded:", { statsData, chartData });
+          console.log("✅ Real data loaded:", {
+            statsData,
+            chartData,
+            activityData,
+          });
 
           // Im Zustand-Store speichern
           setStats(statsData);
           setChartData("userGrowth", chartData.userGrowth);
           setChartData("eventStats", chartData.eventStats);
           setChartData("revenueFlow", chartData.revenueFlow);
+          setActivities(activityData.activities || []);
         } else {
           console.error("❌ API-Fehler:", {
             stats: statsResponse.status,
             charts: chartsResponse.status,
+            activities: activityResponse.status,
           });
           // Fallback-Daten bei einem API-Fehler verwenden
           console.log("🔄 Esatzdaten werden verwendet...");
@@ -87,7 +98,7 @@ export default function AdminDashboard() {
     };
 
     fetchDashboardData();
-  }, [isAdmin, setStats, setChartData, setLoading]);
+  }, [isAdmin, setStats, setChartData, setLoading, setActivities]);
 
   // Administrator-Berechtigungsprüfung
   if (!isAdmin) {

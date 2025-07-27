@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect, memo, useCallback, useMemo } from "react";
+import { memo, useCallback } from "react";
 import { Clock, User, Calendar, Ticket, DollarSign } from "lucide-react";
+import useAdminStore from "@/store/adminStore";
 
 /**
  * Activity type configurations using ES6+ object destructuring
@@ -33,71 +34,14 @@ const activityTypes = {
  * RecentActivity Component - ES6+ and Next.js 15 optimized
  * Modern component with React.memo, useCallback, and ES6+ patterns
  */
+
 const RecentActivity = memo(() => {
-  const [activities, setActivities] = useState([]);
-  const [loading, setLoading] = useState(true);
+  // Aktivitäten und Ladezustand aus dem AdminStore holen
+  const activities = useAdminStore((state) => state.activities);
+  const loading = useAdminStore((state) => state.loading.dashboard);
 
-  // ES6+ Mock data with useMemo for performance
-  const mockActivities = useMemo(
-    () => [
-      {
-        id: 1,
-        type: "user_registered",
-        description: "Neuer Benutzer Max Mustermann registriert",
-        timestamp: new Date(Date.now() - 1000 * 60 * 5).toISOString(),
-      },
-      {
-        id: 2,
-        type: "event_created",
-        description: 'Event "Kunstworkshop 2025" wurde erstellt',
-        timestamp: new Date(Date.now() - 1000 * 60 * 15).toISOString(),
-      },
-      {
-        id: 3,
-        type: "ticket_purchased",
-        description: '3 Tickets für "Tech Conference" verkauft',
-        timestamp: new Date(Date.now() - 1000 * 60 * 30).toISOString(),
-      },
-      {
-        id: 4,
-        type: "payment_completed",
-        description: "Zahlung über €89.50 abgeschlossen",
-        timestamp: new Date(Date.now() - 1000 * 60 * 45).toISOString(),
-      },
-      {
-        id: 5,
-        type: "user_registered",
-        description: "Neuer Benutzer Anna Schmidt registriert",
-        timestamp: new Date(Date.now() - 1000 * 60 * 60).toISOString(),
-      },
-    ],
-    []
-  );
-
-  // ES6+ Async function with useCallback
-  const fetchRecentActivity = useCallback(async () => {
-    try {
-      const response = await fetch("/api/admin/recent-activity");
-      if (response.ok) {
-        const data = await response.json();
-        setActivities(data.activities || []);
-      } else {
-        console.warn("API response not ok:", response.status);
-        // Fallback to mock data on API error
-        setActivities(mockActivities);
-      }
-    } catch (error) {
-      console.error("Fehler beim Laden der aktuellen Aktivitäten:", error);
-      // Fallback to mock data on network error
-      setActivities(mockActivities);
-    } finally {
-      setLoading(false);
-    }
-  }, [mockActivities]);
-
-  useEffect(() => {
-    fetchRecentActivity();
-  }, [fetchRecentActivity]);
+  // Immer echte Aktivitäten anzeigen
+  const displayActivities = activities || [];
 
   // ES6+ Time formatting function with arrow function
   const formatTimeAgo = useCallback((timestamp) => {
@@ -172,7 +116,7 @@ const RecentActivity = memo(() => {
         <Clock className="w-5 h-5 text-gray-400" />
       </div>
 
-      <div className="space-y-4">{activities.map(renderActivity)}</div>
+      <div className="space-y-4">{displayActivities.map(renderActivity)}</div>
 
       <div className="mt-4 pt-4 border-t border-gray-800">
         <button className="text-sm text-purple-400 hover:text-purple-300 transition-colors">

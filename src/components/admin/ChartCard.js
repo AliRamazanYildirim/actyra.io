@@ -336,10 +336,10 @@ const ChartCard = memo(
         {/* Stats for line and bar charts with memoized average */}
         {(type === "line" || type === "bar") && (
           <div className="flex justify-between items-center text-sm">
-            <div className="text-gray-400">
+            <div className="text-gray-900">
               Max: <span className="text-black">{maxValue}</span>
             </div>
-            <div className="text-gray-400">
+            <div className="text-gray-900">
               Durchschnitt: <span className="text-black">{averageValue}</span>
             </div>
           </div>

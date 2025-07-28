@@ -63,7 +63,7 @@ const ChartCard = memo(
 
     // ES6+ Arrow function components with memoization
     const SimpleLineChart = useCallback(() => {
-      // Güvenli data kontrolü
+      // Sichere Datenkontrolle
       if (!chartData || chartData.length === 0) {
         return (
           <div className="h-48 w-full flex items-center justify-center">
@@ -137,7 +137,7 @@ const ChartCard = memo(
           </svg>
 
           {/* Labels */}
-          <div className="absolute bottom-0 left-0 right-0 flex justify-between px-2 text-xs text-gray-400">
+          <div className="absolute bottom-0 left-0 right-0 flex justify-between px-2 text-xs text-gray-900">
             {chartData.map((item, index) => (
               <span key={index}>{item.label || `${index + 1}`}</span>
             ))}
@@ -148,11 +148,11 @@ const ChartCard = memo(
 
     // ES6+ SimpleBarChart with useCallback
     const SimpleBarChart = useCallback(() => {
-      // Güvenli data kontrolü
+      // Sichere Datenkontrolle
       if (!chartData || chartData.length === 0) {
         return (
           <div className="h-48 w-full flex items-center justify-center">
-            <p className="text-gray-400">Keine Daten verfügbar</p>
+            <p className="text-gray-900">Keine Daten verfügbar</p>
           </div>
         );
       }
@@ -170,7 +170,7 @@ const ChartCard = memo(
                     style={{ height: `${height}%`, minHeight: "4px" }}
                   />
                 </div>
-                <span className="text-xs text-gray-400 mt-2">
+                <span className="text-xs text-gray-900 mt-2">
                   {item.label || `${index + 1}`}
                 </span>
               </div>
@@ -182,7 +182,7 @@ const ChartCard = memo(
 
     // ES6+ SimpleDoughnutChart with useCallback
     const SimpleDoughnutChart = useCallback(() => {
-      // Güvenli data kontrolü
+      // Sichere Datenkontrolle
       if (!chartData || chartData.length === 0) {
         return (
           <div className="h-48 w-full flex items-center justify-center">
@@ -250,7 +250,7 @@ const ChartCard = memo(
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="text-center">
                 <div className="text-2xl font-bold text-white">{total}</div>
-                <div className="text-xs text-gray-400">Total</div>
+                <div className="text-xs text-gray-900">Total</div>
               </div>
             </div>
           </div>
@@ -300,7 +300,7 @@ const ChartCard = memo(
             <select
               value={selectedPeriod}
               onChange={handlePeriodChange}
-              className="bg-gray-700/50 border border-gray-600 rounded-lg px-3 py-1 text-sm text-white focus:outline-none focus:border-purple-500"
+              className="bg-purple-700/50 border border-gray-600 rounded-lg px-3 py-1 text-sm text-white focus:outline-none focus:bg-purple-500 hover:bg-blue-500 transition-colors"
             >
               <option value="7d">7 Tage</option>
               <option value="30d">30 Tage</option>

@@ -71,11 +71,11 @@ const RecentActivity = memo(() => {
           <div className={`p-2 rounded-lg ${bg} flex-shrink-0`}>
             <Icon className={`w-4 h-4 ${color}`} />
           </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-sm text-white font-medium">
+          <div className="flex-1 min-w-0 bg-[#edede959] rounded-lg">
+            <p className="text-sm text-black font-medium">
               {activity.description}
             </p>
-            <p className="text-xs text-gray-400 mt-1">
+            <p className="text-xs text-black mt-1">
               {formatTimeAgo(activity.timestamp)}
             </p>
           </div>
@@ -88,7 +88,7 @@ const RecentActivity = memo(() => {
   // ES6+ Loading state with early return
   if (loading) {
     return (
-      <div className="bg-[#0f172a] border border-gray-800 rounded-lg p-6">
+      <div className="bg-white backdrop-blur-xl border border-transparent rounded-2xl p-7 relative transition-all duration-300 shadow-[0_2px_24px_0_rgba(168,85,247,0.12)] before:content-[''] before:absolute before:inset-0 before:rounded-2xl before:pointer-events-none before:transition-all before:duration-300 before:shadow-[0_0_32px_8px_rgba(168,85,247,0.18)] hover:before:shadow-[0_0_48px_12px_rgba(168,85,247,0.32)] hover:shadow-[0_4px_32px_0_rgba(168,85,247,0.22)]">
         <h3 className="text-lg font-semibold text-white mb-4">
           Aktuelle Aktivitäten
         </h3>
@@ -108,15 +108,17 @@ const RecentActivity = memo(() => {
   }
 
   return (
-    <div className="bg-[#0f172a] border border-gray-800 rounded-lg p-6">
+    <div className="bg-white backdrop-blur-xl border border-transparent rounded-2xl p-7 relative transition-all duration-300 shadow-[0_2px_24px_0_rgba(168,85,247,0.12)] before:content-[''] before:absolute before:inset-0 before:rounded-2xl before:pointer-events-none before:transition-all before:duration-300 before:shadow-[0_0_32px_8px_rgba(168,85,247,0.18)] hover:before:shadow-[0_0_48px_12px_rgba(168,85,247,0.32)] hover:shadow-[0_4px_32px_0_rgba(168,85,247,0.22)]">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold text-white">
+        <h3 className="text-lg font-semibold text-black">
           Aktuelle Aktivitäten
         </h3>
-        <Clock className="w-5 h-5 text-gray-400" />
+        <Clock className="w-5 h-5 text-gray-900" />
       </div>
 
-      <div className="space-y-4">{displayActivities.map(renderActivity)}</div>
+      <div className="space-y-4">
+        {displayActivities.map(renderActivity)}
+      </div>
 
       <div className="mt-4 pt-4 border-t border-gray-800">
         <button className="text-sm text-purple-400 hover:text-purple-300 transition-colors">

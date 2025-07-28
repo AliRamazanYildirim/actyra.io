@@ -148,6 +148,8 @@ export default function AdminDashboard() {
           trend="+12%"
           trendPositive={true}
           isLoading={loading.dashboard}
+          bgColor="bg-yellow-500/10"
+          iconColor="text-yellow-500"
         />
         <StatsCard
           title="Aktive Events"
@@ -156,6 +158,8 @@ export default function AdminDashboard() {
           trend="+5%"
           trendPositive={true}
           isLoading={loading.dashboard}
+          bgColor="bg-green-500/10"
+          iconColor="text-green-500"
         />
         <StatsCard
           title="Verkaufte Tickets"
@@ -164,6 +168,8 @@ export default function AdminDashboard() {
           trend="+23%"
           trendPositive={true}
           isLoading={loading.dashboard}
+          bgColor="bg-red-500/10"
+          iconColor="text-red-500"
         />
         <StatsCard
           title="Gesamtumsatz"
@@ -172,6 +178,8 @@ export default function AdminDashboard() {
           trend="+18%"
           trendPositive={true}
           isLoading={loading.dashboard}
+          bgColor="bg-blue-500/10"
+          iconColor="text-blue-500"
         />
       </div>
 
@@ -232,21 +240,23 @@ export default function AdminDashboard() {
 
       {/* Recent Activity */}
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-        <div className="xl:col-span-2">
+        <div className="xl:col-span-2">       
           <RecentActivity />
         </div>
-        <div className="bg-[#0f172a] border border-gray-800 rounded-lg p-6">
+         <div
+          className={`bg-[#1e293b]backdrop-blur-xl border border-transparent rounded-2xl p-7 relative transition-all duration-300 shadow-[0_2px_24px_0_rgba(168,85,247,0.12)] before:content-[''] before:absolute before:inset-0 before:rounded-2xl before:pointer-events-none before:transition-all before:duration-300 before:shadow-[0_0_32px_8px_rgba(168,85,247,0.18)] hover:before:shadow-[0_0_48px_12px_rgba(168,85,247,0.32)] hover:shadow-[0_4px_32px_0_rgba(168,85,247,0.22)]`}
+        >
           <h3 className="text-lg font-semibold text-white mb-4">
             Schnellaktionen
           </h3>
           <div className="space-y-3">
-            <button className="w-full bg-gradient-to-r from-purple-600 to-pink-500 text-white py-2 px-4 rounded-lg hover:from-pink-500 hover:to-purple-600 transition-all duration-200 text-sm lg:text-base">
+            <button className="w-full bg-gradient-to-r from-purple-600 to-pink-500 text-white py-2 px-4 rounded-lg hover:from-pink-500 hover:to-purple-600 transition-all duration-200 text-sm lg:text-base cursor-pointer">
               Neues Event erstellen
             </button>
-            <button className="w-full bg-[#1e293b] text-white py-2 px-4 rounded-lg hover:bg-[#334155] transition-all duration-200 text-sm lg:text-base">
+            <button className="w-full bg-[#1e293b] text-white py-2 px-4 rounded-lg hover:bg-[#334155] transition-all duration-200 text-sm lg:text-base cursor-pointer">
               Benutzer verwalten
             </button>
-            <button className="w-full bg-[#1e293b] text-white py-2 px-4 rounded-lg hover:bg-[#334155] transition-all duration-200 text-sm lg:text-base">
+            <button className="w-full bg-[#1e293b] text-white py-2 px-4 rounded-lg hover:bg-[#334155] transition-all duration-200 text-sm lg:text-base cursor-pointer">
               Berichte generieren
             </button>
           </div>

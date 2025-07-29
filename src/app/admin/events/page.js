@@ -129,10 +129,10 @@ export default function AdminEventsPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between shadow-lg shadow-blue-700/20 bg-gradient-to-r from-purple-700 via-purple-600 to-blue-700 rounded-xl p-6">
         <h1 className="text-3xl font-bold text-white">Event-Verwaltung</h1>
         <Link href="/admin/events/create">
-          <button className="bg-gradient-to-r from-purple-600 to-pink-500 text-white px-4 py-2 rounded-lg hover:from-pink-500 hover:to-purple-600 transition-all duration-200 flex items-center">
+          <button className="bg-gradient-to-r from-purple-600 to-pink-500 text-white px-4 py-2 rounded-lg hover:from-pink-500 hover:to-purple-600 transition-all duration-200 flex items-center cursor-pointer">
             <Plus className="w-4 h-4 mr-2" />
             Neues Event
           </button>
@@ -197,7 +197,7 @@ export default function AdminEventsPage() {
           return (
             <div
               key={event._id}
-              className="bg-[#0f172a] border border-gray-800 rounded-lg overflow-hidden hover:border-gray-700 transition-all duration-200"
+              className="glass-card"
             >
               {/* Event Image */}
               <div className="relative h-48">

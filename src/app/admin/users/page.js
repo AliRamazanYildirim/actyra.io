@@ -101,10 +101,10 @@ export default function AdminUsersPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between shadow-lg shadow-blue-700/20 bg-gradient-to-r from-purple-700 via-purple-600 to-blue-700 rounded-xl p-6">
         <h1 className="text-3xl font-bold text-white">Benutzerverwaltung</h1>
         <Link href="/admin/users/create">
-          <button className="bg-gradient-to-r from-purple-600 to-pink-500 text-white px-4 py-2 rounded-lg hover:from-pink-500 hover:to-purple-600 transition-all duration-200 flex items-center">
+          <button className="bg-gradient-to-r from-purple-600 to-pink-500 text-white px-4 py-2 rounded-lg hover:from-pink-500 hover:to-purple-600 transition-all duration-200 flex items-center cursor-pointer">
             <Plus className="w-4 h-4 mr-2" />
             Benutzer hinzufügen
           </button>

@@ -133,7 +133,7 @@ export default function AdminTicketsPage() {
     <div className="min-h-screen bg-[#0D0E25] rounded-xl p-6 pt-20 lg:pt-6">
       <div className="space-y-6">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="flex items-center justify-between shadow-lg shadow-blue-700/20 bg-gradient-to-r from-purple-700 via-purple-600 to-blue-700 rounded-xl p-6">
           <h1 className="text-2xl sm:text-3xl font-bold text-white">
             Ticket-Verwaltung
           </h1>
@@ -141,75 +141,6 @@ export default function AdminTicketsPage() {
             <Download className="w-4 h-4 mr-2" />
             Exportieren
           </button>
-        </div>
-
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
-          <div className="bg-[#0f172a] border border-gray-800 rounded-lg p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-400">
-                  Gesamt Tickets
-                </p>
-                <p className="text-2xl font-bold text-white">{stats.total}</p>
-              </div>
-              <Ticket className="w-8 h-8 text-purple-500" />
-            </div>
-          </div>
-
-          <div className="bg-[#0f172a] border border-gray-800 rounded-lg p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-400">
-                  Abgeschlossen
-                </p>
-                <p className="text-2xl font-bold text-green-500">
-                  {stats.completed}
-                </p>
-              </div>
-              <CheckCircle className="w-8 h-8 text-green-500" />
-            </div>
-          </div>
-
-          <div className="bg-[#0f172a] border border-gray-800 rounded-lg p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-400">Ausstehend</p>
-                <p className="text-2xl font-bold text-yellow-500">
-                  {stats.pending}
-                </p>
-              </div>
-              <Clock className="w-8 h-8 text-yellow-500" />
-            </div>
-          </div>
-
-          <div className="bg-[#0f172a] border border-gray-800 rounded-lg p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-400">
-                  Fehlgeschlagen
-                </p>
-                <p className="text-2xl font-bold text-red-500">
-                  {stats.failed}
-                </p>
-              </div>
-              <XCircle className="w-8 h-8 text-red-500" />
-            </div>
-          </div>
-
-          <div className="bg-[#0f172a] border border-gray-800 rounded-lg p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-400">
-                  Gesamtumsatz
-                </p>
-                <p className="text-2xl font-bold text-white">
-                  €{totalRevenueCalculated.toLocaleString("de-DE")}
-                </p>
-              </div>
-              <DollarSign className="w-8 h-8 text-purple-500" />
-            </div>
-          </div>
         </div>
 
         {/* Filters */}

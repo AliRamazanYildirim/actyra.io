@@ -357,6 +357,7 @@ const NavBar = memo(() => {
             </Link>
           </li>
           <SignedOut>
+          {!isSignedIn ? (
             <>
               <li>
                 <SignInButton mode="redirect" redirecturl="/sign-in">
@@ -385,6 +386,12 @@ const NavBar = memo(() => {
                 className="text-white flex items-center gap-1 focus:outline-none cursor-pointer"
                 aria-haspopup="true"
                 aria-expanded={profileDropdownOpen}
+          ) : (
+            <>
+              <li
+                className="relative"
+                onMouseEnter={() => setProfileDropdownOpen(true)}
+                onMouseLeave={() => setProfileDropdownOpen(false)}
               >
                 Mein Profil
               </button>
@@ -393,6 +400,10 @@ const NavBar = memo(() => {
                 <div
                   className="absolute right-0 mt-4 w-56 bg-gradient-to-b from-[#23244a] to-[#181a2b] border border-pink-600/30 rounded-2xl shadow-2xl z-50 flex flex-col items-center pt-4 pb-3 animate-fadeIn"
                   style={{ right: "-85px" }}
+                <button
+                  className="text-white flex items-center gap-1 focus:outline-none cursor-pointer"
+                  aria-haspopup="true"
+                  aria-expanded={profileDropdownOpen}
                 >
                   {/* ChevronDownIcon tam ortada ve üstte */}
                   <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-b from-[#23244a] to-[#181a2b] rounded-full p-1 border border-pink-600/30 shadow-lg flex items-center justify-center">
@@ -402,17 +413,50 @@ const NavBar = memo(() => {
                     href="/profil"
                     className="w-5/6 text-center px-4 py-2 text-base text-white rounded-lg hover:bg-pink-500/20 transition mb-1"
                     onClick={() => setProfileDropdownOpen(false)}
+                  Mein Profil
+                </button>
+                {/* Dropdown für Profil und ggf. Admin Dashboard */}
+                {profileDropdownOpen && (
+                  <div
+                    className="absolute right-0 mt-4 w-56 bg-gradient-to-b from-[#23244a] to-[#181a2b] border border-pink-600/30 rounded-2xl shadow-2xl z-50 flex flex-col items-center pt-4 pb-3 animate-fadeIn"
+                    style={{ right: "-85px" }}
                   >
                     Mein Profil
                   </Link>
                   {userRole === "admin" && (
+                    {/* ChevronDownIcon tam ortada ve üstte */}
+                    <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-b from-[#23244a] to-[#181a2b] rounded-full p-1 border border-pink-600/30 shadow-lg flex items-center justify-center">
+                      <ChevronDownIcon className="w-7 h-7 text-pink-400 drop-shadow" />
+                    </div>
                     <Link
                       href="/admin"
                       className="w-5/6 text-center px-4 py-2 text-base text-white rounded-lg hover:bg-pink-500/20 transition"
+                      href="/profil"
+                      className="w-5/6 text-center px-4 py-2 text-base text-white rounded-lg hover:bg-pink-500/20 transition mb-1"
                       onClick={() => setProfileDropdownOpen(false)}
                     >
                       Admin Dashboard
+                      Mein Profil
                     </Link>
+                    {userRole === "admin" && (
+                      <Link
+                        href="/admin"
+                        className="w-5/6 text-center px-4 py-2 text-base text-white rounded-lg hover:bg-pink-500/20 transition"
+                        onClick={() => setProfileDropdownOpen(false)}
+                      >
+                        Admin Dashboard
+                      </Link>
+                    )}
+                  </div>
+                )}
+              </li>
+              <li>
+                <Link href="/warenkorb" className="relative group">
+                  <ShoppingCart className="w-6 h-6 text-white group-hover:text-pink-400 transition" />
+                  {clientTicketCount > 0 && (
+                    <span className="absolute -top-2 -right-2 bg-pink-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full">
+                      {clientTicketCount}
+                    </span>
                   )}
                 </div>
               )}
@@ -431,6 +475,13 @@ const NavBar = memo(() => {
               <UserButton />
             </li>
           </SignedIn>
+                </Link>
+              </li>
+              <li>
+                <UserButton />
+              </li>
+            </>
+          )}
           <li>
             <ThemeToggle />
           </li>
@@ -531,6 +582,16 @@ const NavBar = memo(() => {
                   Login
                 </button>
               </SignInButton>
+            {!isSignedIn ? (
+              <>
+                <SignInButton mode="modal">
+                  <button
+                    className="nav-link nav-text"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    Login
+                  </button>
+                </SignInButton>
 
               <SignUpButton mode="modal">
                 <button
@@ -544,6 +605,17 @@ const NavBar = memo(() => {
 
             {/* Warenkorb - nur für eingeloggte Benutzer sichtbar */}
             <SignedIn>
+                <SignUpButton mode="modal">
+                  <button
+                    className="nav-link nav-text"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    Registrieren
+                  </button>
+                </SignUpButton>
+              </>
+            ) : (
+              /* Warenkorb - nur für eingeloggte Benutzer sichtbar */
               <Link
                 href="/warenkorb"
                 className="nav-link text-white"
@@ -557,6 +629,7 @@ const NavBar = memo(() => {
                 )}
               </Link>
             </SignedIn>
+            )}
             <ThemeToggle />
           </div>
         </div>

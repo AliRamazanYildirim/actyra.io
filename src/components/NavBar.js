@@ -5,14 +5,7 @@ import { useEffect, useState, memo, useCallback, useMemo, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import { ShoppingCart, Menu, X } from "lucide-react";
-import {
-  SignInButton,
-  SignUpButton,
-  SignedIn,
-  SignedOut,
-  UserButton,
-  useUser,
-} from "@clerk/nextjs";
+import { SignInButton, SignUpButton, UserButton, useUser } from "@clerk/nextjs";
 import { RiSearchEyeLine } from "react-icons/ri";
 import ThemeToggle from "./ThemeToggle";
 import useTicketStore from "@/store/ticketStore";
@@ -50,12 +43,12 @@ const NavBar = memo(() => {
         const events = Array.isArray(data?.events)
           ? data.events
           : Array.isArray(data)
-          ? data
-          : [];
+            ? data
+            : [];
         setAllEvents(
           events.length
             ? events
-            : (await import("@/data/eventSeedData")).default
+            : (await import("@/data/eventSeedData")).default,
         );
       } catch {
         setAllEvents((await import("@/data/eventSeedData")).default);
@@ -73,16 +66,16 @@ const NavBar = memo(() => {
       return;
     }
     const isPLZ = loc && /^\d{5}$/.test(loc);
-    const filtered = allEvents.filter(e => {
+    const filtered = allEvents.filter((e) => {
       const title = (e.title || "").toLowerCase();
       const slug = (e.slug || "").toLowerCase();
       const location = (e.location || "").toLowerCase();
       // PLZ: location içinde 5-stellige Zahl arar
       const plzMatch = isPLZ ? location.includes(loc) : false;
       const locMatch = loc && !isPLZ ? location.includes(loc) : false;
-      const titleMatch = q ? (title.includes(q) || slug.includes(q)) : false;
+      const titleMatch = q ? title.includes(q) || slug.includes(q) : false;
       // Mindestens einer der Filter muss passen
-      return (titleMatch || locMatch || plzMatch);
+      return titleMatch || locMatch || plzMatch;
     });
     setSearchResults(filtered.slice(0, 8));
     setShowDropdown(true);
@@ -94,7 +87,7 @@ const NavBar = memo(() => {
       Array.isArray(cartTickets)
         ? cartTickets.reduce((sum, ticket) => sum + (ticket?.quantity || 0), 0)
         : 0,
-    [cartTickets]
+    [cartTickets],
   );
 
   const pathname = usePathname();
@@ -147,7 +140,7 @@ const NavBar = memo(() => {
           }
         }
       },
-      { threshold: 0.6 }
+      { threshold: 0.6 },
     );
 
     // ES6+ Array methods and optional chaining
@@ -183,7 +176,7 @@ const NavBar = memo(() => {
         section?.scrollIntoView({ behavior: "smooth" });
       }
     },
-    [pathname, router]
+    [pathname, router],
   );
 
   // ES6+ Link styling function with template literals
@@ -192,7 +185,7 @@ const NavBar = memo(() => {
       `hover:text-pink-400 transition cursor-pointer ${
         pathname === targetPath ? "text-pink-400 font-semibold" : ""
       }`,
-    [pathname]
+    [pathname],
   );
 
   // ES6+ Section active state checker
@@ -201,7 +194,7 @@ const NavBar = memo(() => {
       pathname === "/" && activeSection === sectionId
         ? "text-pink-400 font-semibold"
         : "hover:text-pink-400 transition cursor-pointer",
-    [pathname, activeSection]
+    [pathname, activeSection],
   );
 
   return (
@@ -243,8 +236,10 @@ const NavBar = memo(() => {
                 placeholder="Nach Events suchen"
                 className="py-2 px-4 bg-transparent text-black placeholder-gray-600 outline-none flex-1 text-sm"
                 value={searchTerm}
-                onChange={e => setSearchTerm(e.target.value)}
-                onFocus={() => (searchTerm || searchLocation) && setShowDropdown(true)}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                onFocus={() =>
+                  (searchTerm || searchLocation) && setShowDropdown(true)
+                }
                 onBlur={() => setTimeout(() => setShowDropdown(false), 150)}
                 autoComplete="off"
               />
@@ -254,8 +249,10 @@ const NavBar = memo(() => {
                 placeholder="Stadt oder PLZ"
                 className="py-2 px-4 bg-transparent text-black placeholder-gray-600 outline-none flex-1 text-sm"
                 value={searchLocation}
-                onChange={e => setSearchLocation(e.target.value)}
-                onFocus={() => (searchTerm || searchLocation) && setShowDropdown(true)}
+                onChange={(e) => setSearchLocation(e.target.value)}
+                onFocus={() =>
+                  (searchTerm || searchLocation) && setShowDropdown(true)
+                }
                 onBlur={() => setTimeout(() => setShowDropdown(false), 150)}
                 autoComplete="off"
               />
@@ -264,7 +261,9 @@ const NavBar = memo(() => {
                 aria-label="Suchen"
                 onClick={() => {
                   if (searchResults.length > 0) {
-                    router.push(`/events/${searchResults[0].slug || searchResults[0].id}`);
+                    router.push(
+                      `/events/${searchResults[0].slug || searchResults[0].id}`,
+                    );
                     setShowDropdown(false);
                   }
                 }}
@@ -289,7 +288,7 @@ const NavBar = memo(() => {
                         router.push(
                           `/events/${
                             event.slug || event.id || event._id || index
-                          }`
+                          }`,
                         );
                         setShowDropdown(false);
                         setSearchTerm("");
@@ -356,7 +355,6 @@ const NavBar = memo(() => {
               Event erstellen
             </Link>
           </li>
-          <SignedOut>
           {!isSignedIn ? (
             <>
               <li>
@@ -374,18 +372,6 @@ const NavBar = memo(() => {
                 </SignUpButton>
               </li>
             </>
-          </SignedOut>
-          {/* Profil-Schaltfläche - nur für eingeloggte Benutzer sichtbar */}
-          <SignedIn>
-            <li
-              className="relative"
-              onMouseEnter={() => setProfileDropdownOpen(true)}
-              onMouseLeave={() => setProfileDropdownOpen(false)}
-            >
-              <button
-                className="text-white flex items-center gap-1 focus:outline-none cursor-pointer"
-                aria-haspopup="true"
-                aria-expanded={profileDropdownOpen}
           ) : (
             <>
               <li
@@ -393,26 +379,11 @@ const NavBar = memo(() => {
                 onMouseEnter={() => setProfileDropdownOpen(true)}
                 onMouseLeave={() => setProfileDropdownOpen(false)}
               >
-                Mein Profil
-              </button>
-              {/* Dropdown für Profil und ggf. Admin Dashboard */}
-              {profileDropdownOpen && (
-                <div
-                  className="absolute right-0 mt-4 w-56 bg-gradient-to-b from-[#23244a] to-[#181a2b] border border-pink-600/30 rounded-2xl shadow-2xl z-50 flex flex-col items-center pt-4 pb-3 animate-fadeIn"
-                  style={{ right: "-85px" }}
                 <button
                   className="text-white flex items-center gap-1 focus:outline-none cursor-pointer"
                   aria-haspopup="true"
                   aria-expanded={profileDropdownOpen}
                 >
-                  {/* ChevronDownIcon tam ortada ve üstte */}
-                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-b from-[#23244a] to-[#181a2b] rounded-full p-1 border border-pink-600/30 shadow-lg flex items-center justify-center">
-                    <ChevronDownIcon className="w-7 h-7 text-pink-400 drop-shadow" />
-                  </div>
-                  <Link
-                    href="/profil"
-                    className="w-5/6 text-center px-4 py-2 text-base text-white rounded-lg hover:bg-pink-500/20 transition mb-1"
-                    onClick={() => setProfileDropdownOpen(false)}
                   Mein Profil
                 </button>
                 {/* Dropdown für Profil und ggf. Admin Dashboard */}
@@ -421,21 +392,15 @@ const NavBar = memo(() => {
                     className="absolute right-0 mt-4 w-56 bg-gradient-to-b from-[#23244a] to-[#181a2b] border border-pink-600/30 rounded-2xl shadow-2xl z-50 flex flex-col items-center pt-4 pb-3 animate-fadeIn"
                     style={{ right: "-85px" }}
                   >
-                    Mein Profil
-                  </Link>
-                  {userRole === "admin" && (
                     {/* ChevronDownIcon tam ortada ve üstte */}
                     <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-b from-[#23244a] to-[#181a2b] rounded-full p-1 border border-pink-600/30 shadow-lg flex items-center justify-center">
                       <ChevronDownIcon className="w-7 h-7 text-pink-400 drop-shadow" />
                     </div>
                     <Link
-                      href="/admin"
-                      className="w-5/6 text-center px-4 py-2 text-base text-white rounded-lg hover:bg-pink-500/20 transition"
                       href="/profil"
                       className="w-5/6 text-center px-4 py-2 text-base text-white rounded-lg hover:bg-pink-500/20 transition mb-1"
                       onClick={() => setProfileDropdownOpen(false)}
                     >
-                      Admin Dashboard
                       Mein Profil
                     </Link>
                     {userRole === "admin" && (
@@ -458,23 +423,6 @@ const NavBar = memo(() => {
                       {clientTicketCount}
                     </span>
                   )}
-                </div>
-              )}
-            </li>
-            <li>
-              <Link href="/warenkorb" className="relative group">
-                <ShoppingCart className="w-6 h-6 text-white group-hover:text-pink-400 transition" />
-                {clientTicketCount > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-pink-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full">
-                    {clientTicketCount}
-                  </span>
-                )}
-              </Link>
-            </li>
-            <li>
-              <UserButton />
-            </li>
-          </SignedIn>
                 </Link>
               </li>
               <li>
@@ -573,15 +521,6 @@ const NavBar = memo(() => {
             </button>
 
             {/* Auth-Buttons */}
-            <SignedOut>
-              <SignInButton mode="modal">
-                <button
-                  className="nav-link nav-text"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  Login
-                </button>
-              </SignInButton>
             {!isSignedIn ? (
               <>
                 <SignInButton mode="modal">
@@ -593,18 +532,6 @@ const NavBar = memo(() => {
                   </button>
                 </SignInButton>
 
-              <SignUpButton mode="modal">
-                <button
-                  className="nav-link nav-text"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  Registrieren
-                </button>
-              </SignUpButton>
-            </SignedOut>
-
-            {/* Warenkorb - nur für eingeloggte Benutzer sichtbar */}
-            <SignedIn>
                 <SignUpButton mode="modal">
                   <button
                     className="nav-link nav-text"
@@ -628,7 +555,6 @@ const NavBar = memo(() => {
                   </span>
                 )}
               </Link>
-            </SignedIn>
             )}
             <ThemeToggle />
           </div>

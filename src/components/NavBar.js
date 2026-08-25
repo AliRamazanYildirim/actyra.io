@@ -4,17 +4,27 @@ import Link from "next/link";
 import { useEffect, useState, memo, useCallback, useMemo, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
-import { ShoppingCart, Menu, X } from "lucide-react";
-import { SignInButton, SignUpButton, UserButton, useUser } from "@clerk/nextjs";
-import { RiSearchEyeLine } from "react-icons/ri";
+import {
+  ShoppingCart,
+  Menu,
+  X,
+  Search,
+  MapPin,
+  Sparkles,
+  User,
+  LogOut,
+  Shield,
+} from "lucide-react";
+import {
+  SignInButton,
+  SignUpButton,
+  UserButton,
+  useUser,
+  SignOutButton,
+} from "@clerk/nextjs";
 import ThemeToggle from "./ThemeToggle";
 import useTicketStore from "@/store/ticketStore";
-import { ChevronDownIcon } from "@heroicons/react/24/solid";
 
-/**
- * NavBar Component - ES6+ and Next.js 15 optimized
- * Modern navigation with React.memo, useCallback, and ES6+ patterns
- */
 const NavBar = memo(() => {
   const [isVisible, setIsVisible] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -22,19 +32,17 @@ const NavBar = memo(() => {
   const [clientTicketCount, setClientTicketCount] = useState(0);
   const [userRole, setUserRole] = useState(null);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
+  const profileDropdownRef = useRef(null);
 
-  // ES6+ Zustand-Store-Selektoren mit Memoisierung
   const cartTickets = useTicketStore((state) => state.cartTickets || []);
 
-  // Ereignisstatus für die Suche
   const [searchTerm, setSearchTerm] = useState("");
-  const [searchLocation, setSearchLocation] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [allEvents, setAllEvents] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
   const searchInputRef = useRef(null);
 
-  // Hole dich die Events vom Backend (einmal beim ersten Laden), mit fallbackEvents.
+  // Fetch events once for client search
   useEffect(() => {
     (async () => {
       try {
@@ -56,32 +64,44 @@ const NavBar = memo(() => {
     })();
   }, []);
 
-  // Filtere, während sich die Sucheingabe ändert (flexibler und mit Debugging).
+  // Filter search results
   useEffect(() => {
     const q = searchTerm.trim().toLowerCase();
-    const loc = searchLocation.trim().toLowerCase();
-    if (!q && !loc) {
+    if (!q) {
       setSearchResults([]);
       setShowDropdown(false);
       return;
     }
-    const isPLZ = loc && /^\d{5}$/.test(loc);
     const filtered = allEvents.filter((e) => {
       const title = (e.title || "").toLowerCase();
-      const slug = (e.slug || "").toLowerCase();
       const location = (e.location || "").toLowerCase();
-      // PLZ: location içinde 5-stellige Zahl arar
-      const plzMatch = isPLZ ? location.includes(loc) : false;
-      const locMatch = loc && !isPLZ ? location.includes(loc) : false;
-      const titleMatch = q ? title.includes(q) || slug.includes(q) : false;
-      // Mindestens einer der Filter muss passen
-      return titleMatch || locMatch || plzMatch;
+      const category = (e.category || "").toLowerCase();
+      return title.includes(q) || location.includes(q) || category.includes(q);
     });
-    setSearchResults(filtered.slice(0, 8));
+    setSearchResults(filtered.slice(0, 6));
     setShowDropdown(true);
-  }, [searchTerm, searchLocation, allEvents]);
+  }, [searchTerm, allEvents]);
 
-  // ES6+ useMemo for computed values
+  // Click outside to close dropdowns
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        profileDropdownRef.current &&
+        !profileDropdownRef.current.contains(event.target)
+      ) {
+        setProfileDropdownOpen(false);
+      }
+      if (
+        searchInputRef.current &&
+        !searchInputRef.current.contains(event.target)
+      ) {
+        setShowDropdown(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   const totalTicketCount = useMemo(
     () =>
       Array.isArray(cartTickets)
@@ -92,8 +112,9 @@ const NavBar = memo(() => {
 
   const pathname = usePathname();
   const router = useRouter();
-  const { isSignedIn, user } = useUser();
-  // Rolle des Benutzers laden, wenn eingeloggt
+  const { isSignedIn } = useUser();
+
+  // Load user role
   useEffect(() => {
     const fetchRole = async () => {
       try {
@@ -112,38 +133,32 @@ const NavBar = memo(() => {
     else setUserRole(null);
   }, [isSignedIn]);
 
-  // ES6+ Initialization effect with arrow function
   useEffect(() => {
-    document.documentElement.style.scrollBehavior = "smooth";
-    const timeout = setTimeout(() => setIsVisible(true), 100);
+    const timeout = setTimeout(() => setIsVisible(true), 50);
     return () => clearTimeout(timeout);
   }, []);
 
-  // ES6+ Client-side ticket count synchronization
   useEffect(() => {
-    // Set real value after client rendering only when tickets is an array
     if (Array.isArray(cartTickets)) {
       setClientTicketCount(totalTicketCount);
     }
   }, [totalTicketCount, cartTickets]);
 
-  // ES6+ Intersection Observer for section tracking
+  // Track active section on homepage
   useEffect(() => {
     if (pathname !== "/") return;
 
     const observer = new IntersectionObserver(
       (entries) => {
-        // ES6+ for...of loop with early return
         for (const entry of entries) {
           if (entry.isIntersecting) {
             setActiveSection(entry.target.id);
           }
         }
       },
-      { threshold: 0.6 },
+      { threshold: 0.5 },
     );
 
-    // ES6+ Array methods and optional chaining
     const sections = ["home", "events", "kategorien"];
     sections.forEach((id) => {
       const el = document.getElementById(id);
@@ -153,19 +168,17 @@ const NavBar = memo(() => {
     return () => observer.disconnect();
   }, [pathname]);
 
-  // ES6+ Mobile menu resize handler
+  // Handle mobile menu auto-close on resize
   useEffect(() => {
     const closeMenuOnResize = () => {
-      if (window.innerWidth >= 768) {
+      if (window.innerWidth >= 1024) {
         setIsMobileMenuOpen(false);
       }
     };
-
     window.addEventListener("resize", closeMenuOnResize);
     return () => window.removeEventListener("resize", closeMenuOnResize);
   }, []);
 
-  // ES6+ Event handlers with useCallback
   const handleScrollTo = useCallback(
     (id) => {
       setIsMobileMenuOpen(false);
@@ -179,392 +192,347 @@ const NavBar = memo(() => {
     [pathname, router],
   );
 
-  // ES6+ Link styling function with template literals
-  const linkStyle = useCallback(
-    (targetPath) =>
-      `hover:text-pink-400 transition cursor-pointer ${
-        pathname === targetPath ? "text-pink-400 font-semibold" : ""
-      }`,
-    [pathname],
-  );
-
-  // ES6+ Section active state checker
-  const isActive = useCallback(
-    (sectionId) =>
-      pathname === "/" && activeSection === sectionId
-        ? "text-pink-400 font-semibold"
-        : "hover:text-pink-400 transition cursor-pointer",
-    [pathname, activeSection],
-  );
-
   return (
-    <nav
-      className={`fixed top-0 left-0 w-full z-50 transition-all duration-700 ease-in-out
-            ${
-              isVisible
-                ? "opacity-100 translate-y-0"
-                : "opacity-0 -translate-y-5"
-            }
-            backdrop-blur-xl bg-gradient-to-r from-[#0D0E25]/80 to-[#1c1f3c]/80 shadow-md`}
+    <header
+      className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ease-in-out ${
+        isVisible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"
+      } backdrop-blur-xl bg-white/95 dark:bg-[#070818]/95 border-b border-slate-200/60 dark:border-slate-800/80 shadow-sm`}
     >
-      <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-        {/* Logo - immer sichtbar */}
-        <Link href="/" className="flex items-center gap-2">
-          <Image
-            src="/logo-actyra.png"
-            alt="Actyra Logo"
-            width={40}
-            height={40}
-            priority
-            className="rounded-full shadow-md hover:scale-105 transition"
-          />
-          <span className="text-white font-bold text-lg hidden sm:inline">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
+        {/* Logo */}
+        <Link href="/" className="flex items-center gap-2.5 shrink-0 group">
+          <div className="relative w-10 h-10 rounded-full overflow-hidden shadow-md shadow-pink-500/20 group-hover:scale-105 transition-transform duration-200">
+            <Image
+              src="/logo-actyra.png"
+              alt="Actyra Logo"
+              fill
+              priority
+              className="object-cover"
+            />
+          </div>
+          <span className="font-extrabold text-xl tracking-tight bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">
             Actyra
           </span>
         </Link>
 
-        {/* 🔍 Suchleiste - nur auf Desktop sichtbar */}
+        {/* Search Bar - Desktop */}
         <div
-          className="hidden md:flex items-center flex-1 max-w-xl mx-6 relative"
-          style={{ zIndex: 60 }}
+          className="hidden md:flex flex-1 max-w-md mx-4 relative"
+          ref={searchInputRef}
         >
-          <div className="w-full relative">
-            <span className="bg-white bg-opacity-10 rounded-md flex items-center w-full backdrop-blur-sm">
-              <input
-                ref={searchInputRef}
-                type="text"
-                placeholder="Nach Events suchen"
-                className="py-2 px-4 bg-transparent text-black placeholder-gray-600 outline-none flex-1 text-sm"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                onFocus={() =>
-                  (searchTerm || searchLocation) && setShowDropdown(true)
-                }
-                onBlur={() => setTimeout(() => setShowDropdown(false), 150)}
-                autoComplete="off"
-              />
-              <div className="h-6 w-[1px] bg-gray-400 mx-1"></div>
-              <input
-                type="text"
-                placeholder="Stadt oder PLZ"
-                className="py-2 px-4 bg-transparent text-black placeholder-gray-600 outline-none flex-1 text-sm"
-                value={searchLocation}
-                onChange={(e) => setSearchLocation(e.target.value)}
-                onFocus={() =>
-                  (searchTerm || searchLocation) && setShowDropdown(true)
-                }
-                onBlur={() => setTimeout(() => setShowDropdown(false), 150)}
-                autoComplete="off"
-              />
-              <button
-                className="bg-pink-600 hover:bg-pink-700 transition p-3 rounded-r-md cursor-pointer"
-                aria-label="Suchen"
-                onClick={() => {
-                  if (searchResults.length > 0) {
-                    router.push(
-                      `/events/${searchResults[0].slug || searchResults[0].id}`,
-                    );
-                    setShowDropdown(false);
-                  }
-                }}
-              >
-                <RiSearchEyeLine />
-              </button>
-            </span>
-            {/* Dropdown-Ereignis-Suchergebnisse */}
-            {showDropdown && searchResults.length > 0 && (
-              <div className="absolute left-0 top-12 w-full bg-white rounded-b-lg shadow-xl z-[999] border border-pink-400/30 max-h-80 overflow-y-auto animate-fadeIn">
-                {searchResults.map((event, index) => {
-                  // Bildquelle flexibel wählen
-                  const imgSrc =
-                    event.image || event.imageUrl || "/event-default.webp";
-                  // Key möglichst eindeutig
-                  const key = event.id || event._id || event.slug || index;
-                  return (
-                    <div
-                      key={key}
-                      className="flex items-center gap-3 px-4 py-2 hover:bg-pink-100 cursor-pointer text-black border-b last:border-b-0 border-gray-100"
-                      onMouseDown={() => {
-                        router.push(
-                          `/events/${
-                            event.slug || event.id || event._id || index
-                          }`,
-                        );
-                        setShowDropdown(false);
-                        setSearchTerm("");
-                      }}
-                    >
+          <div className="w-full relative flex items-center">
+            <Search className="absolute left-3.5 w-4 h-4 text-slate-400 dark:text-slate-500 pointer-events-none" />
+            <input
+              type="text"
+              placeholder="Events, Orte, Kategorien suchen..."
+              className="w-full pl-10 pr-4 py-2 text-sm rounded-full bg-slate-100 dark:bg-[#141738] border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-pink-500/50 focus:border-pink-500 transition-all"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              onFocus={() => searchTerm && setShowDropdown(true)}
+              autoComplete="off"
+              suppressHydrationWarning
+            />
+          </div>
+
+          {/* Search Results Dropdown */}
+          {showDropdown && searchResults.length > 0 && (
+            <div className="absolute left-0 top-12 w-full bg-white/95 dark:bg-[#0d0f26]/95 backdrop-blur-md rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 max-h-80 overflow-y-auto animate-fadeIn z-50 p-2 space-y-1">
+              {searchResults.map((event) => {
+                const imgSrc =
+                  event.imageUrl || event.image || "/images/event-default.webp";
+                return (
+                  <div
+                    key={event.slug || event._id || event.id}
+                    className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-[#1a1d42] cursor-pointer transition-colors"
+                    onMouseDown={() => {
+                      router.push(`/events/${event.slug || event.id}`);
+                      setShowDropdown(false);
+                      setSearchTerm("");
+                    }}
+                  >
+                    <div className="relative w-10 h-10 rounded-lg overflow-hidden shrink-0">
                       <Image
                         src={imgSrc}
                         alt={event.title}
-                        width={32}
-                        height={32}
-                        className="w-8 h-8 object-cover rounded-md border border-gray-200"
+                        fill
+                        className="object-cover"
                       />
-                      <div className="flex flex-col min-w-0">
-                        <span className="font-medium text-sm line-clamp-1">
-                          {event.title}
-                        </span>
-                        {event.location && (
-                          <span className="text-xs text-gray-500 line-clamp-1">
-                            {event.location}
-                          </span>
-                        )}
-                      </div>
                     </div>
-                  );
-                })}
-                {searchResults.length === 8 && (
-                  <div className="px-4 py-2 text-xs text-gray-400">
-                    Begrenze die Suche für weitere Ergebnisse...
+                    <div className="flex flex-col min-w-0">
+                      <span className="font-semibold text-sm text-slate-900 dark:text-white truncate">
+                        {event.title}
+                      </span>
+                      {event.location && (
+                        <span className="text-xs text-slate-500 dark:text-slate-400 truncate flex items-center gap-1">
+                          <MapPin className="w-3 h-3 text-pink-500 inline shrink-0" />
+                          {event.location}
+                        </span>
+                      )}
+                    </div>
                   </div>
-                )}
-              </div>
-            )}
-          </div>
+                );
+              })}
+            </div>
+          )}
         </div>
 
-        {/* Desktop-Navigation - nur auf Desktop sichtbar */}
-        <ul className="hidden md:flex flex-wrap justify-between mt-1 gap-4 text-white font-semibold text-sm">
-          <li>
-            <Link href="/" className={`nav-link ${isActive("home")}`}>
-              Home
-            </Link>
-          </li>
-          <li>
-            <button
-              onClick={() => handleScrollTo("events")}
-              className={`nav-link ${isActive("events")}`}
-            >
-              Events entdecken
-            </button>
-          </li>
-          <li>
-            <button
-              onClick={() => handleScrollTo("kategorien")}
-              className={`nav-link ${isActive("kategorien")}`}
-            >
-              Kategorien
-            </button>
-          </li>
-          <li>
+        {/* Desktop Navigation Links */}
+        <nav className="hidden lg:flex items-center gap-6 text-sm font-medium text-slate-700 dark:text-slate-200">
+          <Link
+            href="/"
+            className={`transition-colors hover:text-pink-500 ${
+              pathname === "/" && activeSection === "home"
+                ? "text-pink-500 font-semibold"
+                : ""
+            }`}
+          >
+            Home
+          </Link>
+
+          <button
+            onClick={() => handleScrollTo("events")}
+            className={`transition-colors hover:text-pink-500 cursor-pointer ${
+              pathname === "/" && activeSection === "events"
+                ? "text-pink-500 font-semibold"
+                : ""
+            }`}
+          >
+            Events
+          </button>
+
+          <button
+            onClick={() => handleScrollTo("kategorien")}
+            className={`transition-colors hover:text-pink-500 cursor-pointer ${
+              pathname === "/" && activeSection === "kategorien"
+                ? "text-pink-500 font-semibold"
+                : ""
+            }`}
+          >
+            Kategorien
+          </button>
+
+          <Link
+            href="/event-erstellen"
+            className={`transition-colors hover:text-pink-500 ${
+              pathname === "/event-erstellen"
+                ? "text-pink-500 font-semibold"
+                : ""
+            }`}
+          >
+            Event erstellen
+          </Link>
+        </nav>
+
+        {/* Action Controls (Auth, Cart, Theme) */}
+        <div className="flex items-center gap-3 sm:gap-4">
+          {/* Cart Icon */}
+          {isSignedIn && (
             <Link
-              href="/event-erstellen"
-              className={`nav-link ${linkStyle("/event-erstellen")}`}
+              href="/warenkorb"
+              className="relative p-2 rounded-full text-slate-700 dark:text-slate-300 hover:text-pink-500 dark:hover:text-pink-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              aria-label="Warenkorb"
             >
-              Event erstellen
+              <ShoppingCart className="w-5 h-5" />
+              {clientTicketCount > 0 && (
+                <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] flex items-center justify-center bg-pink-500 text-white text-[10px] font-extrabold px-1 rounded-full shadow-md animate-pulse">
+                  {clientTicketCount}
+                </span>
+              )}
             </Link>
-          </li>
+          )}
+
+          {/* Theme Toggle */}
+          <ThemeToggle />
+
+          {/* Auth Buttons */}
           {!isSignedIn ? (
-            <>
-              <li>
-                <SignInButton mode="redirect" redirecturl="/sign-in">
-                  <button className={`nav-link ${linkStyle("/sign-in")}`}>
-                    Login
-                  </button>
-                </SignInButton>
-              </li>
-              <li>
-                <SignUpButton mode="modal">
-                  <button className={`nav-link ${linkStyle("/sign-up")}`}>
-                    Registrieren
-                  </button>
-                </SignUpButton>
-              </li>
-            </>
-          ) : (
-            <>
-              <li
-                className="relative"
-                onMouseEnter={() => setProfileDropdownOpen(true)}
-                onMouseLeave={() => setProfileDropdownOpen(false)}
-              >
-                <button
-                  className="text-white flex items-center gap-1 focus:outline-none cursor-pointer"
-                  aria-haspopup="true"
-                  aria-expanded={profileDropdownOpen}
-                >
-                  Mein Profil
+            <div className="hidden sm:flex items-center gap-2">
+              <SignInButton mode="modal">
+                <button className="px-3.5 py-1.5 text-sm font-medium text-slate-700 dark:text-slate-200 hover:text-pink-500 transition-colors cursor-pointer">
+                  Anmelden
                 </button>
-                {/* Dropdown für Profil und ggf. Admin Dashboard */}
-                {profileDropdownOpen && (
-                  <div
-                    className="absolute right-0 mt-4 w-56 bg-gradient-to-b from-[#23244a] to-[#181a2b] border border-pink-600/30 rounded-2xl shadow-2xl z-50 flex flex-col items-center pt-4 pb-3 animate-fadeIn"
-                    style={{ right: "-85px" }}
+              </SignInButton>
+
+              <SignUpButton mode="modal">
+                <button className="px-4 py-1.5 text-sm font-semibold text-white bg-gradient-to-r from-purple-600 to-pink-500 hover:opacity-90 rounded-full shadow-sm transition-all cursor-pointer">
+                  Registrieren
+                </button>
+              </SignUpButton>
+            </div>
+          ) : (
+            <div className="relative" ref={profileDropdownRef}>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setProfileDropdownOpen((prev) => !prev)}
+                  className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-full border border-slate-200 dark:border-slate-800 hover:border-pink-500/50 bg-slate-50 dark:bg-[#141738] transition-colors cursor-pointer"
+                >
+                  <User className="w-4 h-4 text-pink-500" />
+                  <span>Profil</span>
+                </button>
+                <UserButton />
+              </div>
+
+              {/* Profile Dropdown Menu */}
+              {profileDropdownOpen && (
+                <div className="absolute right-0 mt-3 w-52 bg-white dark:bg-[#0d0f26] border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl z-50 p-2 space-y-1 animate-fadeIn">
+                  <Link
+                    href="/profil"
+                    className="flex items-center gap-2.5 px-3 py-2 text-sm font-medium text-slate-700 dark:text-slate-200 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-colors"
+                    onClick={() => setProfileDropdownOpen(false)}
                   >
-                    {/* ChevronDownIcon tam ortada ve üstte */}
-                    <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-b from-[#23244a] to-[#181a2b] rounded-full p-1 border border-pink-600/30 shadow-lg flex items-center justify-center">
-                      <ChevronDownIcon className="w-7 h-7 text-pink-400 drop-shadow" />
-                    </div>
+                    <User className="w-4 h-4 text-pink-500" />
+                    <span>Mein Profil</span>
+                  </Link>
+
+                  {userRole === "admin" && (
                     <Link
-                      href="/profil"
-                      className="w-5/6 text-center px-4 py-2 text-base text-white rounded-lg hover:bg-pink-500/20 transition mb-1"
+                      href="/admin"
+                      className="flex items-center gap-2.5 px-3 py-2 text-sm font-medium text-purple-600 dark:text-purple-400 rounded-xl hover:bg-purple-50 dark:hover:bg-purple-950/30 transition-colors"
                       onClick={() => setProfileDropdownOpen(false)}
                     >
-                      Mein Profil
+                      <Shield className="w-4 h-4" />
+                      <span>Admin Dashboard</span>
                     </Link>
-                    {userRole === "admin" && (
-                      <Link
-                        href="/admin"
-                        className="w-5/6 text-center px-4 py-2 text-base text-white rounded-lg hover:bg-pink-500/20 transition"
-                        onClick={() => setProfileDropdownOpen(false)}
-                      >
-                        Admin Dashboard
-                      </Link>
-                    )}
-                  </div>
-                )}
-              </li>
-              <li>
-                <Link href="/warenkorb" className="relative group">
-                  <ShoppingCart className="w-6 h-6 text-white group-hover:text-pink-400 transition" />
-                  {clientTicketCount > 0 && (
-                    <span className="absolute -top-2 -right-2 bg-pink-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full">
-                      {clientTicketCount}
-                    </span>
                   )}
-                </Link>
-              </li>
-              <li>
-                <UserButton />
-              </li>
-            </>
-          )}
-          <li>
-            <ThemeToggle />
-          </li>
-        </ul>
 
-        {/* Mobile Buttons - rechts */}
+                  <div className="h-[1px] bg-slate-200 dark:bg-slate-800 my-1" />
 
-        <button
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className="md:hidden nav-text relative"
-          aria-label="Menü öffnen"
-        >
-          {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          {clientTicketCount > 0 && (
-            <span className="absolute -top-2 -right-3 bg-pink-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full">
-              {clientTicketCount}
-            </span>
+                  <SignOutButton redirectUrl="/">
+                    <button
+                      className="w-full flex items-center gap-2.5 px-3 py-2 text-sm font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-xl transition-colors cursor-pointer"
+                      onClick={() => setProfileDropdownOpen(false)}
+                    >
+                      <LogOut className="w-4 h-4" />
+                      <span>Abmelden</span>
+                    </button>
+                  </SignOutButton>
+                </div>
+              )}
+            </div>
           )}
-        </button>
+
+          {/* Mobile Menu Button */}
+          <button
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="lg:hidden p-2 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+            aria-label="Menü öffnen"
+          >
+            {isMobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+          </button>
+        </div>
       </div>
 
-      {/* 🔽 Mobiles Menü - Fullscreen Overlay */}
+      {/* Mobile Drawer Menu */}
       {isMobileMenuOpen && (
-        <div
-          className={`fixed top-0 left-0 w-full z-10 transition-all duration-700 ease-in-out
-              ${
-                isVisible
-                  ? "opacity-100 translate-y-0"
-                  : "opacity-0 -translate-y-5"
-              }
-              backdrop-blur-xl bg-gradient-to-r from-[#070815]/95 to-[#121430]/95 shadow-md`}
-        >
-          {/* Menü-Header mit Schließen-Button */}
-          <div className="py-4 text-center border-b border-gray-800">
-            <h2 className="text-white text-xl font-bold">Menu</h2>
-            <button
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="absolute top-6 right-6 nav-text"
-            >
-              <X size={24} />
-            </button>
+        <div className="lg:hidden fixed inset-x-0 top-20 bg-white dark:bg-[#070818] border-b border-slate-200 dark:border-slate-800 shadow-2xl z-40 p-6 space-y-6 animate-fadeIn max-h-[calc(100vh-5rem)] overflow-y-auto">
+          {/* Mobile Search */}
+          <div className="relative">
+            <Search className="absolute left-3.5 top-3 w-4 h-4 text-slate-400 pointer-events-none" />
+            <input
+              type="text"
+              placeholder="Events suchen..."
+              className="w-full pl-10 pr-4 py-2.5 text-sm rounded-xl bg-slate-100 dark:bg-[#141738] border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-pink-500"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              suppressHydrationWarning
+            />
           </div>
 
-          {/* Menü-Links - rechts ausgerichtet mit 15px Abstand */}
-          <div className="flex flex-col items-end justify-start px-6 py-4 space-y-[15px] text-lg font-medium">
+          {/* Mobile Links */}
+          <div className="flex flex-col space-y-3 text-base font-semibold">
             <Link
               href="/"
               onClick={() => setIsMobileMenuOpen(false)}
-              className="nav-link text-white"
+              className="px-3 py-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800/80 text-slate-800 dark:text-slate-200"
             >
               Startseite
             </Link>
 
-            {/* Profil-Schaltfläche - jeder kann sie sehen, aber nur angemeldete Benutzer können sie verwenden */}
-            <Link
-              href={isSignedIn ? "/profil" : "/sign-up"}
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="nav-link text-white"
-            >
-              Mein Profil
-            </Link>
-
             <button
-              onClick={() => {
-                handleScrollTo("events");
-                setIsMobileMenuOpen(false);
-              }}
-              className="nav-link nav-text"
+              onClick={() => handleScrollTo("events")}
+              className="text-left px-3 py-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800/80 text-slate-800 dark:text-slate-200 cursor-pointer"
             >
               Events entdecken
             </button>
 
-            <Link
-              href={isSignedIn ? "/event-erstellen" : "/sign-up"}
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="nav-link nav-text"
-            >
-              Event erstellen
-            </Link>
-
             <button
-              onClick={() => {
-                handleScrollTo("kategorien");
-                setIsMobileMenuOpen(false);
-              }}
-              className="nav-link nav-text"
+              onClick={() => handleScrollTo("kategorien")}
+              className="text-left px-3 py-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800/80 text-slate-800 dark:text-slate-200 cursor-pointer"
             >
               Kategorien
             </button>
 
-            {/* Auth-Buttons */}
-            {!isSignedIn ? (
-              <>
-                <SignInButton mode="modal">
-                  <button
-                    className="nav-link nav-text"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    Login
-                  </button>
-                </SignInButton>
+            <Link
+              href="/event-erstellen"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="px-3 py-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800/80 text-slate-800 dark:text-slate-200"
+            >
+              Event erstellen
+            </Link>
 
-                <SignUpButton mode="modal">
-                  <button
-                    className="nav-link nav-text"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    Registrieren
-                  </button>
-                </SignUpButton>
+            {isSignedIn && (
+              <>
+                <Link
+                  href="/profil"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="px-3 py-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800/80 text-slate-800 dark:text-slate-200 flex items-center justify-between"
+                >
+                  <span>Mein Profil</span>
+                  <User className="w-4 h-4 text-pink-500" />
+                </Link>
+
+                <Link
+                  href="/warenkorb"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="px-3 py-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800/80 text-slate-800 dark:text-slate-200 flex items-center justify-between"
+                >
+                  <span>Warenkorb</span>
+                  {clientTicketCount > 0 && (
+                    <span className="bg-pink-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+                      {clientTicketCount}
+                    </span>
+                  )}
+                </Link>
               </>
-            ) : (
-              /* Warenkorb - nur für eingeloggte Benutzer sichtbar */
-              <Link
-                href="/warenkorb"
-                className="nav-link text-white"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Warenkorb
-                {clientTicketCount > 0 && (
-                  <span className="absolute -top-1 -right-4 bg-pink-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full">
-                    {clientTicketCount}
-                  </span>
-                )}
-              </Link>
             )}
-            <ThemeToggle />
+
+            {/* Theme Toggle in Mobile */}
+            <div className="flex items-center justify-between px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800">
+              <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+                Erscheinungsbild
+              </span>
+              <ThemeToggle />
+            </div>
           </div>
+
+          {/* Auth in Mobile */}
+          {!isSignedIn && (
+            <div className="pt-4 border-t border-slate-200 dark:border-slate-800 flex flex-col gap-3">
+              <SignInButton mode="modal">
+                <button
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="w-full py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 text-sm font-semibold text-slate-800 dark:text-slate-200 cursor-pointer"
+                >
+                  Anmelden
+                </button>
+              </SignInButton>
+
+              <SignUpButton mode="modal">
+                <button
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="w-full py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-pink-500 text-white text-sm font-bold shadow-md cursor-pointer"
+                >
+                  Kostenlos registrieren
+                </button>
+              </SignUpButton>
+            </div>
+          )}
         </div>
       )}
-    </nav>
+    </header>
   );
 });
 
-// ES6+ Display name for debugging
 NavBar.displayName = "NavBar";
 
 export default NavBar;

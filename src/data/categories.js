@@ -6,6 +6,7 @@ const categories = [
   { name: "gesundheit" },
   { name: "technologie-innovation" },
   { name: "messen-ausstellungen" },
+  { name: "sonstige-events" },
 ];
 
 export default categories;

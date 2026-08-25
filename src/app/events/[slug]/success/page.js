@@ -1,14 +1,12 @@
 import { notFound } from "next/navigation";
-import NavBar from "@/components/NavBar";
-import HeroDetailComp from "@/components/HeroDetailComp";
 import Image from "next/image";
 import Link from "next/link";
-import TicketDetails from "@/components/TicketDetails"; // Neue Client-Komponente
+import TicketDetails from "@/components/TicketDetails";
 import dbConnect from "@/lib/db";
 import Event from "@/models/Event";
-import eventSeedData from "@/data/eventSeedData"; // Für Fallback
+import eventSeedData from "@/data/eventSeedData";
+import { CheckCircle2, Sparkles, ArrowRight } from "lucide-react";
 
-// Hilfsfunktion zum Abrufen des Events aus der Datenbank
 async function getEventBySlug(slug) {
   try {
     await dbConnect();
@@ -21,10 +19,9 @@ async function getEventBySlug(slug) {
 }
 
 export default async function TicketSuccessPage({ params, searchParams }) {
-   // Auf params und searchParams warten
   params = await params;
   searchParams = await searchParams;
-  
+
   const slug = params.slug;
   const name = searchParams.name || "Teilnehmer";
   const email = searchParams.email || "kunde@example.com";
@@ -32,74 +29,64 @@ export default async function TicketSuccessPage({ params, searchParams }) {
   const quantity = searchParams.quantity || "1";
   const totalAmount = searchParams.totalAmount || "0";
   const orderNumber = searchParams.orderNumber || "wird geladen...";
-  
-  console.log("DEBUG: URL-Parameter", {
-    slug: slug,
-    name, email, eventTitle, quantity, totalAmount, orderNumber
-  });
 
-  // Versuche zuerst, das Event aus der Datenbank zu laden
   let event = await getEventBySlug(slug);
 
-  // Wenn nicht in der Datenbank gefunden, versuche es mit den Seed-Daten
   if (!event) {
-    console.log(`Event ${slug} nicht in DB gefunden, suche in Seed-Daten`);
     event = eventSeedData.find((e) => e.slug === slug);
-
     if (!event) {
-      console.log(`Event ${slug} auch nicht in Seed-Daten gefunden`);
       return notFound();
     }
-    console.log(`Event ${slug} in Seed-Daten gefunden`);
-  } else {
-    console.log(`Event ${slug} in DB gefunden`);
   }
 
   return (
-    <>
-      <NavBar />
-      <HeroDetailComp />
-
-      <main className="max-w-5xl mx-auto px-6 py-16">
-        <div className="bg-[#0f172a] text-white rounded-2xl shadow-2xl overflow-hidden">
-          {/* Eventbild */}
-          <div className="relative w-full h-72 md:h-[400px]">
-            <Image
-              src={event.imageUrl || "/images/default-event.jpg"}
-              alt={event.title}
-              fill
-              className="object-cover"
-              priority
-            />
+    <div className="min-h-screen py-24 sm:py-28 px-4 sm:px-6 lg:px-8 max-w-3xl mx-auto space-y-8">
+      <div className="bg-white dark:bg-[#0d0f26] border border-slate-200 dark:border-slate-800 rounded-3xl shadow-2xl overflow-hidden">
+        {/* Success Header */}
+        <div className="p-8 sm:p-10 text-center space-y-4 bg-gradient-to-b from-pink-500/10 via-purple-500/5 to-transparent border-b border-slate-100 dark:border-slate-800">
+          <div className="w-16 h-16 rounded-full bg-emerald-500/10 text-emerald-500 flex items-center justify-center mx-auto shadow-md">
+            <CheckCircle2 className="w-10 h-10" />
           </div>
 
-          {/* Inhalt */}
-          <div className="p-8 space-y-6 text-center">
-            <h1 className="text-3xl md:text-4xl font-extrabold bg-gradient-to-r from-purple-400 to-pink-500 text-transparent bg-clip-text">
-              🎉 Buchung erfolgreich!
+          <div className="space-y-1">
+            <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+              Buchung erfolgreich!
             </h1>
-
-            {/* Client-Komponente für interaktive Elemente */}
-            <TicketDetails 
-              name={name}
-              email={email}
-              eventTitle={eventTitle}
-              quantity={quantity}
-              totalAmount={totalAmount}
-              orderNumber={orderNumber}
-            />
-
-            {/* Zurück Button */}
-            <div className="mt-6">
-              <Link href="/">
-                <button className="px-6 py-3 bg-pink-600 hover:bg-pink-700 text-white font-semibold rounded-full transition duration-300 cursor-pointer">
-                  Zurück zur Startseite
-                </button>
-              </Link>
-            </div>
+            <p className="text-sm text-slate-600 dark:text-slate-400">
+              Vielen Dank für deine Bestellung und deinen sozialen Beitrag.
+            </p>
           </div>
         </div>
-      </main>
-    </>
+
+        {/* Details Component */}
+        <div className="p-6 sm:p-10 space-y-8">
+          <TicketDetails
+            name={name}
+            email={email}
+            eventTitle={eventTitle}
+            quantity={quantity}
+            totalAmount={totalAmount}
+            orderNumber={orderNumber}
+          />
+
+          <div className="flex flex-col sm:flex-row gap-4 pt-4 border-t border-slate-100 dark:border-slate-800">
+            <Link
+              href="/profil"
+              className="flex-1 py-3 px-6 rounded-2xl border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-semibold text-sm hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-center"
+            >
+              Zu meinen Tickets
+            </Link>
+
+            <Link
+              href="/"
+              className="flex-1 py-3 px-6 rounded-2xl bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 hover:opacity-95 text-white font-bold text-sm shadow-md shadow-pink-500/25 transition-all text-center flex items-center justify-center gap-2"
+            >
+              <span>Zur Startseite</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }

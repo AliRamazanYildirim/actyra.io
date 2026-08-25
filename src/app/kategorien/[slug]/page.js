@@ -4,8 +4,14 @@ import Link from "next/link";
 import dbConnect from "@/lib/db";
 import Event from "@/models/Event";
 import eventSeedData from "@/data/eventSeedData";
+import {
+  ChevronLeft,
+  MapPin,
+  Calendar,
+  ArrowRight,
+  Sparkles,
+} from "lucide-react";
 
-// Kategorie-Icons importieren
 import KategorieKulturMusik from "@/icons/KategorieKulturMusik";
 import KategorieSportFreizeit from "@/icons/KategorieSportFreizeit";
 import KategorieBildungWorkshop from "@/icons/KategorieBildungWorkshop";
@@ -15,7 +21,6 @@ import KategorieTechnologieInnovation from "@/icons/KategorieTechnologieInnovati
 import KategorieMessenAusstellungen from "@/icons/KategorieMessenAusstellungen";
 import KategorieSonstigeEvents from "@/icons/KategorieSonstigeEvents";
 
-// Kategorien-Array mit Slug, Icon und Name
 const kategorien = [
   { slug: "kultur-musik", icon: KategorieKulturMusik, name: "Kultur & Musik" },
   {
@@ -51,14 +56,12 @@ const kategorien = [
   },
 ];
 
-// Diese Funktion wird zur Build-Zeit aufgerufen, um alle möglichen Pfade zu generieren
 export async function generateStaticParams() {
   return kategorien.map((kategorie) => ({
     slug: kategorie.slug,
   }));
 }
 
-// Holt die Events für die jeweilige Kategorie
 export async function getEvents(slug) {
   try {
     await dbConnect();
@@ -73,7 +76,6 @@ export async function getEvents(slug) {
         };
       });
     } else {
-      // Fallback auf Seed-Daten gefiltert nach Kategorie
       const filteredSeed = eventSeedData.filter((e) => e.category === slug);
       return filteredSeed.map((event, idx) => ({
         ...event,
@@ -82,7 +84,6 @@ export async function getEvents(slug) {
     }
   } catch (error) {
     console.error("Fehler beim Abrufen der Events aus der Datenbank:", error);
-    // Fallback auf Seed-Daten bei DB-Fehler (z.B. während Build)
     const filteredSeed = eventSeedData.filter((e) => e.category === slug);
     return filteredSeed.map((event, idx) => ({
       ...event,
@@ -92,18 +93,15 @@ export async function getEvents(slug) {
 }
 
 export default async function KategoriePage({ params }) {
-  // params muss für Next.js 14+ asynchron behandelt werden
   const resolvedParams = await Promise.resolve(params);
   const { slug } = resolvedParams;
 
   const events = await getEvents(slug);
 
-  // Wenn keine Events gefunden wurden oder der Slug ungültig ist
   if (!events) {
     notFound();
   }
 
-  // Sucht die passende Kategorie-Information
   const kategorie = kategorien.find((k) => k.slug === slug);
   if (!kategorie && slug !== "sonstige-events") {
     notFound();
@@ -113,87 +111,114 @@ export default async function KategoriePage({ params }) {
   const kategorieName = kategorie?.name || "Sonstige Events";
 
   return (
-    <div className="py-20 px-6 md:px-10 max-w-7xl mx-auto">
-      <div className="flex items-center space-x-4 mb-8">
+    <div className="min-h-screen py-24 sm:py-28 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-10">
+      {/* Back button */}
+      <Link
+        href="/#kategorien"
+        className="inline-flex items-center gap-1.5 text-sm font-semibold text-slate-600 dark:text-slate-400 hover:text-pink-600 dark:hover:text-pink-400 transition-colors"
+      >
+        <ChevronLeft className="w-4 h-4" />
+        <span>Zurück zu allen Kategorien</span>
+      </Link>
+
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center gap-4">
         {IconComponent && (
-          <IconComponent className="w-12 h-12 text-[#613583]" />
+          <div className="p-3.5 rounded-2xl bg-pink-500/10 text-pink-600 dark:text-pink-400 w-fit">
+            <IconComponent className="w-8 h-8" />
+          </div>
         )}
-        <h1 className="text-3xl md:text-4xl font-bold">{kategorieName}</h1>
+        <div className="space-y-1">
+          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight">
+            {kategorieName}
+          </h1>
+          <p className="text-slate-600 dark:text-slate-400 text-sm sm:text-base">
+            Entdecke alle aktuellen Veranstaltungen in dieser Kategorie (
+            {events.length} Events gefunden).
+          </p>
+        </div>
       </div>
 
-      <p className="mb-10 text-lg">
-        Entdecke alle Events in der Kategorie{" "}
-        <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-pink-500 font-semibold">
-          {kategorieName}
-        </span>
-      </p>
-
       {events.length === 0 ? (
-        <div className="text-center py-10">
-          <p className="text-xl text-gray-500">
+        <div className="text-center py-16 bg-white dark:bg-[#0d0f26] border border-slate-200 dark:border-slate-800 rounded-3xl p-8 space-y-4">
+          <p className="text-slate-500 dark:text-slate-400 text-base">
             Aktuell sind keine Events in dieser Kategorie verfügbar.
           </p>
           <Link
-            href="/"
-            className="mt-6 inline-block text-purple-600 hover:underline"
+            href="/events"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-500 text-white font-bold text-xs rounded-2xl shadow-md shadow-pink-500/20 hover:opacity-95 transition-all"
           >
-            Zurück zur Startseite
+            <Sparkles className="w-4 h-4" />
+            <span>Alle Events anzeigen</span>
           </Link>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {events.map((event) => (
-            <Link
-              key={event._id ? event._id.toString() : event.slug}
-              href={`/events/${event.slug}`}
-              className="block bg-white dark:bg-gray-900 rounded-xl shadow-md overflow-hidden hover:shadow-lg transition"
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+          {events.map((event, index) => (
+            <div
+              key={event._id ? event._id.toString() : event.slug || index}
+              className="group flex flex-col bg-white/95 dark:bg-[#0d0f26]/95 backdrop-blur-md border border-slate-200 dark:border-slate-800/80 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:border-pink-500/30 transition-all duration-300 transform hover:-translate-y-1"
             >
-              {event.imageUrl ? (
-                <div className="relative h-48 w-full">
+              <div className="relative w-full h-52 overflow-hidden bg-slate-100 dark:bg-slate-800">
+                {event.imageUrl ? (
                   <Image
                     src={event.imageUrl}
                     alt={event.title}
                     fill
-                    className="object-cover"
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
                   />
-                </div>
-              ) : (
-                <div className="h-32 bg-gradient-to-r from-purple-400 to-pink-400" />
-              )}
-
-              <div className="p-5">
-                <h3 className="text-xl font-semibold mb-2">{event.title}</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-300">
-                  {event.location}
-                </p>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">
-                  {event.date
-                    ? new Date(event.date).toLocaleDateString("de-DE", {
-                        day: "2-digit",
-                        month: "2-digit",
-                        year: "numeric",
-                      })
-                    : ""}
-                </p>
-
-                {event.shortDescription && (
-                  <p className="text-sm text-gray-700 dark:text-gray-300 mt-2 line-clamp-2">
-                    {event.shortDescription}
-                  </p>
+                ) : (
+                  <div className="w-full h-full bg-gradient-to-r from-purple-600 to-pink-600 flex items-center justify-center p-4">
+                    <span className="text-white font-bold text-center">
+                      {event.title}
+                    </span>
+                  </div>
                 )}
 
-                <div className="mt-4 flex justify-between items-center">
-                  <span className="text-sm font-semibold text-purple-600">
-                    {typeof event.price === "number" && event.price > 0
-                      ? `${event.price.toFixed(2)} €`
-                      : "Kostenlos"}
-                  </span>
-                  <span className="text-xs bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 px-2 py-1 rounded-full">
-                    Details ansehen
-                  </span>
+                <div className="absolute bottom-3 right-3 bg-pink-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-md">
+                  {event.price === 0 ? "Kostenlos" : `${event.price} €`}
                 </div>
               </div>
-            </Link>
+
+              <div className="p-5 sm:p-6 flex-1 flex flex-col justify-between space-y-4">
+                <div className="space-y-2">
+                  <h3 className="text-lg font-bold text-slate-900 dark:text-white line-clamp-1 group-hover:text-pink-500 transition-colors">
+                    {event.title}
+                  </h3>
+
+                  <div className="space-y-1 text-xs text-slate-500 dark:text-slate-400">
+                    <div className="flex items-center gap-1.5">
+                      <MapPin className="w-3.5 h-3.5 text-pink-500 shrink-0" />
+                      <span className="truncate">
+                        {event.location || "Ort folgt"}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <Calendar className="w-3.5 h-3.5 text-purple-500 shrink-0" />
+                      <span>
+                        {event.date
+                          ? new Date(event.date).toLocaleDateString("de-DE")
+                          : "Datum folgt"}
+                      </span>
+                    </div>
+                  </div>
+
+                  {event.shortDescription && (
+                    <p className="text-xs text-slate-600 dark:text-slate-400 line-clamp-2 pt-1">
+                      {event.shortDescription}
+                    </p>
+                  )}
+                </div>
+
+                <Link
+                  href={`/events/${event.slug}`}
+                  className="flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 text-white text-xs font-semibold hover:opacity-90 shadow-md shadow-pink-500/10 transition-all"
+                >
+                  <span>Details & Tickets</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+              </div>
+            </div>
           ))}
         </div>
       )}

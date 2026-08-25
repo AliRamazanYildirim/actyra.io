@@ -1,27 +1,24 @@
 // src/app/event-erstellen/page.js
-// Seite für Event-Erstellung - bindet das Event-Formular ein
+// Seite für Event-Erstellung - Creator Studio
 
 import HeroEventErstellen from "@/components/HeroEventErstellen";
 import EventErstellenForm from "@/components/EventErstellenForm";
 
 export const metadata = {
-  title: "Event erstellen | Actyra",
-  description: "Erstelle dein eigenes Event und veröffentliche es auf Actyra.",
+  title: "Event erstellen | Actyra Creator Studio",
+  description:
+    "Erstelle und veröffentliche dein Event auf Actyra mit automatischem Social Impact.",
 };
 
 const EventErstellenPage = () => {
   return (
-    <>
-      {/* Hero vollflächig */}
+    <div className="min-h-screen">
       <HeroEventErstellen />
 
-      {/* Ab hier normaler gepaddeter Bereich */}
-      <main className="min-h-screen  pt-5">
-        <div className="container mx-auto">
-          <EventErstellenForm />
-        </div>
+      <main className="pb-24">
+        <EventErstellenForm />
       </main>
-    </>
+    </div>
   );
 };
 

@@ -1,10 +1,8 @@
-import Stars from '@/components/Stars';
 import React from 'react';
 
 const AuthLayout = ({ children }) => {
   return (
-    <div className="min-h-screen  dark:bg-[#0d0e25] flex items-center justify-center">
-      <Stars/>
+    <div className="min-h-screen flex items-center justify-center relative z-10">
       {children}
     </div>
   );

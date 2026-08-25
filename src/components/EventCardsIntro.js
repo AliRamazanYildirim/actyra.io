@@ -1,74 +1,98 @@
-// src/components/EventCardsIntro.js
-
 "use client";
+
+import { Users2, HeartHandshake, Compass, CheckCircle2 } from "lucide-react";
 
 export default function EventCardsIntro() {
   const cards = [
     {
+      icon: Users2,
+      color: "from-blue-500 to-indigo-600",
       title: "Für wen ist Actyra?",
-      content: [
+      items: [
         "Partygänger, Kreative, Techies & Genießer",
         "Gruppen, Paare oder Solo-Entdecker",
         "Alle, die Lust auf echte Begegnungen haben",
       ],
     },
     {
-      title: "Was macht unsere Events besonders?",
-      content: [
+      icon: HeartHandshake,
+      color: "from-purple-500 to-pink-500",
+      title: "Was macht uns besonders?",
+      items: [
         "Kuratierte Events mit Herz & Persönlichkeit",
-        "Vielfalt: Von Yoga bis Tech, von Party bis Kunst",
+        "Automatische Spende bei jedem Ticketkauf",
         "Lokale Veranstalter & echte Community-Vibes",
       ],
     },
     {
-      title: "So funktioniert Actyra",
-      content: [
-        "Finde dein Erlebnis",
-        "Sichere dir deinen Platz",
-        "Entdecke neue Leute & Städte",
+      icon: Compass,
+      color: "from-pink-500 to-rose-600",
+      title: "So einfach funktioniert's",
+      items: [
+        "Finde dein passendes Erlebnis in deiner Stadt",
+        "Sichere dir in Sekunden deinen Platz",
+        "Erlebe unvergessliche Momente & tue Gutes",
       ],
     },
   ];
 
   return (
-    <div className="py-20 px-6 md:px-10">
-      {/* Maximalbreite + Zentrierung */}
-      <div className="max-w-6xl mx-auto">
-        {/* Überschrift */}
-        <h2 className="text-4xl font-extrabold  mb-8 border-b border-gray-200 pb-4">
+    <section className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+      {/* Section Header */}
+      <div className="max-w-3xl mb-14 space-y-4">
+        <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight">
           Was ist{" "}
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-pink-500">
+          <span className="bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">
             Actyra?
           </span>
         </h2>
-
-        {/* Einführungstext */}
-        <p className="text-lg mb-14 leading-relaxed">
-          <strong>Actyra</strong> ist deine neue Plattform für{" "}
+        <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300 leading-relaxed">
+          <strong>Actyra</strong> ist deine Plattform für{" "}
           <strong>soziale Erlebnisse</strong>. Von pulsierenden Clubnächten über
-          entspannte Open-Air-Festivals bis hin zu gemütlichen Game-Nights – hier
-          findest du Events, die Menschen zusammenbringen.
+          entspannte Open-Air-Festivals bis hin zu inspirierenden Workshops –
+          hier verbinden wir Entertainment mit sozialem Impact.
         </p>
+      </div>
 
-        {/* Grid mit drei Karten */}
-        <div className="grid md:grid-cols-3 gap-8">
-          {cards.map((card, index) => (
+      {/* Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+        {cards.map((card, index) => {
+          const Icon = card.icon;
+          return (
             <div
               key={index}
-              className="group transition duration-300 ease-in-out transform hover:-translate-y-2 hover:scale-[1.02] 
-                         rounded-2xl p-6 bg-pink-100 border border-pink-200 text-gray-900 
-                         shadow-md hover:shadow-pink-300 animate-fade-in-up relative overflow-hidden"
+              className="flex flex-col justify-between p-8 premium-card"
             >
-              <h3 className="text-xl font-bold text-pink-700 mb-4">{card.title}</h3>
-              <ul className="space-y-2 list-disc list-inside text-sm">
-                {card.content.map((item, i) => (
-                  <li key={i}>{item}</li>
-                ))}
-              </ul>
+              <div className="space-y-6">
+                {/* Icon Badge */}
+                <div
+                  className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${card.color} flex items-center justify-center text-white shadow-md shadow-pink-500/10`}
+                >
+                  <Icon className="w-6 h-6" />
+                </div>
+
+                {/* Title */}
+                <h3 className="text-xl font-bold text-slate-900 dark:text-white">
+                  {card.title}
+                </h3>
+
+                {/* Bullet List */}
+                <ul className="space-y-3">
+                  {card.items.map((item, i) => (
+                    <li
+                      key={i}
+                      className="flex items-start gap-2.5 text-sm text-slate-600 dark:text-slate-300 leading-snug"
+                    >
+                      <CheckCircle2 className="w-4 h-4 text-pink-500 shrink-0 mt-0.5" />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
-          ))}
-        </div>
+          );
+        })}
       </div>
-    </div>
+    </section>
   );
 }

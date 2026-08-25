@@ -1,30 +1,21 @@
 "use client";
 
-import { useState, useEffect, memo, useCallback, useMemo } from "react";
+import { useState, useEffect, memo, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { MapPin, Calendar, Tag, Euro } from "lucide-react";
+import { MapPin, Calendar, ArrowRight, Sparkles } from "lucide-react";
 import fallbackEvents from "@/data/eventSeedData";
 
-/**
- * Date formatting utility using ES6+ arrow function
- */
 const formatDate = (dateStr) => {
   const options = { day: "2-digit", month: "short" };
   return new Date(dateStr).toLocaleDateString("de-DE", options);
 };
 
-/**
- * EventListSection Component - ES6+ and Next.js 15 optimized
- * Modern component with React.memo, useCallback, and ES6+ patterns
- */
 const EventListSection = memo(() => {
-  // ES6+ State definitions with destructuring
   const [events, setEvents] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // ES6+ API fetch function with useCallback
   const fetchEvents = useCallback(async () => {
     try {
       setIsLoading(true);
@@ -35,148 +26,176 @@ const EventListSection = memo(() => {
       }
 
       const data = await response.json();
-
-      // ES6+ Optional chaining and array validation
       if (data?.events && Array.isArray(data.events)) {
         setEvents(data.events);
       } else {
-        // Fallback data when no valid data from API
         setEvents(fallbackEvents);
       }
-    } catch (error) {
-      console.error("API-Fehler:", error);
+    } catch (err) {
+      console.error("API-Fehler:", err);
       setError("Fehler beim Laden der Events");
-      // Fallback data on error
       setEvents(fallbackEvents);
     } finally {
       setIsLoading(false);
     }
   }, []);
 
-  // ES6+ useEffect with dependency array
   useEffect(() => {
     fetchEvents();
   }, [fetchEvents]);
 
   return (
-    <section id="events" className="">
-      <div className="py-20 px-6 md:px-10 max-w-7xl mx-auto">
-        <h2 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-pink-500 mb-4">
-          Aktuelle Events
-        </h2>
-        <p className="mb-10 text-lg leading-relaxed">
-          Willkommen bei{" "}
-          <span className="font-semibold text-purple-700">Actyra</span> – deiner
-          Plattform für unvergessliche Begegnungen, echte Erlebnisse und soziale
-          Highlights.
-        </p>
-
-        {isLoading ? (
-          // Ladezustand
-          <div className="flex flex-col items-center py-10">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500 mb-4"></div>
-            <p className="text-gray-400">Ihre Events werden geladen...</p>
+    <section
+      id="events"
+      className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto"
+    >
+      <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
+        <div className="space-y-3">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-600 dark:text-purple-400 text-xs font-bold uppercase tracking-wider">
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Highlights</span>
           </div>
-        ) : error ? (
-          // Fehlerzustand
-          <div className="text-center py-10">
-            <p className="text-red-500 mb-2">{error}</p>
-            <p className="text-gray-600">Fallback-Daten werden angezeigt.</p>
-          </div>
-        ) : (
-          // Normale Event-Karten
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {events.map((event, index) => (
-              <div
-                key={event._id || event.slug || index}
-                className="relative bg-[#0f172a] text-white rounded-2xl overflow-hidden shadow-lg transition-all duration-500 hover:scale-[1.02] hover:bg-gradient-to-br hover:from-purple-600 hover:to-pink-600"
-              >
-                {/* Datum oben links */}
-                <div className="absolute top-3 left-3 bg-pink-600 text-white text-xs px-3 py-1 rounded-full z-10 font-bold">
-                  {formatDate(event.date)}
-                </div>
+          <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight">
+            Aktuelle{" "}
+            <span className="bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">
+              Events & Erlebnisse
+            </span>
+          </h2>
+          <p className="text-slate-600 dark:text-slate-400 text-base max-w-xl">
+            Sichere dir deinen Platz bei den beliebtesten Community- und
+            Charity-Events.
+          </p>
+        </div>
 
-                {/* Event-Bild */}
+        <Link
+          href="/events"
+          className="hidden sm:inline-flex items-center gap-2 text-sm font-semibold text-pink-600 dark:text-pink-400 hover:text-pink-700 dark:hover:text-pink-300 transition-colors"
+        >
+          <span>Alle Events ansehen</span>
+          <ArrowRight className="w-4 h-4" />
+        </Link>
+      </div>
+
+      {isLoading ? (
+        /* Skeleton Grid */
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+          {[...Array(6)].map((_, i) => (
+            <div
+              key={i}
+              className="bg-white dark:bg-[#0d0f26] border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden p-0 animate-pulse space-y-4"
+            >
+              <div className="w-full h-48 bg-slate-200 dark:bg-slate-800" />
+              <div className="p-5 space-y-3">
+                <div className="h-4 bg-slate-200 dark:bg-slate-800 rounded w-3/4" />
+                <div className="h-3 bg-slate-200 dark:bg-slate-800 rounded w-1/2" />
+                <div className="h-9 bg-slate-200 dark:bg-slate-800 rounded-xl w-full pt-2" />
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+          {events.slice(0, 6).map((event, index) => (
+            <div
+              key={event._id || event.slug || index}
+              className="group flex flex-col premium-card overflow-hidden"
+            >
+              {/* Event Image */}
+              <div className="relative w-full h-52 overflow-hidden bg-slate-100 dark:bg-slate-800">
                 {event.imageUrl ? (
                   <Image
                     src={event.imageUrl}
                     alt={event.title}
                     width={600}
                     height={400}
-                    className="w-full h-48 object-cover"
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
                 ) : (
-                  <div className="w-full h-48 bg-gradient-to-r from-purple-600 to-pink-600 flex items-center justify-center">
-                    <span className="text-white font-bold">{event.title}</span>
+                  <div className="w-full h-full bg-gradient-to-r from-purple-600 to-pink-600 flex items-center justify-center p-4">
+                    <span className="text-white font-bold text-center">
+                      {event.title}
+                    </span>
                   </div>
                 )}
 
-                {/* Event-Inhalt */}
-                <div className="p-5 space-y-2">
+                {/* Date Badge */}
+                <div className="absolute top-3 left-3 bg-black/70 backdrop-blur-md border border-white/20 text-white text-xs font-semibold px-3 py-1 rounded-full shadow-md">
+                  {formatDate(event.date)}
+                </div>
+
+                {/* Price Tag */}
+                <div className="absolute bottom-3 right-3 bg-pink-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-md">
+                  {event.price === 0 ? "Kostenlos" : `${event.price} €`}
+                </div>
+              </div>
+
+              {/* Event Content */}
+              <div className="p-5 sm:p-6 flex-1 flex flex-col justify-between space-y-4">
+                <div className="space-y-2.5">
                   {/* Tags */}
-                  <div className="flex flex-wrap gap-2">
-                    {event.tags &&
-                      event.tags.map((tag, i) => (
+                  {event.tags && event.tags.length > 0 && (
+                    <div className="flex flex-wrap gap-1.5">
+                      {event.tags.slice(0, 3).map((tag, i) => (
                         <span
                           key={i}
-                          className="bg-pink-700 text-white text-xs px-2 py-1 rounded-full"
+                          className="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs px-2.5 py-0.5 rounded-md font-medium"
                         >
                           {tag}
                         </span>
                       ))}
+                    </div>
+                  )}
+
+                  {/* Title */}
+                  <h3 className="text-lg font-bold text-slate-900 dark:text-white line-clamp-1 group-hover:text-pink-500 transition-colors">
+                    {event.title}
+                  </h3>
+
+                  {/* Meta details */}
+                  <div className="space-y-1 text-xs sm:text-sm text-slate-500 dark:text-slate-400">
+                    <div className="flex items-center gap-2">
+                      <MapPin className="w-4 h-4 text-pink-500 shrink-0" />
+                      <span className="truncate">
+                        {event.location || "Ort folgt"}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Calendar className="w-4 h-4 text-purple-500 shrink-0" />
+                      <span>
+                        {new Date(event.date).toLocaleDateString("de-DE")}
+                      </span>
+                    </div>
                   </div>
-
-                  {/* Titel */}
-                  <h3 className="text-xl font-semibold mt-2">{event.title}</h3>
-
-                  {/* Ort */}
-                  <div className="flex items-center gap-1 text-sm text-pink-100">
-                    <MapPin className="w-4 h-4" />
-                    {event.location}
-                  </div>
-
-                  {/* Datum */}
-                  <div className="flex items-center gap-1 text-sm text-pink-100">
-                    <Calendar className="w-4 h-4" />
-                    {new Date(event.date).toLocaleDateString("de-DE")}
-                  </div>
-
-                  {/* Preis */}
-                  <div className="flex items-center gap-1 text-sm text-white">
-                    <Euro className="w-4 h-4" />
-                    {event.price === 0
-                      ? "Kostenlos / Spende"
-                      : `${event.price} €`}
-                  </div>
-
-                  {/* CTA-Button mit Link zur Detailseite */}
-                  <Link href={`/events/${event.slug}`} passHref>
-                    <button className="mt-4 px-4 py-2 rounded-full bg-pink-700 hover:bg-pink-700 text-white font-semibold w-full cursor-pointer">
-                      Jetzt teilnehmen
-                    </button>
-                  </Link>
                 </div>
-              </div>
-            ))}
-          </div>
-        )}
 
-        {/* "Alle Events anzeigen"-Button - Only show when data is loaded and no error */}
-        {!isLoading && !error && events.length > 0 && (
-          <div className="mt-10 text-center">
-            <Link href="/events" passHref>
-              <button className="px-6 py-3 bg-pink-600 hover:bg-pink-700 text-white font-semibold rounded-full transition cursor-pointer">
-                Alle Events anzeigen
-              </button>
-            </Link>
-          </div>
-        )}
+                {/* CTA */}
+                <Link
+                  href={`/events/${event.slug}`}
+                  className="flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 text-white text-sm font-semibold hover:opacity-90 shadow-md shadow-pink-500/10 transition-all duration-200"
+                >
+                  <span>Jetzt teilnehmen</span>
+                  <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                </Link>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Mobile "Alle Events" Button */}
+      <div className="mt-10 text-center sm:hidden">
+        <Link
+          href="/events"
+          className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-slate-900 dark:bg-slate-800 text-white text-sm font-semibold rounded-full hover:bg-pink-600 transition-colors"
+        >
+          <span>Alle Events anzeigen</span>
+          <ArrowRight className="w-4 h-4" />
+        </Link>
       </div>
     </section>
   );
 });
 
-// ES6+ Display name for debugging  
 EventListSection.displayName = "EventListSection";
 
 export default EventListSection;

@@ -32,6 +32,7 @@ export default function ProfileContent({ user }) {
               src={displayImage}
               alt={name || "Profilbild"}
               fill
+              sizes="(max-width: 640px) 96px, 112px"
               className="object-cover"
               onError={() => setImageError(true)}
             />
@@ -40,6 +41,7 @@ export default function ProfileContent({ user }) {
               src="/default-avatar.png"
               alt="Standard-Profilbild"
               fill
+              sizes="(max-width: 640px) 96px, 112px"
               className="object-cover"
             />
           )}
@@ -60,7 +62,10 @@ export default function ProfileContent({ user }) {
       {editing ? (
         <div className="space-y-6 pt-4 border-t border-slate-100 dark:border-slate-800">
           <div>
-            <label htmlFor="name" className="block text-sm font-semibold text-slate-800 dark:text-slate-200 mb-1.5">
+            <label
+              htmlFor="name"
+              className="block text-sm font-semibold text-slate-800 dark:text-slate-200 mb-1.5"
+            >
               Dein Anzeigename
             </label>
             <input

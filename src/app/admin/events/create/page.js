@@ -310,6 +310,7 @@ const ImageUploadSection = ({ imagePreview, onImageChange }) => (
             src={imagePreview}
             alt="Preview"
             fill
+            sizes="(max-width: 768px) 100vw, 500px"
             className="object-cover"
           />
         ) : (

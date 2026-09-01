@@ -63,8 +63,10 @@ export default function AttendedEvents() {
                     className="object-cover opacity-90"
                   />
                 ) : (
-                  <div className="w-full h-full bg-gradient-to-r from-purple-600 to-pink-600 flex items-center justify-center p-4">
-                    <span className="text-white font-bold text-center text-sm">{event.title}</span>
+                  <div className="w-full h-full bg-linear-to-r from-purple-600 to-pink-600 flex items-center justify-center p-4">
+                    <span className="text-white font-bold text-center text-sm">
+                      {event.title}
+                    </span>
                   </div>
                 )}
               </div>

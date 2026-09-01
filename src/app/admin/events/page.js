@@ -71,7 +71,7 @@ export default function AdminEventsPage() {
     const eventDateOnly = new Date(
       date.getFullYear(),
       date.getMonth(),
-      date.getDate()
+      date.getDate(),
     );
 
     if (eventDateOnly.getTime() === nowDate.getTime()) {
@@ -197,7 +197,7 @@ export default function AdminEventsPage() {
           return (
             <div
               key={event._id}
-              className="relative w-[332.66px] h-[447px] bg-white/5 backdrop-blur-[5px] border border-white/30 rounded-[20px] shadow-[0_8px_32px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5),inset_0_-1px_0_rgba(255,255,255,0.1)] overflow-hidden"
+              className="relative w-[332.66px] h-111.75 bg-white/5 backdrop-blur-[5px] border border-white/30 rounded-[20px] shadow-[0_8px_32px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5),inset_0_-1px_0_rgba(255,255,255,0.1)] overflow-hidden"
             >
               {/* Event Image */}
               <div className="relative h-48">

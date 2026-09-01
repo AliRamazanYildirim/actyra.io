@@ -358,7 +358,7 @@ const EventErstellenForm = () => {
                         e.target.showPicker && e.target.showPicker();
                       } catch {}
                     }}
-                    className="w-full pl-4 pr-12 py-3 rounded-2xl border border-slate-200 dark:border-slate-700/80 bg-white dark:bg-[#141738] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-pink-500/50 focus:border-pink-500 transition-all text-sm font-medium cursor-pointer [color-scheme:light] dark:[color-scheme:dark] date-input"
+                    className="w-full pl-4 pr-12 py-3 rounded-2xl border border-slate-200 dark:border-slate-700/80 bg-white dark:bg-[#141738] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-pink-500/50 focus:border-pink-500 transition-all text-sm font-medium cursor-pointer scheme-light dark:scheme-dark date-input"
                     required
                   />
                   <div
@@ -450,7 +450,7 @@ const EventErstellenForm = () => {
 
             {/* Dynamic Impact Calculator Banner */}
             {donationAmount > 0 && (
-              <div className="p-4 rounded-2xl bg-gradient-to-r from-pink-500/10 via-purple-500/10 to-indigo-500/10 border border-pink-500/20 text-xs sm:text-sm text-slate-700 dark:text-slate-300 flex items-center gap-3">
+              <div className="p-4 rounded-2xl bg-linear-to-r from-pink-500/10 via-purple-500/10 to-indigo-500/10 border border-pink-500/20 text-xs sm:text-sm text-slate-700 dark:text-slate-300 flex items-center gap-3">
                 <div className="p-2 rounded-xl bg-pink-500 text-white shrink-0 shadow-sm">
                   <HeartHandshake className="w-4 h-4" />
                 </div>
@@ -493,7 +493,7 @@ const EventErstellenForm = () => {
           <div className="pt-2">
             <button
               type="submit"
-              className="w-full py-4 px-8 rounded-2xl bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 hover:opacity-95 text-white font-bold text-base shadow-lg shadow-pink-500/25 transition-all duration-200 cursor-pointer flex items-center justify-center gap-2 transform hover:-translate-y-0.5"
+              className="w-full py-4 px-8 rounded-2xl bg-linear-to-r from-indigo-600 via-purple-600 to-pink-500 hover:opacity-95 text-white font-bold text-base shadow-lg shadow-pink-500/25 transition-all duration-200 cursor-pointer flex items-center justify-center gap-2 transform hover:-translate-y-0.5"
             >
               <Eye className="w-5 h-5" />
               <span>Event überprüfen & Vorschau öffnen</span>
@@ -522,6 +522,7 @@ const EventErstellenForm = () => {
                   src={previewImageSrc}
                   alt="Live Vorschau"
                   fill
+                  sizes="(max-width: 1024px) 100vw, 400px"
                   className="object-cover"
                 />
               ) : (
@@ -553,7 +554,7 @@ const EventErstellenForm = () => {
 
             {/* Card Content */}
             <div className="p-6 space-y-4">
-              <h4 className="font-bold text-lg text-slate-900 dark:text-white line-clamp-2 min-h-[1.75rem]">
+              <h4 className="font-bold text-lg text-slate-900 dark:text-white line-clamp-2 min-h-7">
                 {formData.title || "Dein Event-Titel..."}
               </h4>
 

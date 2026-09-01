@@ -287,3 +287,31 @@ input[type="date"],
   -ms-overflow-style: none !important; /* IE and Edge */
   scrollbar-width: none !important; /* Firefox */
 }
+
+/* === CLERK MODAL PERFECT CENTERING === */
+.cl-modalBackdrop {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  position: fixed !important;
+  inset: 0 !important;
+  min-height: 100vh !important;
+  min-height: 100dvh !important;
+  padding: 1.5rem !important;
+  overflow-y: auto !important;
+  z-index: 99999 !important;
+}
+
+.cl-modalContent {
+  margin: auto !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.cl-rootBox,
+.cl-cardBox,
+.cl-signIn-root,
+.cl-signUp-root {
+  margin: auto !important;
+}

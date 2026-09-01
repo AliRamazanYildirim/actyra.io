@@ -1,17 +1,17 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { 
-  Calendar, 
-  MapPin, 
-  Euro, 
-  ChevronLeft, 
-  Heart, 
-  ShieldCheck, 
-  Ticket, 
+import {
+  Calendar,
+  MapPin,
+  Euro,
+  ChevronLeft,
+  Heart,
+  ShieldCheck,
+  Ticket,
   Sparkles,
   ArrowRight,
-  Share2
+  Share2,
 } from "lucide-react";
 
 import dbConnect from "@/lib/db";
@@ -68,7 +68,7 @@ export default async function EventDetailPage({ params }) {
         {/* Left Column: Event Media & Detailed Content */}
         <div className="lg:col-span-8 space-y-8">
           {/* Main Hero Image */}
-          <div className="relative w-full h-72 sm:h-96 md:h-[460px] rounded-3xl overflow-hidden shadow-xl bg-slate-900 border border-slate-200 dark:border-slate-800">
+          <div className="relative w-full h-72 sm:h-96 md:h-115 rounded-3xl overflow-hidden shadow-xl bg-slate-900 border border-slate-200 dark:border-slate-800">
             {event.imageUrl ? (
               <Image
                 src={event.imageUrl}
@@ -79,7 +79,9 @@ export default async function EventDetailPage({ params }) {
               />
             ) : (
               <div className="w-full h-full bg-gradient-to-r from-purple-800 to-pink-700 flex items-center justify-center">
-                <span className="text-white text-xl font-bold">{event.title}</span>
+                <span className="text-white text-xl font-bold">
+                  {event.title}
+                </span>
               </div>
             )}
 
@@ -112,7 +114,9 @@ export default async function EventDetailPage({ params }) {
                 <Calendar className="w-5 h-5" />
               </div>
               <div>
-                <p className="text-xs text-slate-500 dark:text-slate-400">Datum</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400">
+                  Datum
+                </p>
                 <p className="text-sm font-bold text-slate-900 dark:text-white">
                   {new Date(event.date).toLocaleDateString("de-DE", {
                     weekday: "short",
@@ -129,8 +133,10 @@ export default async function EventDetailPage({ params }) {
                 <MapPin className="w-5 h-5" />
               </div>
               <div>
-                <p className="text-xs text-slate-500 dark:text-slate-400">Veranstaltungsort</p>
-                <p className="text-sm font-bold text-slate-900 dark:text-white truncate max-w-[180px]">
+                <p className="text-xs text-slate-500 dark:text-slate-400">
+                  Veranstaltungsort
+                </p>
+                <p className="text-sm font-bold text-slate-900 dark:text-white truncate max-w-45">
                   {event.location || "Wird bekanntgegeben"}
                 </p>
               </div>
@@ -141,7 +147,9 @@ export default async function EventDetailPage({ params }) {
                 <Heart className="w-5 h-5" />
               </div>
               <div>
-                <p className="text-xs text-slate-500 dark:text-slate-400">Spendenanteil</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400">
+                  Spendenanteil
+                </p>
                 <p className="text-sm font-bold text-slate-900 dark:text-white">
                   {donationAmount} € pro Ticket
                 </p>
@@ -162,7 +170,8 @@ export default async function EventDetailPage({ params }) {
             )}
 
             <div className="prose dark:prose-invert max-w-none text-slate-600 dark:text-slate-300 text-sm sm:text-base leading-relaxed whitespace-pre-line border-t border-slate-100 dark:border-slate-800/80 pt-6">
-              {event.longDescription || "Detaillierte Informationen zum Ablauf und Line-Up folgen in Kürze."}
+              {event.longDescription ||
+                "Detaillierte Informationen zum Ablauf und Line-Up folgen in Kürze."}
             </div>
 
             {/* Social Impact Banner */}
@@ -175,7 +184,9 @@ export default async function EventDetailPage({ params }) {
                   Dein Ticket verändert die Welt
                 </h3>
                 <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-                  Mit jedem Kauf wird automatisch ein fester Betrag von {donationAmount} € an gemeinnützige Initiativen gespendet. Transparent, direkt und ohne Extrakosten.
+                  Mit jedem Kauf wird automatisch ein fester Betrag von{" "}
+                  {donationAmount} € an gemeinnützige Initiativen gespendet.
+                  Transparent, direkt und ohne Extrakosten.
                 </p>
               </div>
             </div>
@@ -204,11 +215,15 @@ export default async function EventDetailPage({ params }) {
             <div className="p-4 rounded-2xl bg-slate-50 dark:bg-[#141738] border border-slate-200 dark:border-slate-800 space-y-2.5 text-xs text-slate-600 dark:text-slate-300">
               <div className="flex items-center justify-between">
                 <span>Inkl. Spendenbeitrag:</span>
-                <span className="font-bold text-pink-600 dark:text-pink-400">+{donationAmount} €</span>
+                <span className="font-bold text-pink-600 dark:text-pink-400">
+                  +{donationAmount} €
+                </span>
               </div>
               <div className="flex items-center justify-between">
                 <span>Verfügbarkeit:</span>
-                <span className="font-semibold text-emerald-600 dark:text-emerald-400">Tickets verfügbar</span>
+                <span className="font-semibold text-emerald-600 dark:text-emerald-400">
+                  Tickets verfügbar
+                </span>
               </div>
               <div className="flex items-center justify-between">
                 <span>Ticket-Typ:</span>

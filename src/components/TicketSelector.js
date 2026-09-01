@@ -4,15 +4,15 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import useTicketStore from "@/store/ticketStore";
-import { 
-  ChevronLeft, 
-  ShoppingCart, 
-  Heart, 
-  Plus, 
-  Minus, 
-  Calendar, 
-  MapPin, 
-  ShieldCheck 
+import {
+  ChevronLeft,
+  ShoppingCart,
+  Heart,
+  Plus,
+  Minus,
+  Calendar,
+  MapPin,
+  ShieldCheck,
 } from "lucide-react";
 import { useAuth } from "@clerk/nextjs";
 
@@ -36,7 +36,8 @@ export default function TicketSelector({
   const grandTotal = totalPrice + totalDonation;
 
   const handleIncrement = () => setTicketCount((prev) => prev + 1);
-  const handleDecrement = () => setTicketCount((prev) => (prev > 1 ? prev - 1 : 1));
+  const handleDecrement = () =>
+    setTicketCount((prev) => (prev > 1 ? prev - 1 : 1));
 
   const handleCheckout = () => {
     if (!isLoaded) return;
@@ -79,15 +80,17 @@ export default function TicketSelector({
             className="object-cover opacity-80"
           />
         ) : (
-          <div className="w-full h-full bg-gradient-to-r from-purple-800 to-pink-700" />
+          <div className="w-full h-full bg-linear-to-r from-purple-800 to-pink-700" />
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent" />
+        <div className="absolute inset-0 bg-linear-to-t from-black/85 via-black/40 to-transparent" />
 
         <div className="absolute bottom-6 left-6 right-6 text-white space-y-1">
           <span className="text-xs font-semibold uppercase tracking-wider text-pink-400">
             Ticket-Konfiguration
           </span>
-          <h1 className="text-2xl sm:text-3xl font-extrabold line-clamp-1">{title}</h1>
+          <h1 className="text-2xl sm:text-3xl font-extrabold line-clamp-1">
+            {title}
+          </h1>
           <div className="flex flex-wrap items-center gap-4 text-xs text-slate-300 pt-1">
             {location && (
               <span className="flex items-center gap-1">
@@ -146,7 +149,8 @@ export default function TicketSelector({
         <div className="space-y-3 border-t border-slate-100 dark:border-slate-800/80 pt-6">
           <div className="flex justify-between text-sm text-slate-600 dark:text-slate-400">
             <span>
-              Ticketpreis ({ticketCount}x {price === 0 ? "Kostenlos" : `${price} €`})
+              Ticketpreis ({ticketCount}x{" "}
+              {price === 0 ? "Kostenlos" : `${price} €`})
             </span>
             <span className="font-semibold text-slate-900 dark:text-white">
               {totalPrice} €
@@ -161,7 +165,7 @@ export default function TicketSelector({
             <span className="font-bold">+{totalDonation} €</span>
           </div>
 
-          <div className="h-[1px] bg-slate-200 dark:bg-slate-800 my-2" />
+          <div className="h-px bg-slate-200 dark:bg-slate-800 my-2" />
 
           <div className="flex justify-between items-baseline text-lg font-bold text-slate-900 dark:text-white pt-1">
             <span>Gesamtbetrag</span>
@@ -183,7 +187,7 @@ export default function TicketSelector({
 
           <button
             onClick={handleCheckout}
-            className="flex-1 py-3.5 px-6 rounded-2xl bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 hover:opacity-95 text-white font-bold text-base shadow-lg shadow-pink-500/25 transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer"
+            className="flex-1 py-3.5 px-6 rounded-2xl bg-linear-to-r from-indigo-600 via-purple-600 to-pink-500 hover:opacity-95 text-white font-bold text-base shadow-lg shadow-pink-500/25 transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer"
           >
             <ShoppingCart className="w-5 h-5" />
             <span>In den Warenkorb ({grandTotal} €)</span>

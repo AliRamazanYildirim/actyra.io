@@ -45,7 +45,7 @@ export default function UpcomingEvents() {
           </p>
           <Link
             href="/events"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-500 text-white font-bold text-xs rounded-2xl shadow-md shadow-pink-500/20 hover:opacity-95 transition-all"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-linear-to-r from-purple-600 to-pink-500 text-white font-bold text-xs rounded-2xl shadow-md shadow-pink-500/20 hover:opacity-95 transition-all"
           >
             <Sparkles className="w-4 h-4" />
             <span>Events entdecken</span>
@@ -64,10 +64,11 @@ export default function UpcomingEvents() {
                     src={event.imageUrl}
                     alt={event.title}
                     fill
+                    sizes="(max-width: 640px) 100vw, 144px"
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
                   />
                 ) : (
-                  <div className="w-full h-full bg-gradient-to-r from-indigo-500 to-purple-600" />
+                  <div className="w-full h-full bg-linear-to-r from-indigo-500 to-purple-600" />
                 )}
               </div>
 

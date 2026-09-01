@@ -56,10 +56,11 @@ export default function Footer() {
                   src="/logo-actyra.png"
                   alt="Actyra Logo"
                   fill
+                  sizes="48px"
                   className="object-cover"
                 />
               </div>
-              <span className="text-2xl font-extrabold tracking-tight bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+              <span className="text-2xl font-extrabold tracking-tight bg-linear-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
                 Actyra
               </span>
             </Link>
@@ -223,7 +224,7 @@ export default function Footer() {
               </div>
               <button
                 type="submit"
-                className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-gradient-to-r from-purple-600 to-pink-500 hover:opacity-90 text-white text-xs font-bold transition-all shadow-md shadow-pink-500/20 cursor-pointer"
+                className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-linear-to-rrom-purple-600 to-pink-500 hover:opacity-90 text-white text-xs font-bold transition-all shadow-md shadow-pink-500/20 cursor-pointer"
               >
                 <span>Abonnieren</span>
                 <Send className="w-3.5 h-3.5" />
@@ -255,6 +256,7 @@ export default function Footer() {
                   src={item.src}
                   alt={`Event ${i + 1}`}
                   fill
+                  sizes="48px"
                   className="object-cover transition-transform duration-300 group-hover:scale-110"
                 />
                 <div className="absolute inset-0 bg-pink-600/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">

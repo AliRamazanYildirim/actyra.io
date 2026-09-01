@@ -17,11 +17,27 @@ const geistMono = Geist_Mono({
 export const metadata = {
   title: "Actyra",
   description: "Entdecke soziale Events mit Wirkung",
+  icons: {
+    icon: [
+      { url: "/logo-actyra.png", type: "image/png" },
+      { url: "/favicon.ico", sizes: "any" },
+    ],
+    apple: "/logo-actyra.png",
+    shortcut: "/logo-actyra.png",
+  },
 };
 
 export default function RootLayout({ children }) {
   return (
-    <ClerkProvider>
+    <ClerkProvider
+      appearance={{
+        elements: {
+          modalBackdrop: "!flex !items-center !justify-center !min-h-screen",
+          modalContent: "!m-auto !flex !items-center !justify-center",
+          cardBox: "!m-auto",
+        },
+      }}
+    >
       <html lang="de" suppressHydrationWarning>
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col relative`}

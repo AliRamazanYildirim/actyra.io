@@ -64,6 +64,7 @@ const EventPreview = ({ formData, onBack, onSubmit, isSubmitting }) => {
                 src={imageSrc}
                 alt={formData.title || "Event Bild"}
                 fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 900px"
                 className="object-cover"
                 priority
               />

@@ -15,6 +15,7 @@ import {
   LogOut,
   Shield,
 } from "lucide-react";
+import dynamic from "next/dynamic";
 import {
   SignInButton,
   SignUpButton,
@@ -22,8 +23,14 @@ import {
   useUser,
   SignOutButton,
 } from "@clerk/nextjs";
-import ThemeToggle from "./ThemeToggle";
 import useTicketStore from "@/store/ticketStore";
+
+const ThemeToggle = dynamic(() => import("./ThemeToggle"), {
+  ssr: false,
+  loading: () => (
+    <div className="w-18 h-9 rounded-full bg-slate-200/60 dark:bg-[#0f122e] border border-slate-300/40 dark:border-slate-800" />
+  ),
+});
 
 const NavBar = memo(() => {
   const [isVisible, setIsVisible] = useState(false);
@@ -206,11 +213,12 @@ const NavBar = memo(() => {
               src="/logo-actyra.png"
               alt="Actyra Logo"
               fill
+              sizes="40px"
               priority
               className="object-cover"
             />
           </div>
-          <span className="font-extrabold text-xl tracking-tight bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">
+          <span className="font-extrabold text-xl tracking-tight bg-linear-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">
             Actyra
           </span>
         </Link>
@@ -255,6 +263,7 @@ const NavBar = memo(() => {
                         src={imgSrc}
                         alt={event.title}
                         fill
+                        sizes="40px"
                         className="object-cover"
                       />
                     </div>
@@ -323,8 +332,11 @@ const NavBar = memo(() => {
           </Link>
         </nav>
 
-        {/* Action Controls (Auth, Cart, Theme) */}
+        {/* Action Controls (Divider, Auth, Cart, Theme) */}
         <div className="flex items-center gap-3 sm:gap-4">
+          {/* Divider between Nav links and Auth */}
+          <div className="hidden lg:block w-px h-6 bg-slate-400 dark:bg-slate-500" />
+
           {/* Cart Icon */}
           {isSignedIn && (
             <Link
@@ -334,15 +346,12 @@ const NavBar = memo(() => {
             >
               <ShoppingCart className="w-5 h-5" />
               {clientTicketCount > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] flex items-center justify-center bg-pink-500 text-white text-[10px] font-extrabold px-1 rounded-full shadow-md animate-pulse">
+                <span className="absolute -top-0.5 -right-0.5 min-w-4.5 h-4.5 flex items-center justify-center bg-pink-500 text-white text-[10px] font-extrabold px-1 rounded-full shadow-md animate-pulse">
                   {clientTicketCount}
                 </span>
               )}
             </Link>
           )}
-
-          {/* Theme Toggle */}
-          <ThemeToggle />
 
           {/* Auth Buttons */}
           {!isSignedIn ? (
@@ -354,7 +363,7 @@ const NavBar = memo(() => {
               </SignInButton>
 
               <SignUpButton mode="modal">
-                <button className="px-4 py-1.5 text-sm font-semibold text-white bg-gradient-to-r from-purple-600 to-pink-500 hover:opacity-90 rounded-full shadow-sm transition-all cursor-pointer">
+                <button className="px-4 py-1.5 text-sm font-semibold text-white bg-linear-to-r from-purple-600 to-pink-500 hover:opacity-90 rounded-full shadow-sm transition-all cursor-pointer">
                   Registrieren
                 </button>
               </SignUpButton>
@@ -395,7 +404,7 @@ const NavBar = memo(() => {
                     </Link>
                   )}
 
-                  <div className="h-[1px] bg-slate-200 dark:bg-slate-800 my-1" />
+                  <div className="h-px bg-slate-200 dark:bg-slate-800 my-1" />
 
                   <SignOutButton redirectUrl="/">
                     <button
@@ -410,6 +419,11 @@ const NavBar = memo(() => {
               )}
             </div>
           )}
+
+          {/* Theme Toggle */}
+          <div className="hidden sm:flex items-center">
+            <ThemeToggle />
+          </div>
 
           {/* Mobile Menu Button */}
           <button
@@ -520,7 +534,7 @@ const NavBar = memo(() => {
               <SignUpButton mode="modal">
                 <button
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="w-full py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-pink-500 text-white text-sm font-bold shadow-md cursor-pointer"
+                  className="w-full py-2.5 rounded-xl bg-linear-to-r from-purple-600 to-pink-500 text-white text-sm font-bold shadow-md cursor-pointer"
                 >
                   Kostenlos registrieren
                 </button>

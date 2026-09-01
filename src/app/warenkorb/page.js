@@ -1,29 +1,31 @@
-'use client';
+"use client";
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import useTicketStore from "@/store/ticketStore";
-import { 
-  Trash2, 
-  ShoppingBag, 
-  ChevronLeft, 
-  Plus, 
-  Minus, 
-  Calendar, 
-  MapPin, 
-  Heart, 
-  ShieldCheck, 
+import {
+  Trash2,
+  ShoppingBag,
+  ChevronLeft,
+  Plus,
+  Minus,
+  Calendar,
+  MapPin,
+  Heart,
+  ShieldCheck,
   ArrowRight,
-  Sparkles
+  Sparkles,
 } from "lucide-react";
 
 export default function WarenkorbPage() {
   const router = useRouter();
   const cartTickets = useTicketStore((state) => state.cartTickets);
   const removeFromCart = useTicketStore((state) => state.removeFromCart);
-  const updateTicketQuantity = useTicketStore((state) => state.updateTicketQuantity);
+  const updateTicketQuantity = useTicketStore(
+    (state) => state.updateTicketQuantity,
+  );
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -67,7 +69,8 @@ export default function WarenkorbPage() {
               Dein Warenkorb ist leer
             </h1>
             <p className="text-slate-500 dark:text-slate-400 text-sm sm:text-base max-w-md mx-auto">
-              Du hast aktuell keine Tickets in deinem Warenkorb. Entdecke inspirierende Events und tue gleichzeitig Gutes!
+              Du hast aktuell keine Tickets in deinem Warenkorb. Entdecke
+              inspirierende Events und tue gleichzeitig Gutes!
             </p>
           </div>
 
@@ -83,8 +86,14 @@ export default function WarenkorbPage() {
     );
   }
 
-  const totalPrice = cartTickets.reduce((sum, ticket) => sum + (ticket.price * ticket.quantity), 0);
-  const totalDonation = cartTickets.reduce((sum, ticket) => sum + (ticket.donation * ticket.quantity), 0);
+  const totalPrice = cartTickets.reduce(
+    (sum, ticket) => sum + ticket.price * ticket.quantity,
+    0,
+  );
+  const totalDonation = cartTickets.reduce(
+    (sum, ticket) => sum + ticket.donation * ticket.quantity,
+    0,
+  );
   const grandTotal = totalPrice + totalDonation;
 
   return (
@@ -182,7 +191,9 @@ export default function WarenkorbPage() {
                 {/* Price Breakdown */}
                 <div className="text-right">
                   <div className="text-xs text-slate-500 dark:text-slate-400">
-                    {ticket.quantity}x {ticket.price === 0 ? "Kostenlos" : `${ticket.price} €`} + {ticket.quantity}x {ticket.donation} € Spende
+                    {ticket.quantity}x{" "}
+                    {ticket.price === 0 ? "Kostenlos" : `${ticket.price} €`} +{" "}
+                    {ticket.quantity}x {ticket.donation} € Spende
                   </div>
                   <div className="text-base font-extrabold text-slate-900 dark:text-white">
                     {(ticket.price + ticket.donation) * ticket.quantity} €
@@ -211,8 +222,13 @@ export default function WarenkorbPage() {
 
             <div className="space-y-3 text-sm text-slate-600 dark:text-slate-400">
               <div className="flex justify-between">
-                <span>Tickets ({cartTickets.reduce((s, t) => s + t.quantity, 0)} Stück)</span>
-                <span className="font-semibold text-slate-900 dark:text-white">{totalPrice} €</span>
+                <span>
+                  Tickets ({cartTickets.reduce((s, t) => s + t.quantity, 0)}{" "}
+                  Stück)
+                </span>
+                <span className="font-semibold text-slate-900 dark:text-white">
+                  {totalPrice} €
+                </span>
               </div>
               <div className="flex justify-between text-emerald-600 dark:text-emerald-400 font-medium">
                 <span className="flex items-center gap-1">
@@ -222,7 +238,7 @@ export default function WarenkorbPage() {
                 <span className="font-bold">+{totalDonation} €</span>
               </div>
 
-              <div className="h-[1px] bg-slate-200 dark:bg-slate-800 my-2" />
+              <div className="h-px bg-slate-200 dark:bg-slate-800 my-2" />
 
               <div className="flex justify-between items-baseline text-lg font-bold text-slate-900 dark:text-white">
                 <span>Gesamtsumme</span>

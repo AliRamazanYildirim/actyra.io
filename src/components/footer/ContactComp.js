@@ -40,10 +40,13 @@ export default function ContactComp() {
       </div>
 
       {/* Grid: Form (Left) & Contact Info + Map (Right) */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:items-stretch">
         {/* Form Container */}
-        <div className="lg:col-span-7 bg-white dark:bg-[#0d0f26] border border-slate-200 dark:border-slate-800 rounded-3xl shadow-xl p-6 sm:p-8 space-y-6">
-          <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="lg:col-span-7 bg-white dark:bg-[#0d0f26] border border-slate-200 dark:border-slate-800 rounded-3xl shadow-xl p-6 sm:p-8 flex flex-col justify-between h-full">
+          <form
+            onSubmit={handleSubmit}
+            className="flex-1 flex flex-col justify-between space-y-4"
+          >
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
@@ -98,29 +101,29 @@ export default function ContactComp() {
               </div>
             </div>
 
-            <div>
+            <div className="flex-1 flex flex-col min-h-[140px]">
               <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                 Deine Nachricht *
               </label>
               <textarea
-                rows={4}
+                rows={6}
                 required
                 placeholder="Wie können wir dir weiterhelfen?"
-                className="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-[#141738] text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-pink-500 text-sm"
+                className="w-full flex-1 min-h-[140px] px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-[#141738] text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-pink-500 text-sm resize-none transition-all"
               />
             </div>
 
             <button
               type="submit"
-              className="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 hover:opacity-95 text-white font-bold text-sm shadow-lg shadow-pink-500/25 transition-all flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 hover:opacity-95 hover:brightness-110 active:scale-[0.98] text-white font-bold text-sm shadow-lg shadow-pink-500/25 hover:shadow-pink-500/35 transition-all flex items-center justify-center gap-2 cursor-pointer group"
             >
-              <Send className="w-4 h-4" />
+              <Send className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               <span>Nachricht absenden</span>
             </button>
           </form>
 
           {submitted && (
-            <div className="flex items-center gap-2 text-sm text-emerald-500 font-semibold p-3 bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800 rounded-xl animate-fadeIn">
+            <div className="mt-4 flex items-center gap-2 text-sm text-emerald-500 font-semibold p-3 bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800 rounded-xl animate-fadeIn">
               <CheckCircle2 className="w-4 h-4 shrink-0" />
               <span>
                 Vielen Dank! Deine Nachricht wurde erfolgreich übermittelt.
@@ -130,8 +133,8 @@ export default function ContactComp() {
         </div>
 
         {/* Right Info & Map */}
-        <div className="lg:col-span-5 space-y-6">
-          <div className="bg-white dark:bg-[#0d0f26] border border-slate-200 dark:border-slate-800 rounded-3xl shadow-xl p-6 space-y-4">
+        <div className="lg:col-span-5 flex flex-col justify-between gap-6 h-full">
+          <div className="bg-white dark:bg-[#0d0f26] border border-slate-200 dark:border-slate-800 rounded-3xl shadow-xl p-6 space-y-4 shrink-0">
             <h3 className="font-bold text-base text-slate-900 dark:text-white">
               Direkter Kontakt
             </h3>
@@ -152,7 +155,7 @@ export default function ContactComp() {
           </div>
 
           {/* Map Embed */}
-          <div className="rounded-3xl overflow-hidden shadow-xl border border-slate-200 dark:border-slate-800 h-64 w-full">
+          <div className="flex-1 min-h-[260px] rounded-3xl overflow-hidden shadow-xl border border-slate-200 dark:border-slate-800 w-full">
             <iframe
               title="Standort Frankfurt"
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2519.029770043073!2d8.68090357688205!3d50.11092267152552!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47bcd60b99eae0e3%3A0x2cc3c65085b8e776!2sR%C3%B6mer%2C%2060311%20Frankfurt%20am%20Main!5e0!3m2!1sde!2sde!4v1715670000000!5m2!1sde!2sde"
@@ -161,7 +164,7 @@ export default function ContactComp() {
               allowFullScreen=""
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
-              className="w-full h-full"
+              className="w-full h-full min-h-[260px]"
             />
           </div>
         </div>

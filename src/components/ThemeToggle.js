@@ -42,15 +42,16 @@ export default function ThemeToggle() {
     >
       {/* Tam Yuvarlak Kayan Işıklı Daire (Aspect Square 1:1) */}
       <motion.div
-        className="absolute top-1 w-7 h-7 rounded-full aspect-square pointer-events-none"
-        layout
+        className="absolute top-1 left-1 w-7 h-7 rounded-full aspect-square pointer-events-none"
+        animate={{
+          x: isDarkMode ? 32 : 0,
+        }}
         transition={{
           type: "spring",
           stiffness: 500,
           damping: 35,
         }}
         style={{
-          left: isDarkMode ? "36px" : "4px",
           background: isDarkMode
             ? "linear-gradient(135deg, #38bdf8 0%, #2563eb 50%, #1d4ed8 100%)"
             : "linear-gradient(135deg, #fbbf24 0%, #f97316 100%)",

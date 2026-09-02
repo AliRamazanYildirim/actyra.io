@@ -9,8 +9,6 @@ import {
   ExternalLink,
   CheckCircle2,
   Sparkles,
-  Mail,
-  Loader2,
 } from "lucide-react";
 import {
   FaInstagram,
@@ -32,20 +30,15 @@ const galleryImages = [
 export default function Footer() {
   const [email, setEmail] = useState("");
   const [newsletterSent, setNewsletterSent] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleNewsletter = (e) => {
     e.preventDefault();
-    if (!email || isSubmitting) return;
-    setIsSubmitting(true);
+    if (!email) return;
+    setNewsletterSent(true);
     setTimeout(() => {
-      setIsSubmitting(false);
-      setNewsletterSent(true);
+      setNewsletterSent(false);
       setEmail("");
-      setTimeout(() => {
-        setNewsletterSent(false);
-      }, 4000);
-    }, 600);
+    }, 4000);
   };
 
   return (
@@ -217,48 +210,30 @@ export default function Footer() {
               dein Postfach.
             </p>
 
-            <form onSubmit={handleNewsletter} className="space-y-2.5">
-              <div className="relative flex items-center">
-                <Mail className="absolute left-3.5 w-4 h-4 text-slate-500 pointer-events-none" />
+            <form onSubmit={handleNewsletter} className="space-y-2">
+              <div className="relative">
                 <input
                   type="email"
                   placeholder="Deine E-Mail-Adresse"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  disabled={isSubmitting || newsletterSent}
                   suppressHydrationWarning
-                  className="w-full pl-10 pr-3.5 py-2.5 text-xs rounded-xl bg-slate-900/90 border border-slate-800 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-pink-500/40 focus:border-pink-500/60 transition-all disabled:opacity-60"
+                  className="w-full px-3.5 py-2.5 text-sm rounded-xl bg-slate-900 border border-slate-800 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-pink-500/50 focus:border-pink-500 transition-all"
                 />
               </div>
-
               <button
                 type="submit"
-                disabled={isSubmitting || newsletterSent}
-                className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-linear-to-r from-indigo-600 via-purple-600 to-pink-500 hover:brightness-110 active:scale-[0.98] text-white text-xs font-bold transition-all duration-200 shadow-md shadow-pink-500/25 hover:shadow-lg hover:shadow-pink-500/35 cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed group"
+                className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-linear-to-rrom-purple-600 to-pink-500 hover:opacity-90 text-white text-xs font-bold transition-all shadow-md shadow-pink-500/20 cursor-pointer"
               >
-                {isSubmitting ? (
-                  <>
-                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                    <span>Wird angemeldet...</span>
-                  </>
-                ) : newsletterSent ? (
-                  <>
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-300" />
-                    <span>Erfolgreich abonniert!</span>
-                  </>
-                ) : (
-                  <>
-                    <span>Abonnieren</span>
-                    <Send className="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                  </>
-                )}
+                <span>Abonnieren</span>
+                <Send className="w-3.5 h-3.5" />
               </button>
 
               {newsletterSent && (
-                <p className="flex items-center gap-1.5 text-xs text-emerald-400 pt-0.5 animate-fadeIn">
+                <p className="flex items-center gap-1.5 text-xs text-emerald-400 pt-1 animate-fadeIn">
                   <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
-                  <span>Vielen Dank! Du bist auf der Liste.</span>
+                  <span>Vielen Dank! Du bist angemeldet.</span>
                 </p>
               )}
             </form>
